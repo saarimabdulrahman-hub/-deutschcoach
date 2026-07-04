@@ -1,0 +1,5 @@
+{
+  "name": "deutschcoach-platform",
+  "private": true,
+  "workspaces": ["packages/*", "web"]
+}
