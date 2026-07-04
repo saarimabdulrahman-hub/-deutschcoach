@@ -16,6 +16,7 @@ class Lesson(Base):
     description = Column(String(500), nullable=True)
     content = Column(Text, nullable=True)
     topics = Column(JSON, nullable=True)
+    exercises = Column(JSON, nullable=True)
     prerequisite_lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

@@ -19,4 +19,7 @@ export type {
   CEFRLevel,
   CardStatus,
   QuizType,
+  CurriculumLevel,
+  LessonListItem,
+  LessonDetail,
 } from "@deutschcoach/shared/types";

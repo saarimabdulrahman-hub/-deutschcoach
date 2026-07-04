@@ -24,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 def create_token(user_id: int) -> str:
     expire_minutes = int(os.getenv("JWT_EXPIRE_MINUTES", 1440))
     payload = {
-        "sub": user_id,
+        "sub": str(user_id),
         "exp": datetime.now(timezone.utc) + timedelta(minutes=expire_minutes),
         "iat": datetime.now(timezone.utc),
     }

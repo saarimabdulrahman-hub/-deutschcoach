@@ -104,6 +104,49 @@ export interface UserVocabNote {
   updated_at: string;
 }
 
+// ---- Curriculum types ----
+
+export interface CurriculumLevel {
+  level: string;
+  title: string;
+  lesson_count: number;
+  completed_count: number;
+}
+
+export interface LessonListItem {
+  id: number;
+  title: string;
+  unit: number;
+  order: number;
+  topics: string[];
+  completed: boolean;
+}
+
+export interface LessonDetail {
+  lesson: {
+    id: number;
+    title: string;
+    level: string;
+    unit: number;
+    order: number;
+    description: string | null;
+    content: string | null;
+    topics: string[];
+    prerequisite_lesson_id: number | null;
+    created_at: string;
+  };
+  vocabulary: VocabEntry[];
+  exercises: Record<string, unknown>[];
+  grammar_topics: {
+    id: number;
+    slug: string;
+    title: string;
+    level: string;
+    content: string | null;
+    examples: Record<string, string>[];
+  }[];
+}
+
 // ---- Dashboard aggregate (computed by backend) ----
 
 export interface DashboardData {
@@ -114,9 +157,9 @@ export interface DashboardData {
   continue_lesson: {
     id: number;
     title: string;
-    level: CEFRLevel;
+    level: string;
     unit: number;
-    order: number;
+    progress_pct: number;
   } | null;
   recent_activity: {
     type: string;
@@ -124,9 +167,10 @@ export interface DashboardData {
     timestamp: string;
   }[];
   weakest_words: {
+    id: number;
     german: string;
     english: string;
-    correct_pct: number;
+    lapses: number;
   }[];
 }
 
@@ -138,11 +182,12 @@ export interface QuizSession {
 }
 
 export interface QuizQuestion {
-  id: number;
+  id: number | string;
   type: QuizType;
   prompt: string;
   options?: string[];
   answer?: string;
+  hint?: string;
 }
 
 // ---- Plans / pricing ----

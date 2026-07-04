@@ -5,7 +5,8 @@
   "main": "./index.ts",
   "exports": {
     "./types": "./types/index.ts",
-    "./ui/*": "./ui/*"
+    "./ui/Tabs": "./ui/Tabs.tsx",
+    "./ui/CommandBar": "./ui/CommandBar.tsx"
   },
   "peerDependencies": {
     "react": "^19.0.0"

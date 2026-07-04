@@ -44,6 +44,9 @@ export const api = {
   put<T>(url: string, body?: unknown): Promise<T> {
     return request<T>("PUT", url, body);
   },
+  patch<T>(url: string, body?: unknown): Promise<T> {
+    return request<T>("PATCH", url, body);
+  },
   delete<T>(url: string): Promise<T> {
     return request<T>("DELETE", url);
   },
