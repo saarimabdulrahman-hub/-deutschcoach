@@ -29,11 +29,17 @@ export function SubscriptionSection() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-neutral-800">Subscription</h2>
+      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Subscription</h2>
 
       {/* Current plan */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-sm text-blue-700">
+      <div
+        className="rounded-xl p-4"
+        style={{
+          background: "var(--color-active-bg)",
+          border: "1px solid var(--color-badge-bg)",
+        }}
+      >
+        <p className="text-sm" style={{ color: "var(--color-active-text)" }}>
           You are on the{" "}
           <span className="font-semibold capitalize">{currentTier}</span> plan.
         </p>
@@ -42,7 +48,7 @@ export function SubscriptionSection() {
       {/* Upgrade options (only if free tier) */}
       {currentTier === "free" && (
         <div>
-          <h3 className="text-md font-semibold text-neutral-700 mb-3">
+          <h3 className="text-md font-semibold mb-3" style={{ color: "var(--color-text-secondary)" }}>
             Available Plans
           </h3>
           {loading ? (
@@ -50,12 +56,13 @@ export function SubscriptionSection() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-24 bg-neutral-100 rounded-lg animate-pulse"
+                  className="h-24 rounded-xl animate-pulse"
+                  style={{ background: "var(--color-border)" }}
                 />
               ))}
             </div>
           ) : plans.length === 0 ? (
-            <div className="text-neutral-400 text-sm">
+            <div className="text-sm" style={{ color: "var(--color-text-muted)" }}>
               No plans available right now.
             </div>
           ) : (
@@ -65,30 +72,41 @@ export function SubscriptionSection() {
                 .map((plan) => (
                   <div
                     key={plan.tier}
-                    className="border rounded-lg p-4 bg-white"
+                    className="rounded-xl p-4"
+                    style={{
+                      background: "var(--color-page-bg)",
+                      border: "1px solid var(--color-border)",
+                    }}
                   >
-                    <div className="font-semibold text-neutral-800 capitalize mb-2">
+                    <div className="font-semibold capitalize mb-2" style={{ color: "var(--color-text)" }}>
                       {plan.tier}
                     </div>
-                    <div className="text-2xl font-bold text-neutral-800 mb-1">
+                    <div className="text-2xl font-bold mb-1" style={{ color: "var(--color-text)" }}>
                       ${plan.monthly_price}
-                      <span className="text-sm font-normal text-neutral-400">
+                      <span className="text-sm font-normal" style={{ color: "var(--color-text-muted)" }}>
                         /mo
                       </span>
                     </div>
                     {plan.annual_price > 0 && (
-                      <div className="text-xs text-neutral-400 mb-3">
+                      <div className="text-xs mb-3" style={{ color: "var(--color-text-muted)" }}>
                         ${plan.annual_price}/year
                       </div>
                     )}
-                    <ul className="text-xs text-neutral-500 space-y-1 mb-4">
+                    <ul className="text-xs space-y-1 mb-4" style={{ color: "var(--color-text-muted)" }}>
                       {plan.features.slice(0, 3).map((f, i) => (
                         <li key={i} className="flex items-start gap-1">
-                          <span className="text-green-500">&check;</span> {f}
+                          <span style={{ color: "var(--color-success)" }}>&check;</span> {f}
                         </li>
                       ))}
                     </ul>
-                    <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors">
+                    <button
+                      className="w-full py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                      style={{
+                        color: "var(--color-text)",
+                        background: "var(--color-accent-gradient)",
+                        boxShadow: "0 4px 14px var(--color-accent-glow)",
+                      }}
+                    >
                       Upgrade
                     </button>
                   </div>
@@ -99,14 +117,15 @@ export function SubscriptionSection() {
       )}
 
       {/* Manage Billing */}
-      <div className="border-t pt-4 space-y-3">
+      <div className="pt-4 space-y-3" style={{ borderTop: "1px solid var(--color-border)" }}>
         <a
           href="#"
           onClick={(e) => {
             e.preventDefault();
             alert("Stripe Customer Portal will be available soon.");
           }}
-          className="inline-block text-sm text-blue-600 hover:text-blue-700 underline"
+          className="inline-block text-sm hover:text-indigo-300 underline"
+          style={{ color: "var(--color-active-text)" }}
         >
           Manage Billing (Stripe Customer Portal)
         </a>
@@ -115,13 +134,20 @@ export function SubscriptionSection() {
           {!showCancelConfirm ? (
             <button
               onClick={() => setShowCancelConfirm(true)}
-              className="text-sm text-red-500 hover:text-red-600 underline"
+              className="text-sm hover:text-red-300 underline"
+              style={{ color: "var(--color-error-text)" }}
             >
               Cancel Subscription
             </button>
           ) : (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-sm text-red-700 mb-2">
+            <div
+              className="rounded-xl p-3"
+              style={{
+                background: "var(--color-error-bg)",
+                border: "1px solid var(--color-error-border)",
+              }}
+            >
+              <p className="text-sm mb-2" style={{ color: "var(--color-error-text)" }}>
                 Are you sure you want to cancel your subscription?
               </p>
               <div className="flex gap-2">
@@ -138,7 +164,8 @@ export function SubscriptionSection() {
                 </button>
                 <button
                   onClick={() => setShowCancelConfirm(false)}
-                  className="px-3 py-1 bg-neutral-200 text-neutral-700 rounded text-xs font-medium hover:bg-neutral-300"
+                  className="px-3 py-1 rounded text-xs font-medium"
+                  style={{ background: "var(--color-border)", color: "var(--color-text-secondary)" }}
                 >
                   Keep Subscription
                 </button>

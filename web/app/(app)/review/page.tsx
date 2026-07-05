@@ -26,7 +26,7 @@ export default function ReviewPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Review</h1>
+      <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Review</h1>
 
       {isLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

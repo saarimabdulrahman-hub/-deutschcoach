@@ -48,24 +48,29 @@ export function PreferencesSection() {
     }
   }
 
+  const inputClass = "w-full max-w-xs px-4 py-2 rounded-xl text-sm outline-none transition-all duration-200 placeholder:text-slate-500";
+
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <h2 className="text-lg font-semibold text-neutral-800">Preferences</h2>
+      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Preferences</h2>
 
       {message && (
         <div
-          className={`p-3 rounded-lg text-sm ${
-            message.type === "success"
-              ? "bg-green-50 text-green-700 border border-green-200"
-              : "bg-red-50 text-red-700 border border-red-200"
-          }`}
+          className="p-3 rounded-xl text-sm"
+          style={{
+            color: message.type === "success" ? "var(--color-success)" : "var(--color-error-text)",
+            background: message.type === "success"
+              ? "rgba(34,197,94,0.1)"
+              : "var(--color-error-bg)",
+            border: `1px solid ${message.type === "success" ? "rgba(34,197,94,0.2)" : "var(--color-error-border)"}`,
+          }}
         >
           {message.text}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-neutral-600 mb-1">
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
           Daily Card Goal
         </label>
         <input
@@ -74,21 +79,39 @@ export function PreferencesSection() {
           max={100}
           value={dailyGoalCards}
           onChange={(e) => setDailyGoalCards(Number(e.target.value))}
-          className="w-full max-w-xs px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={inputClass}
+          style={{
+            background: "var(--color-page-bg)",
+            border: "1px solid var(--color-border)",
+            color: "var(--color-text)",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
-        <p className="text-xs text-neutral-400 mt-1">
+        <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
           Number of flashcards to review each day.
         </p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-600 mb-1">
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
           Quiz Size
         </label>
         <select
           value={quizSize}
           onChange={(e) => setQuizSize(Number(e.target.value))}
-          className="w-full max-w-xs px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+          className={inputClass}
+          style={{
+            background: "var(--color-page-bg)",
+            border: "1px solid var(--color-border)",
+            color: "var(--color-text)",
+          }}
         >
           {[5, 10, 15, 20, 25, 30].map((n) => (
             <option key={n} value={n}>
@@ -96,13 +119,13 @@ export function PreferencesSection() {
             </option>
           ))}
         </select>
-        <p className="text-xs text-neutral-400 mt-1">
+        <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
           Number of questions per quiz session.
         </p>
       </div>
 
       <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-neutral-600">
+        <label className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
           Reminders
         </label>
         <button
@@ -110,9 +133,10 @@ export function PreferencesSection() {
           role="switch"
           aria-checked={remindersEnabled}
           onClick={() => setRemindersEnabled(!remindersEnabled)}
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            remindersEnabled ? "bg-blue-600" : "bg-neutral-300"
-          }`}
+          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+          style={{
+            background: remindersEnabled ? "var(--color-accent)" : "var(--color-border)",
+          }}
         >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -124,14 +148,27 @@ export function PreferencesSection() {
 
       {remindersEnabled && (
         <div>
-          <label className="block text-sm font-medium text-neutral-600 mb-1">
+          <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
             Reminder Time
           </label>
           <input
             type="time"
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
-            className="w-full max-w-xs px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className={inputClass}
+            style={{
+              background: "var(--color-page-bg)",
+              border: "1px solid var(--color-border)",
+              color: "var(--color-text)",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "var(--color-accent)";
+              e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "var(--color-border)";
+              e.target.style.boxShadow = "none";
+            }}
           />
         </div>
       )}
@@ -139,7 +176,12 @@ export function PreferencesSection() {
       <button
         type="submit"
         disabled={saving}
-        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+        className="px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+        style={{
+          color: "var(--color-text)",
+          background: "var(--color-accent-gradient)",
+          boxShadow: "0 4px 14px var(--color-accent-glow)",
+        }}
       >
         {saving ? "Saving..." : "Save Preferences"}
       </button>

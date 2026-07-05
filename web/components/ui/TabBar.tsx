@@ -24,6 +24,16 @@ const TABS = [
     ),
   },
   {
+    key: "chat",
+    label: "Chat",
+    href: "/chat",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    ),
+  },
+  {
     key: "review",
     label: "Review",
     href: "/review",
@@ -78,63 +88,47 @@ export function TabBar({ onOpenCommand }: TabBarProps) {
 
   return (
     <>
-      {/* Desktop top bar */}
-      <nav className="hidden md:flex items-center gap-1 border-b border-neutral-200 bg-white px-4 overflow-x-auto">
+      {/* Desktop top bar tabs (rendered inside header, so this is just the tab row) */}
+      <nav className="hidden md:flex items-center gap-0.5 px-1">
         {TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => router.push(tab.href)}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
-              ${
-                active === tab.key
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-neutral-500 hover:text-neutral-700"
-              }`}
+            className="relative px-3.5 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+            style={{ color: active === tab.key ? "var(--color-text)" : "var(--color-text-muted)" }}
           >
-            {tab.label}
+            {active === tab.key && (
+              <span
+                className="absolute inset-0 rounded-lg"
+                style={{ background: "var(--color-active-bg)" }}
+              />
+            )}
+            <span className="relative z-10">{tab.label}</span>
           </button>
         ))}
-        {/* Spacer */}
-        <div className="flex-1" />
-        {/* Search / CommandBar button */}
-        <button
-          onClick={() => onOpenCommand?.()}
-          title="Search (Ctrl+K)"
-          className="px-3 py-2 text-sm text-neutral-400 hover:text-neutral-600 transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-            />
-          </svg>
-        </button>
       </nav>
 
       {/* Mobile bottom tab bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-neutral-200 safe-area-bottom">
-        <div className="flex items-center justify-around h-14">
-          {TABS.slice(0, 5).map((tab) => (
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 safe-area-bottom"
+        style={{ background: "var(--color-card-bg)", borderTop: "1px solid var(--color-border)" }}
+      >
+        <div className="flex items-center justify-around h-16 px-1">
+          {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => router.push(tab.href)}
-              className={`flex flex-col items-center justify-center px-1 py-1 min-w-0 transition-colors
-                ${
-                  active === tab.key
-                    ? "text-blue-600"
-                    : "text-neutral-400 hover:text-neutral-600"
-                }`}
+              className="flex flex-col items-center justify-center px-1 py-1 min-w-0 gap-0.5 transition-colors relative"
+              style={{ color: active === tab.key ? "var(--color-active-text)" : "var(--color-text-muted)" }}
             >
+              {active === tab.key && (
+                <span
+                  className="absolute top-0 left-1/4 right-1/4 h-0.5 rounded-b-full"
+                  style={{ background: "var(--color-accent)" }}
+                />
+              )}
               {tab.icon}
-              <span className="text-[10px] leading-tight mt-0.5 truncate">
+              <span className="text-[10px] leading-tight truncate max-w-[48px]">
                 {tab.label}
               </span>
             </button>

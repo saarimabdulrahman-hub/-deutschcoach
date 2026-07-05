@@ -1,6 +1,9 @@
 import os
 import secrets
+import smtplib
 from datetime import datetime, timedelta, timezone
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 import bcrypt
 import jwt
@@ -19,6 +22,52 @@ from app.schemas.auth import (
 )
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+def send_reset_email(email: str, token: str):
+    smtp_host = os.getenv("SMTP_HOST", "")
+
+    # Always generate the reset link
+    reset_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3456')}/reset-password?token={token}"
+
+    # If SMTP not configured, log to console (dev mode)
+    if not smtp_host:
+        print(f"\n{'='*60}")
+        print(f"[DEV] Password reset for {email}")
+        print(f"[DEV] Reset link: {reset_link}")
+        print(f"{'='*60}\n")
+        return
+
+    # Try sending real email
+    msg = MIMEMultipart()
+    msg["From"] = os.getenv("FROM_EMAIL", "noreply@deutschcoach.app")
+    msg["To"] = email
+    msg["Subject"] = "Reset your DeutschCoach password"
+
+    body = f"""Hello,
+
+You requested a password reset for your DeutschCoach account.
+
+Click the link below to reset your password:
+{reset_link}
+
+This link expires in 1 hour.
+
+If you didn't request this, you can safely ignore this email.
+
+— The DeutschCoach Team
+"""
+    msg.attach(MIMEText(body, "plain"))
+
+    try:
+        with smtplib.SMTP(smtp_host, int(os.getenv("SMTP_PORT", "587"))) as server:
+            server.starttls()
+            server.login(os.getenv("SMTP_USER", ""), os.getenv("SMTP_PASSWORD", ""))
+            server.send_message(msg)
+            print(f"[INFO] Password reset email sent to {email}")
+    except Exception as e:
+        print(f"[ERROR] Failed to send email: {e}")
+        print(f"[DEV] Fallback — reset link: {reset_link}")
 
 
 def create_token(user_id: int) -> str:
@@ -125,8 +174,7 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     db.add(reset_token)
     db.commit()
 
-    # Print token to console for development (email integration is future work)
-    print(f"[DEV] Password reset token for {user.email}: {token_str}")
+    send_reset_email(user.email, token_str)
 
     return message
 

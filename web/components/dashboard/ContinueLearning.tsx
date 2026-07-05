@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
 
 interface ContinueLesson {
   id: number;
@@ -8,39 +9,45 @@ interface ContinueLesson {
   progress_pct: number;
 }
 
-interface ContinueLearningProps {
-  lesson: ContinueLesson;
-}
+export function ContinueLearning({ lesson }: { lesson: ContinueLesson }) {
+  const router = useRouter();
 
-export function ContinueLearning({ lesson }: ContinueLearningProps) {
   return (
-    <div className="bg-white rounded-xl border border-neutral-200 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-neutral-500 font-medium">Continue Learning</p>
-          <h3 className="text-lg font-semibold mt-1">{lesson.title}</h3>
-          <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+    <div
+      className="rounded-2xl p-6 h-full flex flex-col justify-between"
+      style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}
+    >
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-sm font-medium" style={{ color: "var(--color-active-text)" }}>📚 Continue Learning</span>
+          <span className="text-xs px-2 py-0.5 rounded-md font-semibold" style={{ background: "var(--color-badge-bg)", color: "var(--color-badge-text)" }}>
             {lesson.level}
           </span>
         </div>
-        <Link
-          href={`/curriculum/${lesson.level.toLowerCase()}/${lesson.id}`}
-          className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors"
-        >
-          Resume &rarr;
-        </Link>
-      </div>
-      <div className="mt-4">
-        <div className="w-full bg-neutral-200 rounded-full h-2">
-          <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
-            style={{ width: `${lesson.progress_pct}%` }}
-          />
+        <h3 className="text-xl font-bold mb-1" style={{ color: "var(--color-text)" }}>{lesson.title}</h3>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Unit {lesson.unit}</p>
+
+        <div className="mt-5">
+          <div className="flex justify-between text-xs mb-1.5">
+            <span style={{ color: "var(--color-text-muted)" }}>Progress</span>
+            <span style={{ color: "var(--color-text-secondary)" }}>{lesson.progress_pct}%</span>
+          </div>
+          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "var(--color-page-bg)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${lesson.progress_pct}%`, background: "var(--color-accent-gradient)" }}
+            />
+          </div>
         </div>
-        <p className="text-xs text-neutral-400 mt-1">
-          {lesson.progress_pct}% complete
-        </p>
       </div>
+
+      <button
+        onClick={() => router.push(`/curriculum/${lesson.level.toLowerCase()}/${lesson.id}`)}
+        className="mt-5 w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5"
+        style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--color-accent-glow)" }}
+      >
+        Resume Lesson →
+      </button>
     </div>
   );
 }

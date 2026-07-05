@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
@@ -9,12 +9,10 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
 
-function LevelAccordion({
-  level,
-}: {
-  level: CurriculumLevel;
-}) {
+function LevelAccordion({ level }: { level: CurriculumLevel }) {
   const [expanded, setExpanded] = useState(false);
+  const [maxHeight, setMaxHeight] = useState("0px");
+  const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const { data: lessons, isLoading } = useQuery<LessonListItem[]>({
@@ -23,115 +21,191 @@ function LevelAccordion({
     enabled: expanded,
   });
 
+  useEffect(() => {
+    if (expanded && contentRef.current) {
+      setMaxHeight(`${contentRef.current.scrollHeight}px`);
+    } else {
+      setMaxHeight("0px");
+    }
+  }, [expanded, lessons, isLoading]);
+
   const progressPct =
     level.lesson_count > 0
       ? Math.round((level.completed_count / level.lesson_count) * 100)
       : 0;
 
+  const isComplete = progressPct === 100;
+
   return (
-    <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+    <div
+      className="rounded-xl overflow-hidden transition-all duration-200"
+      style={{
+        background: "var(--color-card-bg)",
+        border: "1px solid var(--color-border)",
+      }}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors text-left"
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-bold text-blue-600">{level.level}</span>
+        <div className="flex items-center gap-4">
+          <span
+            className="text-2xl font-bold"
+            style={{ color: isComplete ? "var(--color-success)" : "var(--color-accent-light)" }}
+          >
+            {level.level}
+          </span>
           <div>
-            <p className="font-semibold text-neutral-800">{level.title}</p>
-            <p className="text-xs text-neutral-400">
-              {level.completed_count}/{level.lesson_count} lessons completed
-            </p>
+            <p className="font-semibold text-lg" style={{ color: "var(--color-text)" }}>{level.title}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-28 rounded-full h-1.5" style={{ background: "var(--color-page-bg)" }}>
+                <div
+                  className="h-1.5 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${progressPct}%`,
+                    background: isComplete
+                      ? "var(--color-success)"
+                      : "var(--color-accent-gradient)",
+                  }}
+                />
+              </div>
+              <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                {level.completed_count}/{level.lesson_count}
+              </span>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:block w-24 bg-neutral-200 rounded-full h-1.5">
-            <div
-              className="bg-blue-600 h-1.5 rounded-full transition-all"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-          <span
-            className={`text-sm transform transition-transform ${
-              expanded ? "rotate-90" : ""
-            }`}
-          >
-            &#8250;
+          <span className="text-sm font-semibold" style={{ color: isComplete ? "var(--color-success)" : "var(--color-accent-light)" }}>
+            {progressPct}%
           </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-5 w-5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+            style={{ color: "var(--color-text-muted)" }}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </button>
 
-      {expanded && (
-        <div className="border-t border-neutral-200">
+      {/* Expandable content with animation */}
+      <div
+        ref={contentRef}
+        style={{
+          maxHeight,
+          overflow: "hidden",
+          transition: "max-height 0.4s ease",
+          borderTop: expanded ? "1px solid var(--color-border)" : "none",
+        }}
+      >
+        <div className="p-2">
           {isLoading ? (
-            <div className="p-4 text-center text-neutral-400">
-              Loading lessons...
+            <div className="p-4 space-y-2">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-14 rounded-lg" />
+              ))}
             </div>
           ) : (
-            <div className="divide-y divide-neutral-100">
-              {lessons?.map((lesson) => (
+            <div className="space-y-1">
+              {lessons?.map((lesson, idx) => (
                 <div
                   key={lesson.id}
                   onClick={() =>
-                    router.push(
-                      `/curriculum/${level.level.toLowerCase()}/${lesson.id}`
-                    )
+                    router.push(`/curriculum/${level.level.toLowerCase()}/${lesson.id}`)
                   }
-                  className="flex items-center justify-between p-4 hover:bg-neutral-50 cursor-pointer transition-colors"
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-colors group"
                 >
-                  <div>
-                    <p className="font-medium text-neutral-800">
+                  {/* Number badge */}
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{
+                      background: lesson.completed
+                        ? "rgba(34,197,94,0.15)"
+                        : "var(--color-hover-bg)",
+                      color: lesson.completed
+                        ? "var(--color-success)"
+                        : "var(--color-accent-light)",
+                      border: `1px solid ${
+                        lesson.completed
+                          ? "rgba(34,197,94,0.3)"
+                          : "var(--color-badge-bg)"
+                      }`,
+                    }}
+                  >
+                    {lesson.completed ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      String(idx + 1).padStart(2, "0")
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate group-hover:text-indigo-300 transition-colors" style={{ color: "var(--color-text)" }}>
                       {lesson.title}
                     </p>
                     <div className="flex gap-1 mt-1 flex-wrap">
-                      {lesson.topics?.map((topic) => (
+                      {lesson.topics?.slice(0, 3).map((topic) => (
                         <span
                           key={topic}
-                          className="text-xs bg-neutral-100 text-neutral-500 px-2 py-0.5 rounded"
+                          className="text-[10px] px-1.5 py-0.5 rounded"
+                          style={{ background: "var(--color-page-bg)", color: "var(--color-text-muted)" }}
                         >
                           {topic}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-16 bg-neutral-200 rounded-full h-1.5 hidden sm:block">
-                      <div
-                        className={`h-1.5 rounded-full transition-all ${
-                          lesson.completed ? "bg-green-500 w-full" : "bg-blue-600 w-0"
-                        }`}
-                      />
-                    </div>
+
+                  {/* Status */}
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded ${
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                         lesson.completed
-                          ? "bg-green-100 text-green-700"
-                          : "bg-blue-100 text-blue-700"
+                          ? "text-green-400"
+                          : "text-indigo-400"
                       }`}
+                      style={{
+                        background: lesson.completed
+                          ? "rgba(34,197,94,0.1)"
+                          : "var(--color-active-bg)",
+                        border: `1px solid ${
+                          lesson.completed
+                            ? "rgba(34,197,94,0.2)"
+                            : "var(--color-badge-bg)"
+                        }`,
+                      }}
                     >
-                      {lesson.completed ? "Completed" : "Start"}
+                      {lesson.completed ? "Done" : "Start"}
                     </span>
                   </div>
                 </div>
               ))}
 
               {lessons?.length === 0 && (
-                <p className="p-4 text-sm text-neutral-400 text-center">
+                <p className="p-4 text-sm text-center" style={{ color: "var(--color-text-muted)" }}>
                   No lessons available for this level.
                 </p>
               )}
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
 function CurriculumSkeleton() {
   return (
-    <div className="space-y-3 animate-pulse">
+    <div className="space-y-3">
       {[...Array(5)].map((_, i) => (
-        <Skeleton key={i} className="h-16 rounded-xl" />
+        <Skeleton key={i} className="h-20 rounded-xl" />
       ))}
     </div>
   );
@@ -159,7 +233,10 @@ export default function CurriculumPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Curriculum</h1>
+      <div>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Curriculum</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>Master German step by step, from A1 to C1</p>
+      </div>
       <div className="space-y-3">
         {levels?.map((level) => (
           <LevelAccordion key={level.level} level={level} />

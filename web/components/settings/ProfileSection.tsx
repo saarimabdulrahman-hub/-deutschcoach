@@ -56,83 +56,140 @@ export function ProfileSection() {
     }
   }
 
+  const inputClass = "w-full max-w-md px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 placeholder:text-slate-500";
+
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <h2 className="text-lg font-semibold text-neutral-800">Profile</h2>
+      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Profile</h2>
 
       {message && (
         <div
-          className={`p-3 rounded-lg text-sm ${
-            message.type === "success"
-              ? "bg-green-50 text-green-700 border border-green-200"
-              : "bg-red-50 text-red-700 border border-red-200"
-          }`}
+          className="p-3 rounded-xl text-sm"
+          style={{
+            color: message.type === "success" ? "var(--color-success)" : "var(--color-error-text)",
+            background: message.type === "success"
+              ? "rgba(34,197,94,0.1)"
+              : "var(--color-error-bg)",
+            border: `1px solid ${message.type === "success" ? "rgba(34,197,94,0.2)" : "var(--color-error-border)"}`,
+          }}
         >
           {message.text}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-neutral-600 mb-1">
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
           Name
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full max-w-md px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={inputClass}
+          style={{
+            background: "var(--color-page-bg)",
+            border: "1px solid var(--color-border)",
+            color: "var(--color-text)",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-600 mb-1">
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
           Email
         </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full max-w-md px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={inputClass}
+          style={{
+            background: "var(--color-page-bg)",
+            border: "1px solid var(--color-border)",
+            color: "var(--color-text)",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
-      <div className="border-t pt-6">
-        <h3 className="text-md font-semibold text-neutral-700 mb-4">
+      <div className="pt-6" style={{ borderTop: "1px solid var(--color-border)" }}>
+        <h3 className="text-md font-semibold mb-4" style={{ color: "var(--color-text-secondary)" }}>
           Change Password
         </h3>
         <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-neutral-600 mb-1">
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
               Current Password
             </label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full max-w-md px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
+              style={{
+                background: "var(--color-page-bg)",
+                border: "1px solid var(--color-border)",
+                color: "var(--color-text)",
+              }}
               placeholder="Enter current password"
+              onFocus={(e) => {
+                e.target.style.borderColor = "var(--color-accent)";
+                e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "var(--color-border)";
+                e.target.style.boxShadow = "none";
+              }}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-neutral-600 mb-1">
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
               New Password
             </label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full max-w-md px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
+              style={{
+                background: "var(--color-page-bg)",
+                border: "1px solid var(--color-border)",
+                color: "var(--color-text)",
+              }}
               placeholder="Enter new password"
+              onFocus={(e) => {
+                e.target.style.borderColor = "var(--color-accent)";
+                e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "var(--color-border)";
+                e.target.style.boxShadow = "none";
+              }}
             />
           </div>
 
           {passwordError && (
-            <p className="text-red-500 text-sm" role="alert">
+            <p className="text-sm" style={{ color: "var(--color-error-text)" }} role="alert">
               {passwordError}
             </p>
           )}
           {passwordSuccess && (
-            <p className="text-green-600 text-sm" role="alert">
+            <p className="text-sm" style={{ color: "var(--color-success)" }} role="alert">
               {passwordSuccess}
             </p>
           )}
@@ -141,7 +198,8 @@ export function ProfileSection() {
             type="button"
             onClick={handleChangePassword}
             disabled={changingPassword}
-            className="px-4 py-2 bg-neutral-600 text-white rounded-lg hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: "var(--color-text-muted)", color: "var(--color-text)" }}
           >
             {changingPassword ? "Changing..." : "Change Password"}
           </button>
@@ -151,7 +209,12 @@ export function ProfileSection() {
       <button
         type="submit"
         disabled={saving}
-        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+        className="px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+        style={{
+          color: "var(--color-text)",
+          background: "var(--color-accent-gradient)",
+          boxShadow: "0 4px 14px var(--color-accent-glow)",
+        }}
       >
         {saving ? "Saving..." : "Save"}
       </button>

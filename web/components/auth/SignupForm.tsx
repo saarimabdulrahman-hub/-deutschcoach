@@ -34,33 +34,70 @@ export default function SignupForm({ onComplete }: SignupFormProps) {
     }
   }
 
+  const inputClass =
+    "w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 placeholder:text-slate-500";
+
+  const inputStyle = {
+    background: "var(--color-card-bg)",
+    border: "1px solid var(--color-border)",
+    color: "var(--color-text)",
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
+          Full name
+        </label>
         <input
           type="text"
-          placeholder="Full name"
+          placeholder="Your full name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
           autoComplete="name"
-          className="w-full p-3 rounded-lg bg-neutral-800 text-white border border-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          autoFocus
+          className={inputClass}
+          style={inputStyle}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
       <div>
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
+          Email address
+        </label>
         <input
           type="email"
-          placeholder="Email address"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          className="w-full p-3 rounded-lg bg-neutral-800 text-white border border-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={inputClass}
+          style={inputStyle}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
       <div>
+        <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
+          Password
+        </label>
         <input
           type="password"
           placeholder="Password (min 6 characters)"
@@ -69,20 +106,42 @@ export default function SignupForm({ onComplete }: SignupFormProps) {
           required
           minLength={6}
           autoComplete="new-password"
-          className="w-full p-3 rounded-lg bg-neutral-800 text-white border border-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={inputClass}
+          style={inputStyle}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-accent)";
+            e.target.style.boxShadow = "0 0 0 3px var(--color-active-bg)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border)";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
       {error && (
-        <p className="text-red-400 text-sm" role="alert">
+        <div
+          className="p-3 rounded-xl text-sm flex items-center gap-3"
+          style={{
+            background: "var(--color-error-bg)",
+            border: "1px solid var(--color-error-border)",
+            color: "var(--color-error-text)",
+          }}
+        >
+          <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--color-error-text)" }} />
           {error}
-        </p>
+        </div>
       )}
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-semibold transition-colors"
+        className="w-full py-3 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+        style={{
+          color: "var(--color-text)",
+          background: "var(--color-accent-gradient)",
+          boxShadow: "0 4px 14px var(--color-accent-glow)",
+        }}
       >
         {isSubmitting ? "Creating account..." : "Continue"}
       </button>

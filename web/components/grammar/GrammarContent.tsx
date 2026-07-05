@@ -61,18 +61,19 @@ function renderInline(text: string): React.ReactNode {
     }
 
     if (match[2]) {
-      parts.push(<strong key={match.index}>{match[2]}</strong>);
+      parts.push(<strong key={match.index} style={{ color: "var(--color-text)" }}>{match[2]}</strong>);
     } else if (match[3]) {
-      parts.push(<strong key={match.index}>{match[3]}</strong>);
+      parts.push(<strong key={match.index} style={{ color: "var(--color-text)" }}>{match[3]}</strong>);
     } else if (match[4]) {
-      parts.push(<em key={match.index}>{match[4]}</em>);
+      parts.push(<em key={match.index} style={{ color: "var(--color-text-secondary)" }}>{match[4]}</em>);
     } else if (match[5]) {
-      parts.push(<em key={match.index}>{match[5]}</em>);
+      parts.push(<em key={match.index} style={{ color: "var(--color-text-secondary)" }}>{match[5]}</em>);
     } else if (match[6]) {
       parts.push(
         <code
           key={match.index}
-          className="bg-neutral-100 px-1 py-0.5 rounded text-sm font-mono text-pink-600"
+          className="px-1 py-0.5 rounded text-sm font-mono"
+          style={{ background: "var(--color-page-bg)", color: "var(--color-active-text)" }}
         >
           {match[6]}
         </code>
@@ -111,13 +112,14 @@ function renderTable(lines: string[]): React.ReactNode {
 
   return (
     <div className="overflow-x-auto my-3">
-      <table className="min-w-full border-collapse border border-neutral-200 text-sm">
+      <table className="min-w-full border-collapse text-sm" style={{ borderColor: "var(--color-border)" }}>
         <thead>
-          <tr className="bg-neutral-50">
+          <tr style={{ background: "var(--color-page-bg)" }}>
             {headerCells.map((cell, i) => (
               <th
                 key={i}
-                className="border border-neutral-200 px-3 py-2 text-left font-semibold text-neutral-700"
+                className="px-3 py-2 text-left font-semibold"
+                style={{ border: "1px solid var(--color-border)", color: "var(--color-text-secondary)" }}
               >
                 {renderInline(cell)}
               </th>
@@ -126,11 +128,12 @@ function renderTable(lines: string[]): React.ReactNode {
         </thead>
         <tbody>
           {dataRows.map((row, ri) => (
-            <tr key={ri} className="even:bg-neutral-50">
+            <tr key={ri} style={{ background: "var(--color-page-bg)" }}>
               {parseTableRow(row).map((cell, ci) => (
                 <td
                   key={ci}
-                  className="border border-neutral-200 px-3 py-2 text-neutral-600"
+                  className="px-3 py-2"
+                  style={{ border: "1px solid var(--color-border)", color: "var(--color-text-secondary)" }}
                 >
                   {renderInline(cell)}
                 </td>
@@ -144,14 +147,12 @@ function renderTable(lines: string[]): React.ReactNode {
 }
 
 function renderBlock(text: string): React.ReactNode {
-  // Check if the block is a table
   const lines = text.split("\n");
   if (
     lines.length >= 2 &&
     isTableRow(lines[0]) &&
     isSeparatorRow(lines[1])
   ) {
-    // Collect all consecutive table rows
     const tableLines: string[] = [];
     for (const line of lines) {
       if (isTableRow(line)) {
@@ -163,19 +164,20 @@ function renderBlock(text: string): React.ReactNode {
     return renderTable(tableLines);
   }
 
-  // Code block (indented with 4 spaces or ```)
   if (text.startsWith("```")) {
     const codeContent = text.replace(/^```\w*\n?/, "").replace(/\n?```$/, "");
     return (
-      <pre className="bg-neutral-100 rounded-lg p-4 overflow-x-auto my-3 text-sm font-mono text-neutral-800">
+      <pre
+        className="rounded-xl p-4 overflow-x-auto my-3 text-sm font-mono"
+        style={{ background: "var(--color-page-bg)", border: "1px solid var(--color-border)", color: "var(--color-text-secondary)" }}
+      >
         <code>{codeContent}</code>
       </pre>
     );
   }
 
-  // Regular paragraph
   return (
-    <p className="text-neutral-700 leading-relaxed mb-3">{renderInline(text)}</p>
+    <p className="leading-relaxed mb-3" style={{ color: "var(--color-text-secondary)" }}>{renderInline(text)}</p>
   );
 }
 
@@ -184,16 +186,16 @@ export function GrammarContent({ content }: GrammarContentProps) {
 
   if (!content) {
     return (
-      <div className="text-neutral-400 italic">No content available.</div>
+      <div className="italic" style={{ color: "var(--color-text-muted)" }}>No content available.</div>
     );
   }
 
   return (
-    <div className="prose prose-neutral max-w-none">
+    <div className="max-w-none">
       {sections.map((section, i) => (
         <div key={i} className="mb-6">
           {section.title && (
-            <h2 className="text-lg font-semibold text-neutral-800 mb-3">
+            <h2 className="text-lg font-semibold mb-3" style={{ color: "var(--color-text)" }}>
               {section.title}
             </h2>
           )}

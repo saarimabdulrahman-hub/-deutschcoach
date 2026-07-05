@@ -30,17 +30,14 @@ interface StoredAnswer {
 export default function QuizPage() {
   const [state, setState] = useState<QuizState>("setup");
 
-  // Active quiz data
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<StoredAnswer[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  // Results data
   const [results, setResults] = useState<QuizResultOut | null>(null);
 
-  // Called by QuizSetup when a session is generated
   const handleStart = useCallback((session: QuizSession) => {
     setSessionId(session.session_id);
     setQuestions(session.questions);
@@ -50,7 +47,6 @@ export default function QuizPage() {
     setState("active");
   }, []);
 
-  // Called by QuestionCard when user answers (multiple-choice auto-advances via this)
   const handleAnswer = useCallback(
     (answer: string) => {
       const question = questions[currentIndex];
@@ -64,9 +60,7 @@ export default function QuizPage() {
       const newAnswers = [...answers, newAnswer];
       setAnswers(newAnswers);
 
-      // For multiple-choice, auto-advance; for text, advance after storing
       if (currentIndex + 1 >= questions.length) {
-        // Last question — submit the quiz
         submitQuiz(newAnswers);
       } else {
         setCurrentIndex((i) => i + 1);
@@ -87,7 +81,6 @@ export default function QuizPage() {
       setResults(result);
       setState("results");
     } catch {
-      // Even on error, show results with what we have
       setResults({
         score_pct: 0,
         questions_total: questions.length,
@@ -106,7 +99,6 @@ export default function QuizPage() {
     }
   }
 
-  // Reset to setup
   const handleRetry = useCallback(() => {
     setState("setup");
     setSessionId(null);
@@ -115,12 +107,10 @@ export default function QuizPage() {
     setResults(null);
   }, []);
 
-  // --- Render based on state ---
-
   if (state === "setup") {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Quiz</h1>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Quiz</h1>
         <QuizSetup onStart={handleStart} />
       </div>
     );
@@ -133,8 +123,8 @@ export default function QuizPage() {
       return (
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-neutral-500">Submitting your answers...</p>
+            <div className="w-8 h-8 rounded-full border-2 animate-spin mx-auto mb-4" style={{ borderColor: "var(--color-accent)", borderTopColor: "transparent" }} />
+            <p style={{ color: "var(--color-text-muted)" }}>Submitting your answers...</p>
           </div>
         </div>
       );
@@ -142,7 +132,7 @@ export default function QuizPage() {
 
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Quiz</h1>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Quiz</h1>
         <QuestionCard
           question={question}
           onAnswer={handleAnswer}
@@ -156,17 +146,16 @@ export default function QuizPage() {
   if (state === "results" && results) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Quiz</h1>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Quiz</h1>
         <QuizResults results={results} onRetry={handleRetry} />
       </div>
     );
   }
 
-  // Fallback — shouldn't reach here
   return (
-    <div className="text-center py-12 text-neutral-500">
+    <div className="text-center py-12" style={{ color: "var(--color-text-muted)" }}>
       Something went wrong.{" "}
-      <button onClick={handleRetry} className="text-blue-600 underline">
+      <button onClick={handleRetry} className="underline" style={{ color: "var(--color-active-text)" }}>
         Start over
       </button>
     </div>

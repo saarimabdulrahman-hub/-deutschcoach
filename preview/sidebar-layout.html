@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>German Tutor — UI Preview</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a0a; color: #e2e8f0; }
+
+  /* ── Theme Switcher ── */
+  .theme-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: #0f0f0f; border-bottom: 1px solid #222;
+    display: flex; align-items: center; gap: 8px; padding: 10px 20px;
+    flex-wrap: wrap;
+  }
+  .theme-bar span { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-right: 8px; }
+  .theme-btn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #333; background: #1a1a1a;
+    color: #999; font-size: 12px; cursor: pointer; transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: #555; color: #fff; }
+  .theme-btn.active { border-color: #6366f1; color: #fff; background: #1e1b4b; }
+
+  /* ── Layout ── */
+  .app { display: flex; margin-top: 52px; min-height: calc(100vh - 52px); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 240px; flex-shrink: 0; display: flex; flex-direction: column;
+    border-right: 1px solid var(--border); background: var(--sidebar-bg);
+    position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  }
+  .sidebar-brand {
+    display: flex; align-items: center; gap: 10px; padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px;
+    color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--hover-bg); color: var(--text); }
+  .nav-item.active { background: var(--active-bg); color: var(--active-text); }
+  .nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+  .nav-badge {
+    margin-left: auto; font-size: 10px; padding: 2px 7px; border-radius: 10px;
+    background: var(--badge-bg); color: var(--badge-text); font-weight: 600;
+  }
+  .sidebar-footer {
+    padding: 12px 18px; border-top: 1px solid var(--border);
+  }
+  .user-row { display: flex; align-items: center; gap: 10px; }
+  .user-avatar {
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 13px; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .user-email { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Main Content ── */
+  .main { flex: 1; padding: 28px 32px; background: var(--page-bg); }
+  .page-title { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .page-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+  /* ── Dashboard Cards ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    padding: 18px 20px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--card-bg);
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--text); }
+
+  .content-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .content-card {
+    border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); padding: 20px;
+  }
+  .content-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+
+  /* ── Activity List ── */
+  .activity-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .activity-text { font-size: 13px; color: var(--text); flex: 1; }
+  .activity-time { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Word List ── */
+  .word-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .word-row:last-child { border-bottom: none; }
+  .word-de { font-size: 13px; font-weight: 600; color: var(--text); }
+  .word-en { font-size: 12px; color: var(--text-muted); margin-left: 6px; }
+  .word-lapses { font-size: 11px; color: #ef4444; font-weight: 600; }
+
+  /* ── Progress Bar ── */
+  .progress-bar { height: 6px; border-radius: 3px; background: var(--border); margin-top: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); }
+
+  /* ── Continue Card ── */
+  .continue-card { margin-bottom: 24px; padding: 18px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); display: flex; align-items: center; justify-content: space-between; }
+  .continue-info h3 { font-size: 14px; color: var(--text); margin-bottom: 2px; }
+  .continue-info span { font-size: 12px; color: var(--text-muted); }
+  .resume-btn { padding: 8px 18px; border-radius: 8px; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #fff; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+
+  /* ── Mobile hint ── */
+  .mobile-hint { display: none; }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .mobile-hint { display: block; padding: 20px; text-align: center; color: #888; }
+    .main { padding: 20px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .content-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="theme-bar">
+  <span>Themes:</span>
+  <button class="theme-btn active" onclick="setTheme('indigo')">Indigo Slate</button>
+  <button class="theme-btn" onclick="setTheme('amber')">Amber Gold</button>
+  <button class="theme-btn" onclick="setTheme('emerald')">Emerald Dark</button>
+  <button class="theme-btn" onclick="setTheme('rose')">Rose Noir</button>
+  <button class="theme-btn" onclick="setTheme('mono')">Pure Mono</button>
+  <span style="margin-left:16px; color:#555;">|</span>
+  <span style="font-size:11px; color:#666; margin-left:8px;">Sidebar navigation — click items to see active state</span>
+</div>
+
+<div class="app">
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect x="1" y="1" width="26" height="26" rx="7" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+        <path d="M8 8h9a3.5 3.5 0 0 1 0 7H8V8Z" fill="#e2e8f0" opacity=".9"/>
+        <rect x="8" y="15" width="12" height="2.5" fill="#ef4444" opacity=".9"/>
+        <rect x="8" y="17.5" width="12" height="2.5" fill="#eab308" opacity=".9"/>
+      </svg>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px;">GERMAN</div>
+        <div style="font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">TUTOR</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="setActive(this)">
+        <span class="nav-icon">⌂</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="setActive(this)">
+        <span class="nav-icon">📚</span> Learn
+      </button>
+      <button class="nav-item" onclick="setActive(this)">
+        <span class="nav-icon">🃏</span> Review
+        <span class="nav-badge">18</span>
+      </button>
+      <button class="nav-item" onclick="setActive(this)">
+        <span class="nav-icon">✅</span> Quiz
+      </button>
+      <button class="nav-item" onclick="setActive(this)">
+        <span class="nav-icon">📖</span> Grammar
+      </button>
+      <button class="nav-item" onclick="setActive(this)">
+        <span class="nav-icon">⚙</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">S</div>
+        <div>
+          <div class="user-name">Sarah Mueller</div>
+          <div class="user-email">sarah@email.com</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main">
+    <h1 class="page-title">Welcome back, Sarah 👋</h1>
+    <p class="page-subtitle">Monday, July 5, 2026 · Pro Plan · 12-day streak 🔥</p>
+
+    <div class="continue-card">
+      <div class="continue-info">
+        <h3>📚 A2.07 · Im Restaurant bestellen</h3>
+        <span>Last: ordering drinks &mdash; 80% complete</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+      </div>
+      <button class="resume-btn">Resume →</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">📚 Current Lesson</div>
+        <div class="stat-value">A2.07</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">🃏 Cards Due Today</div>
+        <div class="stat-value">18</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">✅ Avg Quiz Score</div>
+        <div class="stat-value">87%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📊 Level Progress</div>
+        <div class="stat-value">62%</div>
+      </div>
+    </div>
+
+    <div class="content-row">
+      <div class="content-card">
+        <h3>📋 Recent Activity</h3>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:#22c55e"></div>
+          <span class="activity-text">Completed A2.06 quiz — <b>92%</b> (11/12)</span>
+          <span class="activity-time">Today</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--accent-1)"></div>
+          <span class="activity-text">Reviewed 22 flashcards — <b>19 correct</b></span>
+          <span class="activity-time">Today</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--accent-1)"></div>
+          <span class="activity-text">Started A2.07 · Im Restaurant bestellen</span>
+          <span class="activity-time">Yesterday</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:#22c55e"></div>
+          <span class="activity-text">Completed A2.05 quiz — <b>88%</b></span>
+          <span class="activity-time">Jul 3</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:#f59e0b"></div>
+          <span class="activity-text">Custom flashcard added: "der Bahnhof"</span>
+          <span class="activity-time">Jul 3</span>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h3>🎯 Weakest Words</h3>
+        <div class="word-row"><span><span class="word-de">die Bestellung</span><span class="word-en"> · the order</span></span><span class="word-lapses">3×</span></div>
+        <div class="word-row"><span><span class="word-de">der Kellner</span><span class="word-en"> · the waiter</span></span><span class="word-lapses">3×</span></div>
+        <div class="word-row"><span><span class="word-de">empfehlen</span><span class="word-en"> · to recommend</span></span><span class="word-lapses">2×</span></div>
+        <div class="word-row"><span><span class="word-de">die Speisekarte</span><span class="word-en"> · the menu</span></span><span class="word-lapses">2×</span></div>
+        <div class="word-row"><span><span class="word-de">bezahlen</span><span class="word-en"> · to pay</span></span><span class="word-lapses">2×</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const themes = {
+    indigo: {
+      '--sidebar-bg': '#0f172a', '--page-bg': '#0f172a', '--card-bg': '#1e293b',
+      '--border': '#334155', '--text': '#f1f5f9', '--text-muted': '#64748b',
+      '--hover-bg': 'rgba(99,102,241,0.08)', '--active-bg': 'rgba(99,102,241,0.15)',
+      '--active-text': '#a5b4fc', '--badge-bg': 'rgba(99,102,241,0.2)', '--badge-text': '#a5b4fc',
+      '--accent-1': '#6366f1', '--accent-2': '#818cf8'
+    },
+    amber: {
+      '--sidebar-bg': '#0c0a09', '--page-bg': '#0c0a09', '--card-bg': '#1c1917',
+      '--border': '#292524', '--text': '#fafaf9', '--text-muted': '#78716c',
+      '--hover-bg': 'rgba(245,158,11,0.08)', '--active-bg': 'rgba(245,158,11,0.15)',
+      '--active-text': '#fbbf24', '--badge-bg': 'rgba(245,158,11,0.2)', '--badge-text': '#fbbf24',
+      '--accent-1': '#d97706', '--accent-2': '#f59e0b'
+    },
+    emerald: {
+      '--sidebar-bg': '#022c22', '--page-bg': '#022c22', '--card-bg': '#064e3b',
+      '--border': '#065f46', '--text': '#ecfdf5', '--text-muted': '#6ee7b7',
+      '--hover-bg': 'rgba(16,185,129,0.1)', '--active-bg': 'rgba(16,185,129,0.18)',
+      '--active-text': '#34d399', '--badge-bg': 'rgba(16,185,129,0.2)', '--badge-text': '#34d399',
+      '--accent-1': '#059669', '--accent-2': '#10b981'
+    },
+    rose: {
+      '--sidebar-bg': '#0f0009', '--page-bg': '#0f0009', '--card-bg': '#1f0018',
+      '--border': '#3b002e', '--text': '#fff1f2', '--text-muted': '#9f5468',
+      '--hover-bg': 'rgba(244,63,94,0.08)', '--active-bg': 'rgba(244,63,94,0.15)',
+      '--active-text': '#fda4af', '--badge-bg': 'rgba(244,63,94,0.2)', '--badge-text': '#fda4af',
+      '--accent-1': '#e11d48', '--accent-2': '#f43f5e'
+    },
+    mono: {
+      '--sidebar-bg': '#0a0a0a', '--page-bg': '#0a0a0a', '--card-bg': '#171717',
+      '--border': '#262626', '--text': '#fafafa', '--text-muted': '#737373',
+      '--hover-bg': 'rgba(255,255,255,0.04)', '--active-bg': 'rgba(255,255,255,0.08)',
+      '--active-text': '#ffffff', '--badge-bg': 'rgba(255,255,255,0.1)', '--badge-text': '#a3a3a3',
+      '--accent-1': '#525252', '--accent-2': '#737373'
+    }
+  };
+
+  function setTheme(name) {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[onclick="setTheme('${name}')"]`).classList.add('active');
+    const t = themes[name];
+    Object.entries(t).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Init with indigo
+  setTheme('indigo');
+</script>
+</body>
+</html>

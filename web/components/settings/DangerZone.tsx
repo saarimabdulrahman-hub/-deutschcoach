@@ -44,14 +44,27 @@ export function DangerZone() {
   }
 
   return (
-    <div className="border-2 border-red-200 rounded-lg p-6 bg-red-50">
-      <h2 className="text-lg font-semibold text-red-700 mb-2">Danger Zone</h2>
-      <p className="text-sm text-red-600 mb-4">
+    <div
+      className="rounded-xl p-6"
+      style={{
+        background: "var(--color-error-bg)",
+        border: "2px solid var(--color-error-border)",
+      }}
+    >
+      <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--color-error-text)" }}>Danger Zone</h2>
+      <p className="text-sm mb-4" style={{ color: "var(--color-error-text)" }}>
         Once you delete your account, there is no going back. Please be certain.
       </p>
 
       {error && (
-        <div className="p-3 rounded-lg text-sm bg-red-100 text-red-700 border border-red-300 mb-4">
+        <div
+          className="p-3 rounded-xl text-sm mb-4"
+          style={{
+            background: "var(--color-error-bg)",
+            border: "1px solid var(--color-error-border)",
+            color: "var(--color-error-text)",
+          }}
+        >
           {error}
         </div>
       )}
@@ -59,7 +72,7 @@ export function DangerZone() {
       {step === "idle" && (
         <button
           onClick={handleInitialClick}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-sm font-medium"
         >
           Delete Account
         </button>
@@ -67,20 +80,21 @@ export function DangerZone() {
 
       {step === "confirm" && (
         <div className="space-y-3">
-          <p className="text-sm text-red-700 font-medium">
+          <p className="text-sm font-medium" style={{ color: "var(--color-error-text)" }}>
             Are you sure? This permanently deletes all your progress, SRS data,
             and account.
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleFirstConfirm}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+              className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 text-sm font-medium"
             >
               Yes, I want to delete
             </button>
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-neutral-200 text-neutral-700 rounded-lg hover:bg-neutral-300 text-sm font-medium"
+              className="px-4 py-2 rounded-xl text-sm font-medium"
+              style={{ background: "var(--color-border)", color: "var(--color-text-secondary)" }}
             >
               Cancel
             </button>
@@ -90,8 +104,8 @@ export function DangerZone() {
 
       {step === "type-delete" && (
         <div className="space-y-3">
-          <p className="text-sm text-red-700 font-medium">
-            Type <code className="bg-red-100 px-1 rounded">DELETE</code> to
+          <p className="text-sm font-medium" style={{ color: "var(--color-error-text)" }}>
+            Type <code className="px-1 rounded" style={{ background: "var(--color-error-bg)" }}>DELETE</code> to
             confirm:
           </p>
           <input
@@ -99,19 +113,33 @@ export function DangerZone() {
             value={deleteInput}
             onChange={(e) => setDeleteInput(e.target.value)}
             placeholder='Type "DELETE"'
-            className="w-full max-w-xs px-3 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            className="w-full max-w-xs px-3 py-2 rounded-xl text-sm outline-none"
+            style={{
+              background: "var(--color-page-bg)",
+              border: "1px solid var(--color-error-border)",
+              color: "var(--color-text)",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "var(--color-error-text)";
+              e.target.style.boxShadow = "0 0 0 3px var(--color-error-bg)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "var(--color-error-border)";
+              e.target.style.boxShadow = "none";
+            }}
           />
           <div className="flex gap-2">
             <button
               onClick={handleDelete}
               disabled={deleteInput !== "DELETE" || deleting}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+              className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             >
               {deleting ? "Deleting..." : "Delete My Account"}
             </button>
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-neutral-200 text-neutral-700 rounded-lg hover:bg-neutral-300 text-sm font-medium"
+              className="px-4 py-2 rounded-xl text-sm font-medium"
+              style={{ background: "var(--color-border)", color: "var(--color-text-secondary)" }}
             >
               Cancel
             </button>

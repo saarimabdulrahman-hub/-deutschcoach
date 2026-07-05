@@ -8,16 +8,23 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="text-center py-12">
-      <div className="text-4xl mb-4">😕</div>
-      <h3 className="text-lg font-semibold mb-2">Something went wrong</h3>
-      <p className="text-neutral-500 mb-4">
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: "var(--color-error-bg)" }}>
+        <span className="text-4xl">&#9888;</span>
+      </div>
+      <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--color-text)" }}>Something went wrong</h3>
+      <p className="text-center max-w-sm mb-6" style={{ color: "var(--color-text-muted)" }}>
         {message || "Failed to load data."}
       </p>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 hover:-translate-y-0.5"
+          style={{
+            background: "var(--color-accent-gradient)",
+            boxShadow: "0 4px 14px var(--color-accent-glow)",
+            color: "var(--color-text)",
+          }}
         >
           Try Again
         </button>
