@@ -23,15 +23,43 @@ router = APIRouter(prefix="/quiz", tags=["Quiz"])
 
 
 def _compare_answer(user_answer: str, correct_answer: str, question_type: str) -> bool:
-    """Compare user answer to correct answer.
+    """Compare user answer leniently.
 
-    Text answers (translate, fill-blank, conjugate): case-insensitive, trimmed.
-    Multiple-choice: exact match on the selected option.
+    - Case-insensitive, whitespace-trimmed
+    - Ignores leading articles (der/die/das/the) for translate
+    - Partial matching for fill-blank
+    - Substring matching for close answers
     """
+    ua = user_answer.strip().lower()
+    ca = correct_answer.strip().lower()
+
+    if ua == ca:
+        return True
+
     if question_type == "multiple-choice":
-        return user_answer.strip() == correct_answer.strip()
-    else:
-        return user_answer.strip().lower() == correct_answer.strip().lower()
+        return ua == ca
+
+    # Strip leading articles for translate questions
+    for art in ["der ", "die ", "das ", "the "]:
+        ua = ua.removeprefix(art)
+        ca = ca.removeprefix(art)
+
+    if ua == ca:
+        return True
+
+    # Fill-blank: accept if one contains the other
+    if question_type == "fill-blank":
+        if ua in ca or ca in ua:
+            return True
+
+    # Close match: allow 1-2 character difference for answers > 3 chars
+    if len(ua) > 3 and len(ca) > 3 and abs(len(ua) - len(ca)) <= 2:
+        shorter = ua if len(ua) <= len(ca) else ca
+        longer = ca if len(ua) <= len(ca) else ua
+        if shorter in longer:
+            return True
+
+    return False
 
 
 def _find_vocab_entry(db: Session, correct_answer: str) -> VocabEntry | None:
