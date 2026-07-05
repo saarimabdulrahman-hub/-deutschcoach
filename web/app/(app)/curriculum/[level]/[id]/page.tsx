@@ -264,33 +264,59 @@ export default function LessonPage() {
 
       {/* Complete Lesson button */}
       <div className="flex flex-col items-center pt-4 pb-8">
-        {showConfetti && (
-          <div className="text-4xl mb-4 animate-bounce">&#127881;</div>
+        {showConfetti ? (
+          /* Success state after completion */
+          <div className="text-center space-y-4 animate-slide-in">
+            <div className="text-5xl mb-2">🎉</div>
+            <h2 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Lesson Complete!</h2>
+            <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+              You've learned {vocabulary.length} new words. They're now in your flashcard deck.
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => router.push("/review")}
+                className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5"
+                style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--color-accent-glow)" }}
+              >
+                🃏 Review Flashcards
+              </button>
+              <button
+                onClick={() => router.push("/curriculum")}
+                className="px-6 py-2.5 rounded-xl text-sm font-medium transition-all"
+                style={{ background: "var(--color-card-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}
+              >
+                📚 Next Lesson
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Pre-completion state */
+          <>
+            <button
+              onClick={() => seedMutation.mutate()}
+              disabled={seedMutation.isPending}
+              className="px-10 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ color: "var(--color-text)", background: "var(--color-accent-gradient)", boxShadow: "var(--color-accent-glow)" }}
+            >
+              {seedMutation.isPending ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" />
+                  Saving progress...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Complete & Review Vocabulary
+                </span>
+              )}
+            </button>
+            <p className="text-xs mt-3" style={{ color: "var(--color-text-muted)" }}>
+              Completing this lesson adds {vocabulary.length} words to your flashcard deck
+            </p>
+          </>
         )}
-        <button
-          onClick={() => seedMutation.mutate()}
-          disabled={seedMutation.isPending}
-          className="px-10 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-lg"
-          style={{
-            color: "var(--color-text)",
-            background: "var(--color-accent-gradient)",
-            boxShadow: "var(--color-accent-glow)",
-          }}
-        >
-          {seedMutation.isPending ? (
-            <span className="flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--color-text)", borderRightColor: "var(--color-text)" }} />
-              Seeding vocabulary...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Complete Lesson &amp; Review
-            </span>
-          )}
-        </button>
         {seedMutation.isError && (
           <p className="text-center text-sm mt-3" style={{ color: "var(--color-error-text)" }}>
             {(seedMutation.error as Error).message || "Failed to complete lesson"}

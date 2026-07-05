@@ -52,8 +52,6 @@ export function PreferencesSection() {
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Preferences</h2>
-
       {message && (
         <div
           className="p-3 rounded-xl text-sm"

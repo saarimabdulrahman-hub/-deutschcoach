@@ -93,24 +93,20 @@ export function QuestionCard({
               <button
                 key={i}
                 onClick={() => handleOptionClick(option)}
-                className={`w-full text-left px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isSelected ? "scale-[0.98]" : "hover:scale-[1.01]"
-                }`}
+                className="w-full text-left px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200"
                 style={{
-                  background: isSelected
-                    ? "var(--color-active-bg)"
-                    : "var(--color-card-bg)",
+                  background: isSelected ? "var(--color-accent)" : "var(--color-card-bg)",
                   border: `1px solid ${isSelected ? "var(--color-accent)" : "var(--color-border)"}`,
-                  color: isSelected ? "var(--color-active-text)" : "var(--color-text)",
+                  color: isSelected ? "#fff" : "var(--color-text)",
                 }}
               >
                 <span className="flex items-center gap-3">
                   <span
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
                     style={{
-                      background: isSelected ? "var(--color-accent)" : "var(--color-page-bg)",
-                      color: isSelected ? "var(--color-text)" : "var(--color-text-muted)",
-                      border: `1px solid ${isSelected ? "var(--color-accent)" : "var(--color-border)"}`,
+                      background: isSelected ? "rgba(255,255,255,0.2)" : "var(--color-page-bg)",
+                      color: isSelected ? "#fff" : "var(--color-text-muted)",
+                      border: `1px solid ${isSelected ? "rgba(255,255,255,0.3)" : "var(--color-border)"}`,
                     }}
                   >
                     {String.fromCharCode(65 + i)}

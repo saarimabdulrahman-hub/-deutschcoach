@@ -85,33 +85,31 @@ export function QuizSetup({ onStart }: QuizSetupProps) {
               key={s.key}
               type="button"
               onClick={() => setSource(s.key)}
-              className={`flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 ${
-                source === s.key ? "" : "hover:bg-white/5"
-              }`}
+              className="flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200"
               style={{
-                background: source === s.key ? "var(--color-hover-bg)" : "var(--color-card-bg)",
-                border: `1px solid ${source === s.key ? "var(--color-badge-bg)" : "var(--color-border)"}`,
+                background: source === s.key ? "var(--color-accent)" : "var(--color-card-bg)",
+                border: `1px solid ${source === s.key ? "var(--color-accent)" : "var(--color-border)"}`,
               }}
             >
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 style={{
-                  background: source === s.key ? "var(--color-active-bg)" : "var(--color-page-bg)",
-                  color: source === s.key ? "var(--color-active-text)" : "var(--color-text-muted)",
+                  background: source === s.key ? "rgba(255,255,255,0.2)" : "var(--color-page-bg)",
+                  color: source === s.key ? "#fff" : "var(--color-text-muted)",
                 }}
               >
                 {s.icon}
               </div>
               <div>
-                <p className="font-medium text-sm" style={{ color: source === s.key ? "var(--color-text)" : "var(--color-text-secondary)" }}>
+                <p className="font-medium text-sm" style={{ color: source === s.key ? "#fff" : "var(--color-text-secondary)" }}>
                   {s.label}
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>{s.desc}</p>
+                <p className="text-xs mt-0.5" style={{ color: source === s.key ? "rgba(255,255,255,0.7)" : "var(--color-text-muted)" }}>{s.desc}</p>
               </div>
               {source === s.key && (
                 <div className="ml-auto">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "var(--color-accent)" }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" style={{ color: "var(--color-text)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" style={{ color: "#fff" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>

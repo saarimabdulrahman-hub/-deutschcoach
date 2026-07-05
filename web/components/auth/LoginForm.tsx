@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
@@ -80,13 +81,13 @@ export default function LoginForm() {
             <label className="block text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
               Password
             </label>
-            <a
-              href="#"
+            <Link
+              href="/forgot-password"
               className="text-xs font-medium transition-colors hover:text-indigo-300"
               style={{ color: "var(--color-active-text)" }}
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
           <div className="relative">
             <input

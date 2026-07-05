@@ -231,12 +231,48 @@ export default function CurriculumPage() {
       />
     );
 
+  const levelInfo: Record<string, { name: string; desc: string; emoji: string }> = {
+    A1: { name: "Beginner", desc: "Introduce yourself, order food, ask for directions", emoji: "🌱" },
+    A2: { name: "Elementary", desc: "Travel, daily routines, shopping, simple conversations", emoji: "🌿" },
+    B1: { name: "Intermediate", desc: "Job interviews, media, relationships, opinions", emoji: "🌳" },
+    B2: { name: "Upper Intermediate", desc: "Politics, culture, science — express complex ideas", emoji: "🎯" },
+    C1: { name: "Advanced", desc: "Academic writing, literary analysis, formal debate", emoji: "🏆" },
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>Curriculum</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>Master German step by step, from A1 to C1</p>
+        <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>Master German step by step, from absolute beginner to advanced fluency</p>
       </div>
+
+      {/* Level descriptions */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        {["A1", "A2", "B1", "B2", "C1"].map((lvl) => {
+          const info = levelInfo[lvl];
+          const isFirst = lvl === "A1";
+          return (
+            <div
+              key={lvl}
+              className="rounded-xl p-4 text-center transition-all"
+              style={{
+                background: isFirst ? "var(--color-hover-bg)" : "var(--color-card-bg)",
+                border: isFirst ? "2px solid var(--color-accent)" : "1px solid var(--color-border)",
+              }}
+            >
+              <div className="text-2xl mb-1">{info.emoji}</div>
+              <div className="text-sm font-bold" style={{ color: "var(--color-text)" }}>{lvl} — {info.name}</div>
+              <div className="text-xs mt-1 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>{info.desc}</div>
+              {isFirst && (
+                <div className="text-xs font-bold mt-2 px-2 py-0.5 rounded-full inline-block" style={{ background: "var(--color-accent)", color: "#fff" }}>
+                  Start here
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       <div className="space-y-3">
         {levels?.map((level) => (
           <LevelAccordion key={level.level} level={level} />

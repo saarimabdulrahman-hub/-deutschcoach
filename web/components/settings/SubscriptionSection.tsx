@@ -10,6 +10,7 @@ export function SubscriptionSection() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [portalMsg, setPortalMsg] = useState("");
 
   const currentTier = user?.subscription_tier || "free";
 
@@ -29,8 +30,6 @@ export function SubscriptionSection() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Subscription</h2>
-
       {/* Current plan */}
       <div
         className="rounded-xl p-4"
@@ -118,17 +117,16 @@ export function SubscriptionSection() {
 
       {/* Manage Billing */}
       <div className="pt-4 space-y-3" style={{ borderTop: "1px solid var(--color-border)" }}>
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            alert("Stripe Customer Portal will be available soon.");
-          }}
-          className="inline-block text-sm hover:text-indigo-300 underline"
+        <button
+          onClick={() => setPortalMsg("Stripe Customer Portal will be available once you set up your Stripe keys.")}
+          className="text-sm hover:underline"
           style={{ color: "var(--color-active-text)" }}
         >
-          Manage Billing (Stripe Customer Portal)
-        </a>
+          Manage Billing →
+        </button>
+        {portalMsg && (
+          <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>{portalMsg}</p>
+        )}
 
         <div>
           {!showCancelConfirm ? (
@@ -154,11 +152,10 @@ export function SubscriptionSection() {
                 <button
                   onClick={() => {
                     setShowCancelConfirm(false);
-                    alert(
-                      "Subscription cancellation will be available soon."
-                    );
+                    setPortalMsg("Subscription cancellation will be available once Stripe is configured.");
                   }}
-                  className="px-3 py-1 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700"
+                  className="px-3 py-1 rounded text-xs font-medium transition-colors"
+                  style={{ background: "#dc2626", color: "#fff" }}
                 >
                   Yes, Cancel
                 </button>

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from database import get_db
 from app.models.user import User
@@ -298,6 +298,31 @@ def seed_lesson(
         db.add(card)
         created += 1
 
+    # Create or update lesson progress
+    from app.models.lesson_progress import LessonProgress
+    progress = db.query(LessonProgress).filter(
+        LessonProgress.user_id == user.id,
+        LessonProgress.lesson_id == body.lesson_id,
+    ).first()
+    if not progress:
+        progress = LessonProgress(
+            user_id=user.id,
+            lesson_id=body.lesson_id,
+            completed_at=now,
+        )
+        db.add(progress)
+    elif not progress.completed_at:
+        progress.completed_at = now
+
+    # Update user streak
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+    if user.last_active_date == yesterday:
+        user.daily_streak += 1
+    elif user.last_active_date != today:
+        user.daily_streak = 1
+    user.last_active_date = today
+
     db.commit()
 
     return {
@@ -305,4 +330,5 @@ def seed_lesson(
         "total_vocab": len(vocab_entries),
         "newly_seeded": created,
         "already_existed": len(vocab_entries) - created,
+        "streak": user.daily_streak,
     }

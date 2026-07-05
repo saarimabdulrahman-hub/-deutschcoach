@@ -60,8 +60,6 @@ export function ProfileSection() {
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>Profile</h2>
-
       {message && (
         <div
           className="p-3 rounded-xl text-sm"
@@ -198,8 +196,8 @@ export function ProfileSection() {
             type="button"
             onClick={handleChangePassword}
             disabled={changingPassword}
-            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: "var(--color-text-muted)", color: "var(--color-text)" }}
+            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+            style={{ background: "var(--color-page-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}
           >
             {changingPassword ? "Changing..." : "Change Password"}
           </button>
