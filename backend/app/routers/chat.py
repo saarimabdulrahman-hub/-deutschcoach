@@ -26,6 +26,19 @@ SCENARIOS = {
 
 TIER_LEVEL_MAX = {"free": "A1", "starter": "A2", "plus": "B1", "pro": "C1"}
 
+# Common German words for quick language detection
+_GERMAN_WORDS = {"und", "die", "der", "das", "ist", "nicht", "ein", "eine", "einen",
+    "ich", "du", "wir", "sie", "er", "es", "mit", "auf", "für", "auch", "sich",
+    "aber", "oder", "wie", "wenn", "dass", "kann", "haben", "werden", "sein",
+    "bei", "von", "zum", "zur", "dem", "den", "des", "einem", "einer", "kein",
+    "schon", "noch", "doch", "mal", "immer", "sehr", "viel", "mehr", "gut"}
+
+def _is_german(text: str) -> bool:
+    """Quick check: is the text primarily German?"""
+    words = set(text.lower().split())
+    common = words & _GERMAN_WORDS
+    return len(common) >= 3
+
 
 def build_system_prompt(db: Session, user) -> str:
     """Build a system prompt that includes the user's level, known vocab, and grammar topics."""
@@ -151,6 +164,33 @@ async def chat_send(
 
         if not reply:
             raise HTTPException(status_code=502, detail=f"Unexpected API response format: {json.dumps(data)[:300]}")
+
+        # Post-process: if response is mostly German, translate it to English
+        if _is_german(reply):
+            try:
+                translate_resp = await client.post(
+                    ANTHROPIC_API_URL,
+                    headers={
+                        "x-api-key": ANTHROPIC_API_KEY,
+                        "anthropic-version": "2023-06-01",
+                        "content-type": "application/json",
+                    },
+                    json={
+                        "model": ANTHROPIC_MODEL,
+                        "max_tokens": 500,
+                        "system": "Translate the following German text to English. Keep any German example words or phrases in their original form but explain them in English. Output ONLY the translation, no extra text.",
+                        "messages": [{"role": "user", "content": reply}],
+                    },
+                )
+                if translate_resp.status_code == 200:
+                    trans_data = translate_resp.json()
+                    if isinstance(trans_data.get("content"), list):
+                        for block in trans_data["content"]:
+                            if block.get("type") == "text" and block.get("text"):
+                                reply = block["text"]
+                                break
+            except Exception:
+                pass  # If translation fails, use original response
 
         # Parse corrections from the response (look for parenthetical hints)
         corrections: list[dict] = []
