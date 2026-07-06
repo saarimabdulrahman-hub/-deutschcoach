@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, UTC
 
 from database import get_db
 from app.models.user import User
@@ -93,14 +93,14 @@ def _seed_srs_for_missed(db: Session, user_id: int, vocab_entry: VocabEntry):
         existing.interval_days = 0
         existing.repetitions = 0
         existing.status = CardStatus.learning
-        existing.next_review_at = datetime.utcnow()
+        existing.next_review_at = datetime.now(UTC).replace(tzinfo=None)
     else:
         db.add(
             SRSState(
                 user_id=user_id,
                 vocab_entry_id=vocab_entry.id,
                 status=CardStatus.new,
-                next_review_at=datetime.utcnow(),
+                next_review_at=datetime.now(UTC).replace(tzinfo=None),
             )
         )
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from datetime import datetime, date
+from datetime import datetime, date, UTC
 from sqlalchemy import func
 
 from database import get_db
@@ -21,7 +21,7 @@ def get_dashboard(
     db: Session = Depends(get_db),
     user: User = Depends(require_auth),
 ):
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
     today = date.today()
 
     # Streak — reset to 0 if user hasn't been active today

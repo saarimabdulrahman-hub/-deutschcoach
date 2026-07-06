@@ -1,6 +1,6 @@
 import random
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 from sqlalchemy.orm import Session
 
@@ -15,7 +15,7 @@ SESSION_TTL_HOURS = 1  # Quiz sessions expire after 1 hour
 
 def _sweep_expired(db: Session):
     """Delete sessions older than SESSION_TTL_HOURS."""
-    cutoff = datetime.utcnow() - timedelta(hours=SESSION_TTL_HOURS)
+    cutoff = datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=SESSION_TTL_HOURS)
     db.query(QuizSession).filter(QuizSession.created_at < cutoff).delete()
     db.commit()
 
@@ -184,7 +184,7 @@ def get_session(db: Session, session_id: str) -> dict | None:
         return None
 
     # Check expiry
-    if (datetime.utcnow() - session.created_at) > timedelta(hours=SESSION_TTL_HOURS):
+    if (datetime.now(UTC).replace(tzinfo=None) - session.created_at) > timedelta(hours=SESSION_TTL_HOURS):
         db.delete(session)
         db.commit()
         return None

@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from app.srs.engine import calculate_srs
 from app.models.srs import SRSState, CardStatus
 
@@ -14,7 +14,7 @@ def make_card(**overrides):
         interval_days=0,
         repetitions=0,
         lapses=0,
-        next_review_at=datetime.utcnow(),
+        next_review_at=datetime.now(UTC).replace(tzinfo=None),
         last_reviewed_at=None,
         status=CardStatus.new,
     )
@@ -30,7 +30,7 @@ def test_perfect_recall_on_new_card():
     assert result.interval_days == 1
     assert result.easiness_factor == 2.6  # +0.1 for rating 5
     assert result.status == CardStatus.learning  # 1 rep => learning
-    assert result.next_review_at > datetime.utcnow()
+    assert result.next_review_at > datetime.now(UTC).replace(tzinfo=None)
 
 
 def test_second_perfect_recall():

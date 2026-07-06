@@ -1,0 +1,71 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: deutschcoach
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -u root -ptestpassword"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: mysql+pymysql://root:testpassword@127.0.0.1:3306/deutschcoach
+        run: |
+          alembic upgrade head
+
+      - name: Sync curriculum
+        env:
+          DATABASE_URL: mysql+pymysql://root:testpassword@127.0.0.1:3306/deutschcoach
+        run: |
+          python -c "
+          from database import SessionLocal
+          from app.curriculum_loader import sync_curriculum
+          db = SessionLocal()
+          try:
+              sync_curriculum(db)
+          finally:
+              db.close()
+          "
+
+      - name: Run tests
+        env:
+          DATABASE_URL: mysql+pymysql://root:testpassword@127.0.0.1:3306/deutschcoach
+          JWT_SECRET: test-ci-jwt-secret-32-bytes-long!
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_WEBHOOK_SECRET: whsec_dummy
+          CORS_ORIGIN: http://localhost:3000
+        run: |
+          python -m pytest tests/ -v

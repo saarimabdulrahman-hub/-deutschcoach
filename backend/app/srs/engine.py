@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from app.models.srs import SRSState, CardStatus
 
 
@@ -24,7 +24,7 @@ def calculate_srs(card: SRSState, rating: int) -> SRSState:
 
     Returns the mutated card (caller is responsible for persisting).
     """
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
     card.last_reviewed_at = now
     previous_interval = card.interval_days
 

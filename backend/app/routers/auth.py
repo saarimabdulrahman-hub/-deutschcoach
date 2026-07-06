@@ -1,6 +1,7 @@
 import os
 import secrets
 import smtplib
+import logging
 from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -21,6 +22,7 @@ from app.schemas.auth import (
     AuthResponse,
 )
 
+logger = logging.getLogger("deutschcoach.auth")
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
@@ -30,12 +32,9 @@ def send_reset_email(email: str, token: str):
     # Always generate the reset link
     reset_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3456')}/reset-password?token={token}"
 
-    # If SMTP not configured, log to console (dev mode)
+    # If SMTP not configured, log the reset link (dev mode)
     if not smtp_host:
-        print(f"\n{'='*60}")
-        print(f"[DEV] Password reset for {email}")
-        print(f"[DEV] Reset link: {reset_link}")
-        print(f"{'='*60}\n")
+        logger.info("DEV — Password reset for %s: %s", email, reset_link)
         return
 
     # Try sending real email
@@ -64,10 +63,9 @@ If you didn't request this, you can safely ignore this email.
             server.starttls()
             server.login(os.getenv("SMTP_USER", ""), os.getenv("SMTP_PASSWORD", ""))
             server.send_message(msg)
-            print(f"[INFO] Password reset email sent to {email}")
-    except Exception as e:
-        print(f"[ERROR] Failed to send email: {e}")
-        print(f"[DEV] Fallback — reset link: {reset_link}")
+            logger.info("Password reset email sent to %s", email)
+    except Exception:
+        logger.exception("Failed to send email to %s — reset link: %s", email, reset_link)
 
 
 def create_token(user_id: int) -> str:

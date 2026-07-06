@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, UTC
 
 from database import get_db
 from app.models.user import User
@@ -51,7 +51,7 @@ def get_due_cards(
     user: User = Depends(require_auth),
 ):
     """Return cards due for review, ordered by next_review_at ascending."""
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
 
     cards = (
         db.query(SRSState)
@@ -126,7 +126,7 @@ def get_srs_stats(
     user: User = Depends(require_auth),
 ):
     """Return counts by card status and total cards due today."""
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
 
     new_count = (
         db.query(func.count(SRSState.id))
@@ -210,7 +210,7 @@ def add_custom_vocab(
         )
 
         if not existing:
-            now = datetime.utcnow()
+            now = datetime.now(UTC).replace(tzinfo=None)
             srs_card = SRSState(
                 user_id=user.id,
                 vocab_entry_id=vocab_entry.id,
@@ -278,7 +278,11 @@ def seed_lesson(
         .all()
     }
 
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
+    # Seed cards as immediately due (1 second in the past) so they are
+    # guaranteed to appear in stats.total_due_today regardless of MySQL
+    # DATETIME sub-second rounding.
+    due_now = now - timedelta(seconds=1)
     created = 0
 
     for v in vocab_entries:
@@ -292,7 +296,7 @@ def seed_lesson(
             interval_days=0,
             repetitions=0,
             lapses=0,
-            next_review_at=now,
+            next_review_at=due_now,
             status=CardStatus.new,
         )
         db.add(card)

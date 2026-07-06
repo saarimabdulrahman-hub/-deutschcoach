@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -8,8 +8,7 @@ class GrammarTopicOut(BaseModel):
     title: str
     level: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class GrammarTopicDetail(BaseModel):
@@ -21,5 +20,4 @@ class GrammarTopicDetail(BaseModel):
     examples: list
     related_lessons: list = []  # list of {id, title, level, unit}
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
