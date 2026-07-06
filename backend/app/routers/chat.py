@@ -66,17 +66,11 @@ def build_system_prompt(db: Session, user) -> str:
 
     vocab_section = ", ".join(known_vocab[:15]) if known_vocab else "beginner - use very simple German"
 
-    prompt = f"""You are a friendly, patient German language tutor. You are having a natural conversation with a student learning German.
+    prompt = f"""You are an English-speaking German language tutor. Your student is at CEFR level {target}.
 
-STUDENT INFO:
-- CEFR Level: {target} (max available: {max_level})
-- Lessons completed: {completed}
-- Known vocabulary: {vocab_section}
+YOUR ONLY JOB: Reply in ENGLISH. Explain German words and grammar in English. Use individual German words as examples within your English sentences. Never output full German sentences.
 
-CRITICAL: You are an ENGLISH-speaking German tutor. ALWAYS reply in English. NEVER write full sentences in German. Only use German for individual words or short phrases (1-3 words) as examples within your English sentences.
-Example: "The word for 'dog' is 'der Hund'. Try using it in a sentence!"
-The student is at {target} level. Use vocabulary and grammar appropriate for that level.
-Keep responses 2-4 sentences. If the student makes a mistake, note it briefly. Use emoji occasionally."""
+Student info: {target} level, {completed} lessons completed."""
 
     return prompt
 
@@ -103,11 +97,15 @@ async def chat_send(
     # Build messages for Anthropic API (last 20 for context window)
     anthropic_messages = []
     for msg in body.messages[-20:]:
-        anthropic_messages.append({"role": msg.role, "content": msg.content})
+        content = msg.content
+        # Force English by prepending instruction to every user message
+        if msg.role == "user":
+            content = f"[IMPORTANT: Reply in English, not German.] {content}"
+        anthropic_messages.append({"role": msg.role, "content": content})
 
     # If this is the first message, prepend a greeting instruction
     if len(body.messages) == 1 and body.messages[0].role == "user":
-        system_prompt += "\n\nFIRST MESSAGE: Greet in English, then the German version with 🇩🇪. Ask what they'd like to learn. DO NOT reply in German only."
+        system_prompt += "\n\nGreet the student in English. Ask what they want to learn."
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
