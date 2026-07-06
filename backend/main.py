@@ -60,3 +60,33 @@ app.include_router(chat.router)
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/debug/signup-test")
+def debug_signup():
+    """Temporary: test database write and return error detail."""
+    import traceback
+    try:
+        from database import SessionLocal
+        from app.models.user import User, SubscriptionTier
+        from datetime import datetime, timedelta, timezone
+
+        db = SessionLocal()
+        try:
+            user = User(
+                name="DebugTest",
+                email="debug_test@example.com",
+                password_hash="test_hash_not_real",
+                subscription_tier=SubscriptionTier.free,
+                trial_ends_at=datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=7),
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            db.delete(user)
+            db.commit()
+            return {"status": "ok", "message": "Write succeeded, user cleaned up", "user_id": user.id}
+        finally:
+            db.close()
+    except Exception:
+        return {"status": "error", "traceback": traceback.format_exc()}
