@@ -71,7 +71,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="text-[168px] leading-[0.9] -tracking-[2px]">
+          <div className="text-[336px] leading-[0.9] -tracking-[2px]">
             <span className="font-extralight" style={{ color: "var(--color-text)" }}>Deutsch</span>
             <br />
             <span
