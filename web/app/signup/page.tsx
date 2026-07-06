@@ -86,7 +86,7 @@ export default function SignupPage() {
             </span>{" "}
             <span style={{ color: "var(--color-border)" }}>· Est 2026</span>
           </p>
-          <div style={{ fontSize: "clamp(6rem, 20vw, 24rem)", lineHeight: 0.82, letterSpacing: "-0.04em" }}>
+          <div className="text-[72px] leading-[0.95] -tracking-[2px]">
             <span className="font-extralight" style={{ color: "var(--color-text)" }}>Deutsch</span>
             <br />
             <span className="font-bold" style={{ background: "linear-gradient(135deg, #7c3aed, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Flow</span>
