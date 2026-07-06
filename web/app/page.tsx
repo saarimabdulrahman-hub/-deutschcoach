@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginForm from "@/components/auth/LoginForm";
+import { Logo } from "@/components/ui/Logo";
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
@@ -64,30 +65,20 @@ export default function LoginPage() {
         <div className="relative z-10">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-10">
-            <svg width="36" height="36" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="26" height="26" rx="7" fill="var(--color-card-bg)" stroke="var(--color-border)" strokeWidth="1.5" />
-              <path d="M8 8h9a3.5 3.5 0 0 1 0 7H8V8Z" fill="url(#flag-black-lp)" opacity="0.9" />
-              <rect x="8" y="15" width="12" height="2.5" fill="url(#flag-red-lp)" opacity="0.9" />
-              <rect x="8" y="17.5" width="12" height="2.5" fill="url(#flag-gold-lp)" opacity="0.9" />
-              <defs>
-                <linearGradient id="flag-black-lp" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#fff"/><stop offset="1" stopColor="#cbd5e1"/></linearGradient>
-                <linearGradient id="flag-red-lp" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#ef4444"/><stop offset="1" stopColor="#dc2626"/></linearGradient>
-                <linearGradient id="flag-gold-lp" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#facc15"/><stop offset="1" stopColor="#eab308"/></linearGradient>
-              </defs>
-            </svg>
+            <Logo size={36} />
             <p className="text-xs font-semibold tracking-[3px] uppercase" style={{ color: "var(--color-text-muted)" }}>
               Est 2026
             </p>
           </div>
 
-          <div className="text-[72px] leading-[0.95] -tracking-[2px]">
-            <span className="font-extralight" style={{ color: "var(--color-text)" }}>GERMAN</span>
+          <div className="text-[68px] leading-[0.9] -tracking-[2px]">
+            <span className="font-extralight" style={{ color: "var(--color-text)" }}>Deutsch</span>
             <br />
             <span
               className="font-bold"
-              style={{ background: "var(--color-accent-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+              style={{ background: "linear-gradient(135deg, #7c3aed, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
-              TUTOR
+              Flow
             </span>
           </div>
 
@@ -96,12 +87,12 @@ export default function LoginPage() {
             style={{
               width: "56px",
               height: "1.5px",
-              background: "var(--color-accent-gradient)",
+              background: "linear-gradient(135deg, #7c3aed, #f59e0b)",
             }}
           />
 
           <p className="text-sm leading-relaxed max-w-[300px]" style={{ color: "var(--color-text-muted)" }}>
-            Structured German learning from A1 to C1. Real SM-2 flashcards, curated lessons, and measurable progress.
+            Master German naturally. Structured lessons, smart flashcards, and AI-powered conversation practice.
           </p>
         </div>
 
@@ -126,14 +117,10 @@ export default function LoginPage() {
         <div className="w-full max-w-[380px]">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
-            <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="26" height="26" rx="7" fill="var(--color-card-bg)" stroke="var(--color-border)" strokeWidth="1.5" />
-              <path d="M8 8h9a3.5 3.5 0 0 1 0 7H8V8Z" fill="#e2e8f0" opacity="0.9" />
-              <rect x="8" y="15" width="12" height="2.5" fill="#ef4444" opacity="0.9" />
-              <rect x="8" y="17.5" width="12" height="2.5" fill="#eab308" opacity="0.9" />
-            </svg>
-            <h1 className="font-bold text-sm tracking-widest uppercase" style={{ color: "var(--color-text)" }}>
-              GERMAN <span style={{ color: "var(--color-active-text)" }}>TUTOR</span>
+            <Logo size={32} />
+            <h1 className="font-bold text-sm tracking-widest">
+              <span style={{ color: "var(--color-text)" }}>Deutsch</span>
+              <span style={{ background: "linear-gradient(135deg, #7c3aed, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Flow</span>
             </h1>
           </div>
 
@@ -145,7 +132,7 @@ export default function LoginPage() {
           <LoginForm />
 
           <p className="text-center text-sm mt-8" style={{ color: "var(--color-text-muted)" }}>
-            New to German Tutor?{" "}
+            New to DeutschFlow?{" "}
             <Link href="/signup" className="hover:text-indigo-300 font-medium transition-colors" style={{ color: "var(--color-active-text)" }}>
               Start your free trial &rarr;
             </Link>

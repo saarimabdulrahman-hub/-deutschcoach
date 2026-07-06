@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import SignupForm from "@/components/auth/SignupForm";
+import { Logo } from "@/components/ui/Logo";
 
 export default function SignupPage() {
   const { user, isLoading, signup } = useAuth();
@@ -75,27 +76,27 @@ export default function SignupPage() {
           <p className="text-base font-semibold tracking-[2px] uppercase mb-10" style={{ color: "var(--color-text)" }}>
             <span
               style={{
-                background: "var(--color-accent-gradient)",
+                background: "linear-gradient(135deg, #7c3aed, #f59e0b)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}
             >
-              German
+              DeutschFlow
             </span>{" "}
             <span style={{ color: "var(--color-border)" }}>· Est 2026</span>
           </p>
-          <div className="text-[72px] leading-[0.95] -tracking-[2px]">
-            <span className="font-extralight" style={{ color: "var(--color-text)" }}>GERMAN</span>
+          <div className="text-[68px] leading-[0.9] -tracking-[2px]">
+            <span className="font-extralight" style={{ color: "var(--color-text)" }}>Deutsch</span>
             <br />
-            <span className="font-bold" style={{ color: "var(--color-text)" }}>TUTOR</span>
+            <span className="font-bold" style={{ background: "linear-gradient(135deg, #7c3aed, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Flow</span>
           </div>
           <div
             className="my-8"
-            style={{ width: "56px", height: "1.5px", background: "var(--color-accent-gradient)" }}
+            style={{ width: "56px", height: "1.5px", background: "linear-gradient(135deg, #7c3aed, #f59e0b)" }}
           />
           <p className="text-sm leading-relaxed max-w-[300px]" style={{ color: "var(--color-text-muted)" }}>
-            Structured German learning from A1 to C1. Real SM-2 flashcards, curated lessons, and measurable progress.
+            Master German naturally. Structured lessons, smart flashcards, and AI-powered conversation practice.
           </p>
         </div>
         <div className="relative z-10">
@@ -124,7 +125,7 @@ export default function SignupPage() {
               G
             </div>
             <h1 className="font-bold text-sm tracking-widest uppercase" style={{ color: "var(--color-text)" }}>
-              German Tutor
+              DeutschFlow
             </h1>
           </div>
 

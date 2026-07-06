@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { TabBar } from "@/components/ui/TabBar";
 import { CommandBar } from "@/components/ui/CommandBar";
+import { Logo } from "@/components/ui/Logo";
 
 const THEME_DOTS: { key: ThemeName; label: string; color: string }[] = [
   { key: "indigo", label: "Indigo", color: "#6366f1" },
@@ -97,27 +98,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Left: Logo + App name */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
-          {/* Logo — stylised G with flag colors */}
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="26" height="26" rx="7" fill="var(--color-card-bg)" stroke="var(--color-border)" strokeWidth="1.5" />
-            <path d="M8 8h9a3.5 3.5 0 0 1 0 7H8V8Z" fill="url(#flag-black)" opacity="0.9" />
-            <rect x="8" y="15" width="12" height="2.5" fill="url(#flag-red)" opacity="0.9" />
-            <rect x="8" y="17.5" width="12" height="2.5" fill="url(#flag-gold)" opacity="0.9" />
-            <defs>
-              <linearGradient id="flag-black" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#fff"/><stop offset="1" stopColor="#cbd5e1"/></linearGradient>
-              <linearGradient id="flag-red" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#ef4444"/><stop offset="1" stopColor="#dc2626"/></linearGradient>
-              <linearGradient id="flag-gold" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#facc15"/><stop offset="1" stopColor="#eab308"/></linearGradient>
-            </defs>
-          </svg>
-          <div className="hidden sm:flex items-baseline gap-1.5">
-            <span className="text-sm font-bold tracking-wide" style={{ color: "var(--color-text)" }}>
-              GERMAN
+          <Logo size={28} />
+          <div className="hidden sm:flex items-baseline gap-0.5">
+            <span className="text-sm font-light tracking-[1px]" style={{ color: "var(--color-text)" }}>
+              Deutsch
             </span>
             <span
-              className="text-sm font-bold tracking-wide"
-              style={{ background: "var(--color-accent-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+              className="text-sm font-bold tracking-[1px]"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
-              TUTOR
+              Flow
             </span>
           </div>
         </div>
