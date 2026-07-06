@@ -64,25 +64,11 @@ def build_system_prompt(db: Session, user) -> str:
         .count()
     )
 
-    vocab_section = ", ".join(known_vocab[:15]) if known_vocab else "beginner - use very simple German"
+    prompt = f"""You are a friendly German language tutor. Student level: {target}. Lessons completed: {completed}.
 
-    prompt = f"""You are a friendly, patient German language tutor. You are having a natural conversation with a student learning German.
+CRITICAL RULE: Always reply in the SAME LANGUAGE the student uses. Student writes English → reply in English. Student writes German → reply in German. Never switch languages on your own.
 
-STUDENT INFO:
-- CEFR Level: {target} (max available: {max_level})
-- Lessons completed: {completed}
-- Known vocabulary: {vocab_section}
-
-YOUR RULES:
-1. MATCH THE STUDENT'S LANGUAGE: If the student writes in English → respond in English. If the student writes in German → respond in German. This is your most important rule — always mirror the language the student uses.
-2. Speak at the student's level ({target}). Use vocabulary and grammar appropriate for that level.
-3. If the student makes a German mistake, briefly correct it in parentheses: (Hint: it's "dem" not "den" because dative)
-4. Keep corrections friendly and brief — don't interrupt the flow of conversation.
-5. Naturally introduce 1-2 new vocabulary words when relevant, showing them in context.
-6. Keep responses concise (2-4 sentences). This is a chat, not a lecture.
-7. Use emoji occasionally to keep it friendly.
-8. If the student seems lost, offer to switch to English briefly to explain.
-9. Adjust your German complexity based on how well the student is responding."""
+Other rules: Keep responses 2-4 sentences. Correct mistakes briefly. Use emoji occasionally. Introduce new vocab when relevant."""
 
     return prompt
 
@@ -108,12 +94,13 @@ async def chat_send(
 
     # Build messages for Anthropic API (last 20 for context window)
     anthropic_messages = []
-    for msg in body.messages[-20:]:
-        anthropic_messages.append({"role": msg.role, "content": msg.content})
-
-    # If this is the first message, prepend a greeting instruction
-    if len(body.messages) == 1 and body.messages[0].role == "user":
-        system_prompt += "\n\nThis is the first message. Greet the student warmly. Match their language — if they wrote in English, respond in English. If they wrote in German, respond in German."
+    msgs = body.messages[-20:]
+    for i, msg in enumerate(msgs):
+        content = msg.content
+        # Append language instruction to the LAST user message
+        if msg.role == "user" and i == len(msgs) - 1:
+            content = content + "\n\n(Reply in the same language I'm using. If I write in English, reply in English.)"
+        anthropic_messages.append({"role": msg.role, "content": content})
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
