@@ -107,7 +107,6 @@ export default function DashboardPage() {
 
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   const firstName = (user?.name || "Student").split(" ")[0];
-  const isNewUser = data.streak === 0 && data.cards_due_today === 0 && !data.continue_lesson;
   const tip = getTodaysTip();
 
   return (
@@ -120,182 +119,119 @@ export default function DashboardPage() {
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>{today}</p>
         </div>
-        {!isNewUser && (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-              <span className="text-base">🔥</span>
-              <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-                {data.streak} day{data.streak !== 1 ? "s" : ""}
-              </span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
+            <span className="text-base">🔥</span>
+            <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
+              {data.streak} day{data.streak !== 1 ? "s" : ""}
+            </span>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* ── New User Onboarding ────────────────── */}
-      {isNewUser ? (
-        <div className="space-y-6">
-          <div className="rounded-2xl p-6 md:p-8 text-center relative overflow-hidden"
-            style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-            <div className="absolute top-0 left-0 right-0 h-1" style={{ background: "var(--color-accent-gradient)" }} />
-            <div className="text-6xl mb-5">🇩🇪</div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: "var(--color-text)" }}>
-              Willkommen, {firstName}!
-            </h2>
-            <p className="max-w-lg mx-auto mb-7 text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-              Your journey from complete beginner to confident German speaker starts here.
-              We&apos;ll guide you step by step — no experience needed.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button onClick={() => router.push("/curriculum")}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
-                style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--color-accent-glow)" }}>
-                📚 Start Your First Lesson
-              </button>
-              <button onClick={() => router.push("/chat")}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-medium transition-all hover:-translate-y-0.5"
-                style={{ background: "var(--color-page-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
-                🗣️ Try AI Chat
-              </button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 max-w-md mx-auto mt-8">
-              {[
-                { icon: "📚", label: "5 A1 Lessons", desc: "Ready to start" },
-                { icon: "🃏", label: "Smart SRS", desc: "Never forget vocab" },
-                { icon: "🤖", label: "AI Tutor", desc: "Practice anytime" },
-              ].map((feat) => (
-                <div key={feat.label} className="text-center">
-                  <div className="text-2xl mb-1">{feat.icon}</div>
-                  <div className="text-xs font-semibold" style={{ color: "var(--color-text)" }}>{feat.label}</div>
-                  <div className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{feat.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tip of the day — shown even for new users */}
-          <div className="rounded-2xl p-5 flex items-start gap-4"
-            style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-            <span className="text-2xl flex-shrink-0">{tip.emoji}</span>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-                Tip of the Day
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{tip.tip}</p>
-            </div>
-          </div>
+      {/* Stats + Level ring */}
+      <div className="grid lg:grid-cols-[1fr_180px] gap-4">
+        <StatsGrid data={data} />
+        <div className="rounded-2xl p-5 flex flex-col items-center justify-center gap-3"
+          style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
+          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
+            Level Progress
+          </p>
+          <LevelProgressRing pct={data.level_progress_pct} />
+          <p className="text-xs text-center" style={{ color: "var(--color-text-muted)" }}>
+            {data.level_progress_pct === 0
+              ? "Start a lesson to begin!"
+              : data.level_progress_pct < 25
+                ? "You're getting started!"
+                : data.level_progress_pct < 50
+                  ? "Making good progress!"
+                  : data.level_progress_pct < 75
+                    ? "Over halfway there!"
+                    : "Almost complete! 🎉"}
+          </p>
         </div>
-      ) : (
-        /* ── Returning User ────────────────────── */
-        <div className="space-y-6">
-          {/* Stats + Level ring */}
-          <div className="grid lg:grid-cols-[1fr_180px] gap-4">
-            <StatsGrid data={data} />
-            <div className="rounded-2xl p-5 flex flex-col items-center justify-center gap-3"
-              style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
-                Level Progress
-              </p>
-              <LevelProgressRing pct={data.level_progress_pct} />
-              <p className="text-xs text-center" style={{ color: "var(--color-text-muted)" }}>
-                {data.level_progress_pct === 0
-                  ? "Start a lesson to begin!"
-                  : data.level_progress_pct < 25
-                    ? "You're getting started!"
-                    : data.level_progress_pct < 50
-                      ? "Making good progress!"
-                      : data.level_progress_pct < 75
-                        ? "Over halfway there!"
-                        : "Almost complete! 🎉"}
-              </p>
-            </div>
-          </div>
+      </div>
 
-          {/* Main content area */}
-          <div className="grid lg:grid-cols-3 gap-4">
-            {/* Left — Continue Learning */}
-            <div className="lg:col-span-2">
-              {data.continue_lesson ? (
-                <ContinueLearning lesson={data.continue_lesson} />
-              ) : (
-                <div className="rounded-2xl p-6 flex flex-col items-center justify-center text-center"
-                  style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)", minHeight: "140px" }}>
-                  <p className="text-3xl mb-2">🎉</p>
-                  <p className="text-sm font-medium mb-1" style={{ color: "var(--color-text)" }}>
-                    All caught up!
-                  </p>
-                  <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>
-                    Take a quiz or practice your flashcards.
-                  </p>
-                  <div className="flex gap-2">
-                    <button onClick={() => router.push("/quiz")}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>
-                      Take a Quiz
-                    </button>
-                    <button onClick={() => router.push("/curriculum")}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: "var(--color-page-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
-                      Browse Lessons
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Right — Quick Actions */}
-            <div className="flex flex-col gap-2">
-              {[
-                { label: "Daily Review", icon: "🃏", href: "/review", subtitle: `${data.cards_due_today} cards due`, primary: data.cards_due_today > 0 },
-                { label: "Take a Quiz", icon: "✅", href: "/quiz", subtitle: `Avg score: ${data.avg_quiz_score}%`, primary: false },
-                { label: "AI Chat", icon: "🗣️", href: "/chat", subtitle: "Practice conversation", primary: false },
-              ].map((action) => (
-                <button key={action.label} onClick={() => router.push(action.href)}
-                  className="flex items-center gap-3 p-3.5 rounded-xl text-left transition-all hover:-translate-y-0.5"
-                  style={{
-                    background: action.primary ? "var(--color-accent-gradient)" : "var(--color-card-bg)",
-                    border: action.primary ? "none" : "1px solid var(--color-border)",
-                  }}>
-                  <span className="text-xl flex-shrink-0">{action.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold" style={{ color: action.primary ? "#fff" : "var(--color-text)" }}>
-                      {action.label}
-                    </div>
-                    <div className="text-xs" style={{ color: action.primary ? "rgba(255,255,255,0.8)" : "var(--color-text-muted)" }}>
-                      {action.subtitle}
-                    </div>
-                  </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0"
-                    style={{ color: action.primary ? "rgba(255,255,255,0.7)" : "var(--color-text-muted)" }}
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
+      {/* Main content area */}
+      <div className="grid lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          {data.continue_lesson ? (
+            <ContinueLearning lesson={data.continue_lesson} />
+          ) : (
+            <div className="rounded-2xl p-6 flex flex-col items-center justify-center text-center"
+              style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)", minHeight: "140px" }}>
+              <p className="text-3xl mb-2">📚</p>
+              <p className="text-sm font-medium mb-1" style={{ color: "var(--color-text)" }}>
+                Ready to start learning?
+              </p>
+              <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>
+                Jump into your first lesson or try the AI chat.
+              </p>
+              <div className="flex gap-2">
+                <button onClick={() => router.push("/curriculum")}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold"
+                  style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>
+                  Browse Lessons
                 </button>
-              ))}
+                <button onClick={() => router.push("/chat")}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold"
+                  style={{ background: "var(--color-page-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
+                  Try AI Chat
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Tip of the day */}
-          <div className="rounded-2xl p-5 flex items-start gap-4"
-            style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-            <span className="text-2xl flex-shrink-0">{tip.emoji}</span>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-                Tip of the Day
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{tip.tip}</p>
-            </div>
-          </div>
-
-          {/* Bottom row — Activity + Weakest Words */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <RecentActivity items={data.recent_activity} />
-            <WeakestWords words={data.weakest_words} />
-          </div>
+          )}
         </div>
-      )}
+
+        {/* Right — Quick Actions */}
+        <div className="flex flex-col gap-2">
+          {[
+            { label: "Daily Review", icon: "🃏", href: "/review", subtitle: `${data.cards_due_today} cards due`, primary: data.cards_due_today > 0 },
+            { label: "Take a Quiz", icon: "✅", href: "/quiz", subtitle: `Avg score: ${data.avg_quiz_score}%`, primary: false },
+            { label: "AI Chat", icon: "🗣️", href: "/chat", subtitle: "Practice conversation", primary: false },
+          ].map((action) => (
+            <button key={action.label} onClick={() => router.push(action.href)}
+              className="flex items-center gap-3 p-3.5 rounded-xl text-left transition-all hover:-translate-y-0.5"
+              style={{
+                background: action.primary ? "var(--color-accent-gradient)" : "var(--color-card-bg)",
+                border: action.primary ? "none" : "1px solid var(--color-border)",
+              }}>
+              <span className="text-xl flex-shrink-0">{action.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold" style={{ color: action.primary ? "#fff" : "var(--color-text)" }}>
+                  {action.label}
+                </div>
+                <div className="text-xs" style={{ color: action.primary ? "rgba(255,255,255,0.8)" : "var(--color-text-muted)" }}>
+                  {action.subtitle}
+                </div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0"
+                style={{ color: action.primary ? "rgba(255,255,255,0.7)" : "var(--color-text-muted)" }}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tip of the day */}
+      <div className="rounded-2xl p-5 flex items-start gap-4"
+        style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
+        <span className="text-2xl flex-shrink-0">{tip.emoji}</span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
+            Tip of the Day
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{tip.tip}</p>
+        </div>
+      </div>
+
+      {/* Bottom row — Activity + Weakest Words */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <RecentActivity items={data.recent_activity} />
+        <WeakestWords words={data.weakest_words} />
+      </div>
     </div>
   );
 }
