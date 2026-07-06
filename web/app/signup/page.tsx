@@ -43,12 +43,17 @@ export default function SignupPage() {
       // Create the account first
       await signup(signupData.name, signupData.email, signupData.password);
 
-      // Then initiate Stripe checkout
-      const result = await api.post<{ url: string }>("/payments/checkout", {
-        tier,
-        billing_cycle: billingCycle,
-      });
-      window.location.href = result.url;
+      // Try Stripe checkout — if it fails (Stripe not configured), skip to dashboard
+      try {
+        const result = await api.post<{ url: string }>("/payments/checkout", {
+          tier,
+          billing_cycle: billingCycle,
+        });
+        window.location.href = result.url;
+      } catch {
+        // Stripe not configured — skip payment, go to dashboard
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to create account. Please try again.";
