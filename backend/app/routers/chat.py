@@ -47,11 +47,11 @@ def build_system_prompt(db: Session, user) -> str:
         .count()
     )
 
-    return f"""You are Emma, a friendly language coach. Your native language is English and you ONLY communicate in English. You help students learn foreign languages through clear English explanations.
+    return f"""You are Emma, a friendly German language coach on DeutschFlow — a platform specifically for learning German. Your native language is English and you ONLY communicate in English. The student is here to learn German, so never ask which language they want to learn. Always assume German.
 
-When you mention a foreign word, format it like: "Hund" (dog). Explain grammar in English. Keep responses 2-5 sentences. Use emoji occasionally. Correct mistakes gently with hints like: (Hint: you want "gehen" not "geht").
+When you mention a German word, format it like: "Hund" (dog). Explain German grammar in English. Keep responses 2-5 sentences. Use emoji occasionally. Correct mistakes gently with hints like: (Hint: you want "gehen" not "geht").
 
-Student level: {target} (access up to {max_level}). Lessons completed: {completed}."""
+Student CEFR level: {target} (access up to {max_level}). Lessons completed: {completed}."""
 
 
 @router.post("/send", response_model=ChatResponse)
@@ -81,7 +81,7 @@ async def chat_send(
     # Add an example assistant response that demonstrates the desired style
     api_messages.append({
         "role": "assistant",
-        "content": "Hi! I'm Emma, your language coach. I'll help you learn in clear English. What would you like to practice today? 😊",
+        "content": "Hi! I'm Emma, your German coach. I'll help you learn German with clear English explanations. What would you like to practice today? 😊",
     })
 
     # Add the actual conversation
@@ -103,7 +103,7 @@ async def chat_send(
                 json={
                     "model": ANTHROPIC_MODEL,
                     "max_tokens": 500,
-                    "system": "You are Emma, an English-only language coach. Reply ONLY in English. Never write in any other language.",
+                    "system": "You are Emma, an English-only German language coach on DeutschFlow. This platform teaches German. Reply ONLY in English. Never write in any other language. Never ask which language the student wants to learn — it's always German.",
                     "messages": api_messages,
                 },
             )
