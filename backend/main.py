@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 import os
 import logging
 from dotenv import load_dotenv
@@ -15,6 +16,24 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("deutschcoach")
+
+
+class CORSHandler(BaseHTTPMiddleware):
+    """Allow all origins — mirrors the request Origin header back."""
+    async def dispatch(self, request: Request, call_next):
+        if request.method == "OPTIONS":
+            # Preflight response
+            response = Response(status_code=204)
+            response.headers["Access-Control-Allow-Methods"] = "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+            response.headers["Access-Control-Max-Age"] = "600"
+        else:
+            response = await call_next(request)
+
+        origin = request.headers.get("origin", "*")
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Vary"] = "Origin"
+        return response
 
 
 @asynccontextmanager
@@ -36,21 +55,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="DeutschCoach API", version="1.0.0", lifespan=lifespan)
-
-cors_origins = os.getenv("CORS_ORIGIN", "")
-if cors_origins:
-    origins = [o.strip() for o in cors_origins.split(",")]
-else:
-    # Allow all origins when not explicitly configured (dev + free-tier deployments)
-    origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSHandler)
 
 app.include_router(auth.router)
 app.include_router(curriculum.router)
