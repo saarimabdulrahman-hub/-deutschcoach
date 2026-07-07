@@ -37,11 +37,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="DeutschCoach API", version="1.0.0", lifespan=lifespan)
 
-origins = os.getenv("CORS_ORIGIN", "http://localhost:3000").split(",")
+cors_origins = os.getenv("CORS_ORIGIN", "")
+if cors_origins:
+    origins = [o.strip() for o in cors_origins.split(",")]
+else:
+    # Allow all origins when not explicitly configured (dev + free-tier deployments)
+    origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in origins],
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
