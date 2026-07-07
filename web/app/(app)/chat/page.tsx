@@ -10,8 +10,8 @@ export default function ChatPage() {
           🗣️
         </div>
         <div>
-          <h1 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Practice Chat</h1>
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>AI-powered German conversation with live corrections</p>
+          <h1 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Language Coach</h1>
+          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Chat with Emma — your English-speaking coach for explanations, practice & corrections</p>
         </div>
       </div>
       <ChatInterface />

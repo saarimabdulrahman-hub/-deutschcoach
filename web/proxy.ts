@@ -8,7 +8,7 @@ const PUBLIC_PATHS = new Set([
   "/reset-password",
 ]);
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public routes without auth

@@ -15,13 +15,43 @@ const SCENARIO_ICONS: Record<string, string> = {
   "job-interview": "💼", doctor: "🏥",
 };
 
-const SUGGESTED_PHRASES: Record<string, string[]> = {
-  casual: ["Hallo! Wie geht's?", "Was machst du gern?", "Erzähl mir von deiner Familie."],
-  restaurant: ["Ich möchte bitte bestellen.", "Was können Sie empfehlen?", "Die Rechnung, bitte."],
-  shopping: ["Ich suche ein Geschenk.", "Haben Sie das in Größe M?", "Was kostet das?"],
-  travel: ["Wann fährt der nächste Zug?", "Eine Fahrkarte nach Berlin, bitte.", "Wo ist der Ausgang?"],
-  "job-interview": ["Ich habe 5 Jahre Erfahrung.", "Warum möchten Sie hier arbeiten?", "Was sind Ihre Stärken?"],
-  doctor: ["Ich habe Schmerzen hier.", "Seit drei Tagen habe ich Fieber.", "Brauche ich ein Rezept?"],
+const SUGGESTED_PROMPTS: Record<string, string[]> = {
+  casual: [
+    "How do I introduce myself?",
+    "Teach me some common greetings",
+    "How do I talk about my hobbies?",
+    "What are the days of the week?",
+  ],
+  restaurant: [
+    "How do I order food?",
+    "Teach me phrases for asking about the menu",
+    "How do I ask for the bill?",
+    "What are common food words?",
+  ],
+  shopping: [
+    "How do I ask about prices?",
+    "Teach me clothing sizes and colors",
+    "How do I say 'I'm just looking'?",
+    "What are common shopping phrases?",
+  ],
+  travel: [
+    "How do I buy a ticket?",
+    "Teach me directions and locations",
+    "How do I ask about departure times?",
+    "What are common travel phrases?",
+  ],
+  "job-interview": [
+    "How do I describe my experience?",
+    "Teach me professional introductions",
+    "How do I talk about my strengths?",
+    "What are common interview questions?",
+  ],
+  doctor: [
+    "How do I describe my symptoms?",
+    "Teach me body parts and pain words",
+    "How do I ask about medication?",
+    "What are common medical phrases?",
+  ],
 };
 
 export function ChatInterface() {
@@ -60,13 +90,13 @@ export function ChatInterface() {
       );
       setMessages((prev) => [...prev, { role: "assistant", content: res.reply, corrections: res.corrections }]);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Entschuldigung, ich konnte nicht antworten. Versuch es noch einmal." }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I couldn't respond right now. Please try again." }]);
     } finally {
       setLoading(false);
     }
   }
 
-  const suggestions = scenario ? SUGGESTED_PHRASES[scenario] || SUGGESTED_PHRASES.casual : SUGGESTED_PHRASES.casual;
+  const suggestions = scenario ? SUGGESTED_PROMPTS[scenario] || SUGGESTED_PROMPTS.casual : SUGGESTED_PROMPTS.casual;
 
   return (
     <div className="flex h-[calc(100vh-9rem)] gap-0">
@@ -101,11 +131,11 @@ export function ChatInterface() {
         ))}
 
         <div className="mt-auto pt-4">
-          <p className="text-xs font-semibold uppercase tracking-wider mb-2 px-1" style={{ color: "var(--color-text-muted)" }}>How to use</p>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-2 px-1" style={{ color: "var(--color-text-muted)" }}>How it works</p>
           <div className="text-xs leading-relaxed px-1" style={{ color: "var(--color-text-muted)" }}>
-            <p className="mb-1.5">• Type in German — mistakes are corrected gently</p>
-            <p className="mb-1.5">• Use English if you're stuck</p>
-            <p>• Try a scenario for role-play</p>
+            <p className="mb-1.5">• Ask questions in English about vocabulary, grammar, or phrases</p>
+            <p className="mb-1.5">• Try writing in the language you're learning to get corrections</p>
+            <p>• Pick a scenario above for role-play practice</p>
           </div>
         </div>
       </div>
@@ -132,19 +162,22 @@ export function ChatInterface() {
         <div className="flex-1 overflow-y-auto space-y-4 px-1" style={{ scrollBehavior: "smooth" }}>
           {messages.length === 0 && (
             <div className="text-center py-10">
-              <div className="text-5xl mb-4">🗣️</div>
+              <div className="text-5xl mb-4">👩‍🏫</div>
               <h2 className="text-xl font-bold mb-2" style={{ color: "var(--color-text)" }}>
-                {scenario ? `${SCENARIO_ICONS[scenario] || ""} ${scenario.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())} Scenario` : "German Conversation Practice"}
-              </h2>
-              <p className="text-sm max-w-sm mx-auto mb-6" style={{ color: "var(--color-text-muted)" }}>
                 {scenario
-                  ? `You're now in a ${scenario.replace("-", " ")} scenario. Start speaking German!`
-                  : "Chat freely in German. Your AI tutor corrects mistakes and introduces new words naturally."}
+                  ? `${SCENARIO_ICONS[scenario] || ""} ${scenario.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())} Practice`
+                  : "Your Language Coach"}
+              </h2>
+              <p className="text-sm max-w-sm mx-auto mb-2" style={{ color: "var(--color-text-muted)" }}>
+                Hi{userName ? ` ${userName}` : ""}! I'm Emma, your English-speaking language coach. 👋
+              </p>
+              <p className="text-sm max-w-sm mx-auto mb-6" style={{ color: "var(--color-text-muted)" }}>
+                Ask me anything in English — I'll explain vocabulary, grammar, and help you practice. Try writing in the language you're learning and I'll correct your mistakes!
               </p>
 
-              {/* Suggested phrases */}
+              {/* Suggested prompts */}
               <div className="max-w-sm mx-auto">
-                <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>Try saying</p>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>Try asking</p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {suggestions.map((phrase, i) => (
                     <button
@@ -170,7 +203,7 @@ export function ChatInterface() {
                   ? { background: "var(--color-accent-gradient)", color: "#fff" }
                   : { background: "var(--color-card-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}
               >
-                {msg.role === "user" ? userName.charAt(0).toUpperCase() : "🇩🇪"}
+                {msg.role === "user" ? userName.charAt(0).toUpperCase() : "👩‍🏫"}
               </div>
 
               {/* Bubble */}
@@ -195,7 +228,7 @@ export function ChatInterface() {
           {loading && (
             <div className="flex items-start gap-2.5">
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: "var(--color-card-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
-                🇩🇪
+                👩‍🏫
               </div>
               <div className="px-4 py-3 rounded-2xl text-sm" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
                 <span className="flex gap-1.5">
@@ -215,7 +248,7 @@ export function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-            placeholder={scenario ? `Type in German... (${scenario.replace("-", " ")})` : "Schreib etwas auf Deutsch..."}
+            placeholder={scenario ? `Ask me anything... (${scenario.replace("-", " ")})` : "Ask me anything about the language..."}
             disabled={loading}
             className="flex-1 px-4 py-3 rounded-xl text-sm outline-none placeholder:text-slate-500"
             style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)", color: "var(--color-text)" }}

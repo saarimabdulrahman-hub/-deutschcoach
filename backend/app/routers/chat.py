@@ -1,12 +1,15 @@
 import os
 import re
 import json
+import logging
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from app.routers.auth_dependency import require_auth
 from app.schemas.chat import ChatRequest, ChatResponse
+
+logger = logging.getLogger("deutschcoach.chat")
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
@@ -16,45 +19,25 @@ ANTHROPIC_API_URL = f"{ANTHROPIC_BASE_URL}/v1/messages"
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 
 SCENARIOS = {
-    "restaurant": "You are at a German restaurant. The user is the customer and you are the waiter. Take their order, recommend dishes, handle payment.",
-    "job-interview": "You are conducting a job interview in German. Ask about experience, skills, motivations. Keep it professional.",
-    "casual": "You are a German friend. Have a relaxed conversation about hobbies, travel, daily life.",
-    "shopping": "You are a shop assistant in a German store. Help the user find items, discuss sizes and prices.",
-    "travel": "You are at a German train station/airport. Help with tickets, schedules, directions.",
-    "doctor": "You are a doctor in Germany. Ask about symptoms, give advice. Use medical vocabulary appropriately.",
+    "restaurant": "The student is practicing ordering food. You are the waiter in an English-speaking restaurant. Ask what they'd like, recommend dishes, handle payment — all in English.",
+    "job-interview": "The student is practicing professional conversation. You are an interviewer at an English-speaking company. Ask about their experience and skills in English.",
+    "casual": "The student wants casual conversation practice. Be a friendly English-speaking chat partner. Talk about hobbies, travel, daily life — all in English.",
+    "shopping": "The student is practicing shopping interactions. You are a store assistant in an English-speaking store. Help them browse — all in English.",
+    "travel": "The student is practicing travel situations. Help with tickets, schedules, and directions at a station — all in English.",
+    "doctor": "The student is practicing medical conversations. You are an English-speaking doctor. Ask about symptoms and give advice in English.",
 }
 
 TIER_LEVEL_MAX = {"free": "A1", "starter": "A2", "plus": "B1", "pro": "C1"}
 
 
 def build_system_prompt(db: Session, user) -> str:
-    """Build a system prompt that includes the user's level, known vocab, and grammar topics."""
-    tier = user.subscription_tier.value if hasattr(user.subscription_tier, "value") else str(user.subscription_tier)
+    """Build the system prompt with student context."""
     target = user.target_level.value if hasattr(user.target_level, "value") else "A1"
+    tier = user.subscription_tier.value if hasattr(user.subscription_tier, "value") else str(user.subscription_tier)
     max_level = TIER_LEVEL_MAX.get(tier, "A1")
 
-    # Get user's mastered and learning vocab from SRS
-    from app.models.srs import SRSState, CardStatus
-    from app.models.vocab import VocabEntry
     from app.models.lesson_progress import LessonProgress
 
-    srs_cards = (
-        db.query(SRSState)
-        .filter(
-            SRSState.user_id == user.id,
-            SRSState.status.in_([CardStatus.reviewing, CardStatus.mastered]),
-        )
-        .limit(30)
-        .all()
-    )
-
-    known_vocab: list[str] = []
-    if srs_cards:
-        vocab_ids = [c.vocab_entry_id for c in srs_cards]
-        vocab_entries = db.query(VocabEntry).filter(VocabEntry.id.in_(vocab_ids)).all()
-        known_vocab = [f"{v.german} ({v.english})" for v in vocab_entries[:20]]
-
-    # Completed lessons count
     completed = (
         db.query(LessonProgress)
         .filter(
@@ -64,13 +47,11 @@ def build_system_prompt(db: Session, user) -> str:
         .count()
     )
 
-    prompt = f"""You are a friendly German language tutor. Student level: {target}. Lessons completed: {completed}.
+    return f"""You are Emma, a friendly language coach. Your native language is English and you ONLY communicate in English. You help students learn foreign languages through clear English explanations.
 
-CRITICAL RULE: Always reply in the SAME LANGUAGE the student uses. Student writes English → reply in English. Student writes German → reply in German. Never switch languages on your own.
+When you mention a foreign word, format it like: "Hund" (dog). Explain grammar in English. Keep responses 2-5 sentences. Use emoji occasionally. Correct mistakes gently with hints like: (Hint: you want "gehen" not "geht").
 
-Other rules: Keep responses 2-4 sentences. Correct mistakes briefly. Use emoji occasionally. Introduce new vocab when relevant."""
-
-    return prompt
+Student level: {target} (access up to {max_level}). Lessons completed: {completed}."""
 
 
 @router.post("/send", response_model=ChatResponse)
@@ -87,20 +68,28 @@ async def chat_send(
 
     system_prompt = build_system_prompt(db, user)
 
-    # Add scenario context if selected
-    scenario_instruction = ""
     if body.scenario and body.scenario in SCENARIOS:
-        scenario_instruction = f"\n\nCURRENT SCENARIO: {SCENARIOS[body.scenario]}\nStay in character for this scenario."
+        system_prompt += f"\n\nSCENARIO: {SCENARIOS[body.scenario]}"
 
-    # Build messages for Anthropic API (last 20 for context window)
-    anthropic_messages = []
-    msgs = body.messages[-20:]
-    for i, msg in enumerate(msgs):
+    # Build messages — prepend system prompt as first user message
+    # (DeepSeek sometimes respects user messages more than the system parameter)
+    api_messages: list[dict] = [{
+        "role": "user",
+        "content": f"INSTRUCTIONS (follow these for the entire conversation): {system_prompt}\n\n---\n\nNow the conversation begins. Remember: reply ONLY in English.",
+    }]
+
+    # Add an example assistant response that demonstrates the desired style
+    api_messages.append({
+        "role": "assistant",
+        "content": "Hi! I'm Emma, your language coach. I'll help you learn in clear English. What would you like to practice today? 😊",
+    })
+
+    # Add the actual conversation
+    for msg in body.messages[-20:]:
         content = msg.content
-        # Append language instruction to the LAST user message
-        if msg.role == "user" and i == len(msgs) - 1:
-            content = content + "\n\n(Reply in the same language I'm using. If I write in English, reply in English.)"
-        anthropic_messages.append({"role": msg.role, "content": content})
+        if msg.role == "user":
+            content = f"[reply in English only] {content}"
+        api_messages.append({"role": msg.role, "content": content})
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
@@ -114,12 +103,13 @@ async def chat_send(
                 json={
                     "model": ANTHROPIC_MODEL,
                     "max_tokens": 500,
-                    "system": system_prompt + scenario_instruction,
-                    "messages": anthropic_messages,
+                    "system": "You are Emma, an English-only language coach. Reply ONLY in English. Never write in any other language.",
+                    "messages": api_messages,
                 },
             )
 
         if resp.status_code != 200:
+            logger.error("LLM API error %s: %s", resp.status_code, resp.text[:500])
             raise HTTPException(
                 status_code=502,
                 detail=f"LLM API error: {resp.text[:200]}",
@@ -128,7 +118,6 @@ async def chat_send(
         data = resp.json()
         reply = None
 
-        # Anthropic format: content[0].text
         if isinstance(data.get("content"), list):
             for block in data["content"]:
                 if block.get("type") == "text" and block.get("text"):
@@ -138,14 +127,14 @@ async def chat_send(
                 first = data["content"][0]
                 reply = first.get("text") or first.get("thinking") or ""
 
-        # OpenAI format: choices[0].message.content
         if not reply and isinstance(data.get("choices"), list):
             reply = data["choices"][0]["message"]["content"]
 
         if not reply:
+            logger.error("Unexpected API response format: %s", json.dumps(data)[:500])
             raise HTTPException(status_code=502, detail=f"Unexpected API response format: {json.dumps(data)[:300]}")
 
-        # Parse corrections from the response
+        # Parse corrections
         corrections: list[dict] = []
         hints = re.findall(r"\(Hint:\s*(.+?)\)", reply)
         for hint in hints:
@@ -157,21 +146,20 @@ async def chat_send(
                 correction_text = hint.split('"')[1] if hint.count('"') >= 2 else ""
             if not correction_text and "not" in hint:
                 correction_text = hint.split("not")[-1].strip()
-            corrections.append(
-                {
-                    "error": error_text,
-                    "correction": correction_text,
-                    "explanation": hint,
-                }
-            )
+            corrections.append({
+                "error": error_text,
+                "correction": correction_text,
+                "explanation": hint,
+            })
 
         return ChatResponse(reply=reply, corrections=corrections)
 
-    except httpx.TimeoutException:
-        raise HTTPException(status_code=504, detail="LLM request timed out")
     except HTTPException:
         raise
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=504, detail="LLM request timed out")
     except Exception as e:
+        logger.exception("Chat error")
         raise HTTPException(status_code=502, detail=f"Chat error: {str(e)[:200]}")
 
 
