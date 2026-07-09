@@ -37,15 +37,15 @@ function getTodaysTip() {
 }
 
 function LevelProgressRing({ pct }: { pct: number }) {
-  const radius = 40;
+  const radius = 50;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
 
   return (
-    <div className="relative w-28 h-28 flex-shrink-0">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r={radius} fill="none" stroke="var(--color-border)" strokeWidth="6" />
-        <circle cx="50" cy="50" r={radius} fill="none" stroke="url(#levelGradient)" strokeWidth="6"
+    <div className="relative w-36 h-36 flex-shrink-0">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r={radius} fill="none" stroke="var(--color-border)" strokeWidth="7" />
+        <circle cx="60" cy="60" r={radius} fill="none" stroke="url(#levelGradient)" strokeWidth="7"
           strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
           style={{ transition: "stroke-dashoffset 1s ease" }} />
         <defs>
@@ -56,8 +56,8 @@ function LevelProgressRing({ pct }: { pct: number }) {
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
-        <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Complete</span>
+        <span className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
+        <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Complete</span>
       </div>
     </div>
   );
@@ -196,7 +196,10 @@ export default function DashboardPage() {
                 background: action.primary ? "var(--color-accent-gradient)" : "var(--color-card-bg)",
                 border: action.primary ? "none" : "1px solid var(--color-border)",
               }}>
-              <span className="text-xl flex-shrink-0">{action.icon}</span>
+              <span className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+                style={{ background: action.primary ? "rgba(255,255,255,0.15)" : "var(--color-hover-bg)" }}>
+                {action.icon}
+              </span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold" style={{ color: action.primary ? "#fff" : "var(--color-text)" }}>
                   {action.label}
