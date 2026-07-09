@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "DeutschCoach — Learn German",
   description:
     "Master German vocabulary, grammar, and conversation with spaced repetition and interactive quizzes.",
+  viewport: {
+    width: 768,
+    initialScale: 1.0,
+  },
 };
 
 export default function RootLayout({

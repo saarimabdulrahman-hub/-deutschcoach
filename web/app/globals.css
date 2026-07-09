@@ -33,6 +33,9 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  max-width: 768px;
+  margin: 0 auto;
+  overflow-x: hidden;
   background: var(--color-page-bg);
   color: var(--color-text-secondary);
 }
