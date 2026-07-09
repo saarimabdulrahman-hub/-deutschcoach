@@ -75,11 +75,11 @@ export function StatsGrid({ data }: { data: DashboardData }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="flex gap-4">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1"
+          className="flex-1 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1"
           style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-3 mb-3">
