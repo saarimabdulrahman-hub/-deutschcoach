@@ -32,64 +32,165 @@ function Ring({ pct }: { pct: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
-        <span className="text-[10px] sm:text-xs font-medium uppercase tracking-wider mt-0.5" style={{ color: "var(--color-text-muted)" }}>Complete</span>
+        <span className="text-[10px] sm:text-xs font-medium uppercase tracking-wider mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+          complete
+        </span>
       </div>
     </div>
   );
 }
 
-function StatCell({ icon, value, label }: { icon: string; value: string | number; label: string }) {
+function InsightRow({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-lg flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-        style={{ background: "var(--color-hover-bg)" }}>{icon}</span>
-      <div>
-        <p className="text-base font-bold leading-tight" style={{ color: "var(--color-text)" }}>{value}</p>
-        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>{label}</p>
+    <div className="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
+      <span className="text-lg flex-shrink-0 w-7 text-center">{icon}</span>
+      <div className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+        {children}
       </div>
     </div>
   );
+}
+
+function milestoneMessage(pct: number): string {
+  if (pct >= 100) return "Level complete — advance to the next level!";
+  if (pct >= 75) return "Almost there — just a few more lessons";
+  if (pct >= 50) return "Over halfway — keep the momentum";
+  if (pct >= 25) return "Making great progress";
+  return "You're getting started — keep going!";
 }
 
 export function ProgressOverview({ levelPct, streak, cardsDue, quizAvg, weakestCount }: Props) {
   const router = useRouter();
 
   return (
-    <div className="rounded-2xl p-5 sm:p-6 surface-elevated" style={{ border: "1px solid var(--color-border)" }}>
-      <h3 className="text-xs font-semibold uppercase tracking-wider mb-5" style={{ color: "var(--color-text-muted)" }}>
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
         Your Progress
-      </h3>
+      </p>
 
-      <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 mb-6">
-        <Ring pct={levelPct} />
-        <div className="flex-1 text-center sm:text-left">
-          <p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-            {levelPct === 0
-              ? "Ready to begin?"
-              : levelPct >= 100
-                ? "Level mastered!"
-                : `${levelPct}% through your current level`}
-          </p>
-          <p className="text-xs mt-1 mb-3" style={{ color: "var(--color-text-muted)" }}>
-            {levelPct === 0
-              ? "Start your first lesson to see your progress here."
-              : "Keep going — every lesson brings you closer to fluency."}
-          </p>
-          <button onClick={() => router.push("/curriculum")}
-            className="text-xs font-medium hover:underline" style={{ color: "var(--color-accent-light)" }}>
-            View Roadmap &rarr;
-          </button>
+      <div className="rounded-2xl p-5 sm:p-6 surface-elevated"
+        style={{ border: "1px solid var(--color-border)" }}>
+
+        {/* Top: Ring + summary */}
+        <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 mb-5 sm:mb-6">
+          <Ring pct={levelPct} />
+
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-base sm:text-lg font-bold mb-1" style={{ color: "var(--color-text)" }}>
+              {levelPct === 0
+                ? "Ready to begin"
+                : levelPct >= 100
+                  ? "Level mastered!"
+                  : `${milestoneMessage(levelPct)}`}
+            </p>
+            <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+              {levelPct === 0
+                ? "Start your first lesson to see your progress here"
+                : levelPct >= 100
+                  ? "You've completed every lesson in this level. Time to advance."
+                  : `You're ${levelPct}% through your current CEFR level.`}
+            </p>
+
+            {/* Milestone bar */}
+            {levelPct > 0 && levelPct < 100 && (
+              <div className="mt-3 max-w-xs">
+                <div className="w-full h-1.5 rounded-full" style={{ background: "var(--color-border)" }}>
+                  <div className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${levelPct}%`, background: "var(--color-accent-gradient)" }} />
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>0%</span>
+                  <span className="text-[10px] font-semibold" style={{ color: "var(--color-brand-purple)" }}>
+                    Next: {levelPct >= 75 ? "Complete level" : levelPct >= 50 ? "75%" : "50%"}
+                  </span>
+                  <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>100%</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="border-t pt-5" style={{ borderColor: "var(--color-border)" }}>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <StatCell icon="📖" value={levelPct > 0 ? Math.max(1, Math.round(levelPct / 6)) : 0} label="Lessons Completed" />
-          <StatCell icon="📝" value={weakestCount > 0 ? weakestCount * 5 : 0} label="Vocabulary Learned" />
-          <StatCell icon="✅" value={quizAvg > 0 ? `${quizAvg}%` : "—"} label="Quiz Accuracy" />
-          <StatCell icon="🃏" value={cardsDue} label="Cards to Review" />
-          <StatCell icon="📖" value={levelPct > 0 ? Math.max(1, Math.round(levelPct / 10)) : 0} label="Grammar Topics" />
-          <StatCell icon="⏱" value={levelPct > 0 ? `${Math.max(1, Math.round(levelPct / 6) * 10)}m` : "—"} label="Study Time" />
+        {/* Divider */}
+        <div className="border-t mb-4" style={{ borderColor: "var(--color-border)" }} />
+
+        {/* Bottom: Narrative insights */}
+        <div className="divide-y" style={{ borderColor: "var(--color-border)" }}>
+          {/* Streak */}
+          <InsightRow icon="🔥">
+            {streak > 0 ? (
+              <>
+                <span style={{ color: "#f59e0b", fontWeight: 600 }}>{streak}-day streak</span>
+                {" — "}come back tomorrow to keep it going
+              </>
+            ) : (
+              <>
+                <span style={{ fontWeight: 600 }}>No streak yet</span>
+                {" — "}practice today to start one
+              </>
+            )}
+          </InsightRow>
+
+          {/* Cards due */}
+          <InsightRow icon="🃏">
+            {cardsDue > 0 ? (
+              <>
+                <span style={{ color: "var(--color-accent-light)", fontWeight: 600 }}>{cardsDue} card{cardsDue !== 1 ? "s" : ""}</span>
+                {" ready for review "}
+                <span style={{ color: "var(--color-text-muted)" }}>
+                  (~{Math.max(1, Math.round(cardsDue / 5))} min)
+                </span>
+                {" — "}
+                <button onClick={() => router.push("/review")} className="hover:underline"
+                  style={{ color: "var(--color-accent-light)" }}>
+                  start now
+                </button>
+              </>
+            ) : (
+              <>
+                <span style={{ fontWeight: 600 }}>All caught up</span>
+                {" — no cards due right now"}
+              </>
+            )}
+          </InsightRow>
+
+          {/* Quiz accuracy */}
+          <InsightRow icon="✅">
+            {quizAvg > 0 ? (
+              <>
+                <span style={{ color: "var(--color-success)", fontWeight: 600 }}>Quiz average: {quizAvg}%</span>
+                {" — "}
+                {quizAvg >= 80 ? "you're doing great!" : quizAvg >= 60 ? "steady improvement" : "keep practicing — you'll get there"}
+              </>
+            ) : (
+              <>
+                <span style={{ fontWeight: 600 }}>No quizzes yet</span>
+                {" — "}
+                <button onClick={() => router.push("/quiz")} className="hover:underline"
+                  style={{ color: "var(--color-accent-light)" }}>
+                  take your first quiz
+                </button>
+              </>
+            )}
+          </InsightRow>
+
+          {/* Vocabulary */}
+          <InsightRow icon="📝">
+            {weakestCount > 0 ? (
+              <>
+                <span style={{ color: "#f472b6", fontWeight: 600 }}>{weakestCount} word{weakestCount !== 1 ? "s" : ""}</span>
+                {" to practice — "}
+                <button onClick={() => router.push("/review")} className="hover:underline"
+                  style={{ color: "var(--color-accent-light)" }}>
+                  review now
+                </button>
+              </>
+            ) : (
+              <>
+                <span style={{ fontWeight: 600 }}>No vocabulary yet</span>
+                {" — complete a lesson to build your word bank"}
+              </>
+            )}
+          </InsightRow>
         </div>
       </div>
     </div>

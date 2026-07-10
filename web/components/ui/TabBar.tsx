@@ -94,14 +94,16 @@ export function TabBar({ onOpenCommand }: TabBarProps) {
           <button
             key={tab.key}
             onClick={() => router.push(tab.href)}
-            className="relative px-4 py-2 text-sm font-semibold rounded-xl transition-all whitespace-nowrap"
-            style={{
-              color: active === tab.key ? "#fff" : "var(--color-text-muted)",
-              background: active === tab.key ? "var(--color-accent-gradient)" : "transparent",
-              boxShadow: active === tab.key ? "var(--shadow-glow)" : "none",
-            }}
+            className="relative px-3.5 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+            style={{ color: active === tab.key ? "var(--color-text)" : "var(--color-text-muted)" }}
           >
-            <span>{tab.label}</span>
+            {active === tab.key && (
+              <span
+                className="absolute inset-0 rounded-lg"
+                style={{ background: "var(--color-active-bg)" }}
+              />
+            )}
+            <span className="relative z-10">{tab.label}</span>
           </button>
         ))}
       </nav>
