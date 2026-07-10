@@ -235,7 +235,7 @@ export default function LessonPage() {
           style={{ background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.1)" }}>
           <span className="text-xl flex-shrink-0">🎯</span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#a78bfa" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--color-brand-purple)" }}>
               You'll learn to
             </p>
             <div className="flex flex-wrap gap-2">

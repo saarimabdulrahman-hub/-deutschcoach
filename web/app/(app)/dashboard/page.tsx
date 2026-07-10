@@ -124,7 +124,7 @@ function WordCloud({ words }: { words: { id: number; german: string; english: st
                 <div className="h-full rounded-full transition-all"
                   style={{
                     width: `${Math.min(100, intensity * 100)}%`,
-                    background: intensity > 0.6 ? "#ef4444" : intensity > 0.3 ? "#f59e0b" : "#22c55e",
+                    background: intensity > 0.6 ? "var(--color-error-text)" : intensity > 0.3 ? "var(--color-warning)" : "var(--color-success)",
                   }} />
               </div>
               <span className="text-[10px] font-bold w-5 text-right" style={{ color: "var(--color-text-muted)" }}>

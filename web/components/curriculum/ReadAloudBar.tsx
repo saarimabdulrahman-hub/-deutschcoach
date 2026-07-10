@@ -89,7 +89,7 @@ export function ReadAloudBar({
             className="h-full rounded-full transition-all duration-300"
             style={{
               width: `${progressPct}%`,
-              background: isPaused ? "#f59e0b" : "var(--color-accent-gradient)",
+              background: isPaused ? "var(--color-warning)" : "var(--color-accent-gradient)",
             }}
           />
         </div>

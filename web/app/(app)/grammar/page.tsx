@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { getLevelColor } from "@/lib/colors";
 
 const LEVELS = ["All", "A1", "A2", "B1", "B2", "C1"] as const;
 
@@ -32,17 +33,6 @@ function SkeletonGrid() {
       ))}
     </div>
   );
-}
-
-function getLevelColor(level: string): string {
-  const colors: Record<string, string> = {
-    A1: "#22c55e",
-    A2: "#3b82f6",
-    B1: "#f59e0b",
-    B2: "#f97316",
-    C1: "#ef4444",
-  };
-  return colors[level] || "#6366f1";
 }
 
 export default function GrammarPage() {

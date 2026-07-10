@@ -1,23 +1,8 @@
 import Link from "next/link";
+import { getLevelColor } from "@/lib/colors";
 
 interface GrammarTopicCardProps {
-  topic: {
-    id: number;
-    slug: string;
-    title: string;
-    level: string;
-  };
-}
-
-function getLevelColor(level: string): string {
-  const colors: Record<string, string> = {
-    A1: "#22c55e",
-    A2: "#3b82f6",
-    B1: "#f59e0b",
-    B2: "#f97316",
-    C1: "#ef4444",
-  };
-  return colors[level] || "#6366f1";
+  topic: { id: number; slug: string; title: string; level: string };
 }
 
 export function GrammarTopicCard({ topic }: GrammarTopicCardProps) {

@@ -14,7 +14,7 @@ function StrengthBar({ lapses }: { lapses: number }) {
           className="w-1.5 h-3 rounded-full transition-colors"
           style={{
             background: i <= strength
-              ? lapses === 0 ? "#22c55e" : lapses === 1 ? "#f59e0b" : "#ef4444"
+              ? lapses === 0 ? "var(--color-success)" : lapses === 1 ? "var(--color-warning)" : "var(--color-error-text)"
               : "var(--color-border)",
           }}
         />
@@ -67,7 +67,7 @@ export function WeakestWords({ words }: { words: WeakWord[] }) {
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <StrengthBar lapses={word.lapses} />
-                <span className="text-[10px] font-bold w-5 text-right" style={{ color: word.lapses > 2 ? "#ef4444" : "var(--color-text-muted)" }}>
+                <span className="text-[10px] font-bold w-5 text-right" style={{ color: word.lapses > 2 ? "var(--color-error-text)" : "var(--color-text-muted)" }}>
                   {word.lapses > 0 ? `${word.lapses}×` : "✓"}
                 </span>
               </div>

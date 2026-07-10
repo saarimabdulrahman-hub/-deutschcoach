@@ -80,7 +80,7 @@ export default function CurriculumPage() {
             </p>
           </div>
           {totalCompleted > 0 && (
-            <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "#a78bfa" }}>
+            <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--color-brand-purple)" }}>
               <span className="text-lg">📚</span>
               {totalCompleted}/{totalLessons} lessons
             </div>

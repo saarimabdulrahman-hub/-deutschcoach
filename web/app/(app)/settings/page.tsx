@@ -72,7 +72,7 @@ export default function SettingsPage() {
       <div className={sectionCard} style={{ background: "var(--color-card-bg)", border: "1px solid rgba(239,68,68,0.2)" }}>
         <div className="flex items-center gap-2 mb-5">
           <span className="text-lg">⚠️</span>
-          <h2 className="text-base font-semibold" style={{ color: "#ef4444" }}>Danger Zone</h2>
+          <h2 className="text-base font-semibold" style={{ color: "var(--color-error-text)" }}>Danger Zone</h2>
         </div>
         <DangerZone />
       </div>

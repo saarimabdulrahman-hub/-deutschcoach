@@ -35,9 +35,9 @@ export function ContinueHero({ lesson, levelPct }: Props) {
           style={{
             background: "rgba(124,58,237,0.15)",
             border: "1px solid rgba(124,58,237,0.25)",
-            color: "#a78bfa",
+            color: "var(--color-brand-purple)",
           }}>
-          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#a78bfa" }} />
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--color-brand-purple)" }} />
           {lesson ? lesson.level : "A1"} LEVEL
         </div>
 
