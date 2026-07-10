@@ -46,7 +46,7 @@ export default function SignupPage() {
     <div className="min-h-screen flex">
       {/* Left Panel — Brand */}
       <div
-        className="hidden lg:flex w-[45%] relative overflow-hidden flex-col justify-between py-12 px-12"
+        className="hidden sm:flex w-[45%] relative overflow-hidden flex-col justify-between py-8 sm:py-12 px-6 sm:px-12"
         style={{
           background:
             "linear-gradient(160deg, #0a0a0a 0%, #171717 30%, #1a1a1a 60%, #0f0f0f 100%)",
@@ -118,7 +118,7 @@ export default function SignupPage() {
       >
         <div className="w-full max-w-[440px]">
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
+          <div className="sm:hidden flex items-center gap-3 mb-10 justify-center">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm"
               style={{ background: "var(--color-badge-bg)", color: "var(--color-text)" }}
