@@ -213,7 +213,7 @@ export default function DashboardPage() {
       </div>
 
       {/* 1. Continue Learning — primary action, most prominent */}
-      <ContinueCard lesson={data.continue_lesson} />
+      <ContinueCard lesson={data.continue_lesson} levelPct={data.level_progress_pct} />
 
       {/* 2. Today's Learning Plan — simplified: only learning, not review */}
       <div>
