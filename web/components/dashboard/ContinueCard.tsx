@@ -16,34 +16,62 @@ function estimatedMinutes(progressPct: number): number {
 // ── State: New Learner ──────────────────────────────────────────────
 function NewLearnerHero({ onStart }: { onStart: () => void }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl p-5 sm:p-8 surface-glass"
-      style={{ border: "1px solid rgba(124, 58, 237, 0.15)", color: "#fff" }}>
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-8">
-        <div className="flex-1">
-          <p className="text-xs font-semibold uppercase tracking-widest opacity-60 mb-2">Welcome to DeutschFlow</p>
-          <h2 className="text-xl sm:text-2xl font-bold mb-2">Your German learning journey starts here</h2>
-          <p className="text-sm opacity-75 max-w-md">
-            Structured lessons, smart flashcards, and an AI tutor — everything you need to go from zero to fluent.
-          </p>
-          <div className="flex items-center gap-5 mt-4 text-xs opacity-60">
-            <span>🌱 Beginner-friendly</span>
-            <span>⏱ 10 min lessons</span>
-            <span>📚 80+ lessons</span>
+    <div className="relative overflow-hidden rounded-[2rem] p-6 sm:p-10"
+      style={{
+        background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 30%, #7c3aed 60%, #8b5cf6 100%)",
+        color: "#fff",
+      }}>
+      {/* Radial glow */}
+      <div className="absolute pointer-events-none"
+        style={{ top: "-30%", right: "-10%", width: "60%", height: "150%",
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 60%)" }} />
+      <div className="absolute pointer-events-none"
+        style={{ bottom: "-20%", left: "5%", width: "40%", height: "60%",
+          background: "radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 60%)" }} />
+
+      {/* Brandenburg Gate silhouette — right side */}
+      <div className="absolute right-0 top-0 bottom-0 w-[45%] opacity-10 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.3) 0%, transparent 70%)",
+        }}>
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-right" style={{ fontSize: "120px", lineHeight: "1", opacity: 0.5, filter: "blur(0.5px)" }}>
+          🏛️
+        </div>
+      </div>
+
+      <div className="relative z-10">
+        <p className="text-xs font-semibold uppercase tracking-widest opacity-60 mb-3">Welcome to DeutschFlow</p>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+          <div className="flex-1 max-w-xl">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 leading-tight">Your German learning journey starts here</h2>
+            <p className="text-sm sm:text-base opacity-80 leading-relaxed">
+              Structured lessons, smart flashcards, and an AI tutor — everything you need to go from zero to fluent.
+            </p>
+            <div className="flex flex-wrap items-center gap-4 mt-5 text-xs sm:text-sm opacity-70">
+              <span>🌱 Beginner-friendly</span>
+              <span className="opacity-30">|</span>
+              <span>⏱ 10 min lessons</span>
+              <span className="opacity-30">|</span>
+              <span>📚 80+ lessons</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start gap-3 flex-shrink-0">
+            <p className="text-xs font-medium opacity-60">Ready to begin?</p>
+            <button
+              onClick={onStart}
+              className="px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:scale-105 flex items-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
+                color: "#fff",
+                boxShadow: "0 4px 20px rgba(139,92,246,0.3)",
+              }}>
+              <span className="text-lg">🚀</span>
+              Start Your First Lesson
+            </button>
           </div>
         </div>
-        <button
-          onClick={onStart}
-          className="px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:scale-105 flex items-center gap-2 flex-shrink-0"
-          style={{ background: "rgba(255,255,255,0.18)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }}>
-          <span className="text-lg">🚀</span>
-          Start Your First Lesson
-        </button>
       </div>
-      {/* Decorative ring */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-5"
-        style={{ border: "2px solid #fff" }} />
-      <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full opacity-5"
-        style={{ border: "2px solid #fff" }} />
     </div>
   );
 }
