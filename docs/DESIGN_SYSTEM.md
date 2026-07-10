@@ -1,6 +1,6 @@
 # DeutschFlow — Design System & Brand Identity
 
-**Version:** 2.2
+**Version:** 3.0
 **Last Updated:** 2026-07-11
 **Source of Truth:** `web/app/globals.css`, `web/contexts/ThemeContext.tsx`, `web/tailwind.config.ts`
 
@@ -985,3 +985,273 @@ grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3
 ```
 
 **Rule:** Always start with 2 columns on mobile. Never use 1 column at base unless the content genuinely needs full width.
+
+---
+
+## Future Design Standards
+
+Every new page, component, or feature added to DeutschFlow must satisfy these quality gates before it can be merged. These are not aspirational — they are the minimum bar. A feature that fails any gate is not complete.
+
+### Gate 1: Design Token Compliance
+
+- [ ] All colors reference semantic CSS variables (`var(--color-*)`) — no raw hex values
+- [ ] All spacing uses the 4px scale (Tailwind `p-*`, `gap-*`, `space-y-*` utilities)
+- [ ] All border radii use `rounded-xl` or `rounded-2xl` — no other radius values
+- [ ] All shadows use the predefined elevation tokens (`--shadow-card`, `--shadow-dropdown`, `--shadow-glow`, `--shadow-ring`)
+- [ ] All animations use the duration tokens (`--duration-fast`, `--duration-normal`, `--duration-slow`, `--duration-page`)
+- [ ] All z-index values use the z-index scale tokens (`--z-*`) or Tailwind `z-*` utilities
+
+### Gate 2: Shared Component Usage
+
+- [ ] Existing shared components (`Card`, `Badge`, `PageHeader`, `ProgressBar`, `ErrorState`, `EmptyState`, `Icons`) are used where applicable — no duplicate implementations
+- [ ] New shared component candidates are identified and proposed for extraction to `web/components/ui/`
+- [ ] Component props are fully typed with TypeScript interfaces
+- [ ] Components follow the established naming convention (PascalCase, descriptive, singular)
+
+### Gate 3: Brand Identity Consistency
+
+- [ ] The brand violet is used only in designated contexts (CTAs, progress, active states) — never as large backgrounds or reading surfaces
+- [ ] The brand gradient appears only on progress indicators and primary CTAs — never on static elements
+- [ ] The interface feels premium, calm, and intelligent — consistent with the Brand Personality
+- [ ] Microcopy follows the Tone of Interface — supportive tutor, not software manual
+- [ ] No element could be described as "gamified," "childish," "corporate," or "generic"
+
+### Gate 4: Visual Hierarchy
+
+- [ ] The primary action or primary content is the most visually weighty element on the page
+- [ ] Navigation is accessible but does not compete with learning content
+- [ ] The heading hierarchy (h1 → h2 → h3) is logical with no skipped levels
+- [ ] Information is presented in order of importance — most critical at the top
+- [ ] Progressive disclosure is applied — secondary details are available but not forced
+
+### Gate 5: Beginner Friendliness
+
+- [ ] A complete beginner (zero German knowledge) can understand the page within 5 seconds
+- [ ] All German text is accompanied by English translation or explanation
+- [ ] The next action is visually obvious — the learner never wonders "what do I do now?"
+- [ ] Empty states are encouraging, not discouraging — they always include a CTA
+- [ ] No jargon, no assumption of prior app knowledge, no "clever" undiscoverable interactions
+
+### Gate 6: Mobile-First Responsiveness
+
+- [ ] The page is designed at 375px first — desktop enhancements are added via `sm:` and `lg:`
+- [ ] All touch targets are minimum 44px on mobile
+- [ ] No horizontal overflow at any viewport width
+- [ ] Cards stack vertically on mobile, sit side-by-side on desktop
+- [ ] The bottom tab bar is respected — content has `pb-20` on mobile to avoid overlap
+- [ ] The layout works correctly at 375px, 768px, 1024px, 1440px, and 1920px
+
+### Gate 7: Accessibility
+
+- [ ] All interactive elements have visible `:focus-visible` states
+- [ ] All icon-only buttons have `aria-label` attributes
+- [ ] All form inputs have associated `<label>` elements (visible or `sr-only`)
+- [ ] The page is fully navigable by keyboard (Tab, Enter, Escape)
+- [ ] `prefers-reduced-motion` is respected — animations disable when requested
+- [ ] Color is never the sole communicator of information
+- [ ] Heading hierarchy is logical with no skipped levels
+
+### Gate 8: Performance
+
+- [ ] No unnecessary re-renders — `useMemo` and `useCallback` used where appropriate
+- [ ] Images (if any) are optimized and lazy-loaded
+- [ ] No layout shift during loading (skeletons match final layout)
+- [ ] Bundle size is not significantly increased by new dependencies
+- [ ] React Query `staleTime` is set appropriately for the data's freshness requirements
+
+### Gate 9: Empty, Loading, and Error States
+
+- [ ] Loading state: shimmer skeletons match the page layout pattern
+- [ ] Empty state: encouraging message + explanation + CTA (never just "0" or blank)
+- [ ] Error state: uses `ErrorState` component with descriptive message and retry button
+- [ ] All three states are implemented before the feature is considered complete
+
+### Gate 10: Visual Polish
+
+- [ ] Hover states exist on all interactive elements
+- [ ] Transitions use consistent durations and easings
+- [ ] No visual regressions on existing pages
+- [ ] Cards, buttons, and inputs follow the established component patterns exactly
+- [ ] Spacing is consistent with adjacent sections — no "this section has more padding because it's special"
+
+---
+
+## Design Review Checklist
+
+This checklist must be completed before any UI work is approved for merge. It applies to: new pages, redesigned pages, new components, and significant visual changes to existing components. A reviewer should be able to check every box before signing off.
+
+### Visual Consistency
+
+- [ ] The page uses only design token colors — no raw hex values
+- [ ] Cards follow the established pattern (`rounded-2xl` + surface + border + padding)
+- [ ] Buttons use only the three defined styles (primary, secondary, ghost)
+- [ ] Border radii are exclusively `rounded-xl` or `rounded-2xl`
+- [ ] Shadows use only the four defined elevation levels
+- [ ] The page feels like it belongs to DeutschFlow — not a different application
+
+### UX Quality
+
+- [ ] The primary action is immediately obvious (under 3 seconds to find it)
+- [ ] The information hierarchy is correct — most important content is most prominent
+- [ ] Navigation is accessible but does not dominate the page
+- [ ] Progressive disclosure is applied — complexity is revealed, not dumped
+- [ ] No dead ends — every state (empty, loading, error, complete) has a path forward
+- [ ] The page could be used by someone who has never seen DeutschFlow before
+
+### Accessibility
+
+- [ ] Full keyboard navigation works — Tab order follows visual order
+- [ ] All focus states are visible
+- [ ] All images and icons have text alternatives
+- [ ] Form inputs have labels
+- [ ] Heading hierarchy is correct (h1 → h2 → h3, no skips)
+- [ ] `prefers-reduced-motion` is respected
+- [ ] Color contrast meets WCAG AA minimums
+
+### Responsiveness
+
+- [ ] Layout works at 375px (mobile)
+- [ ] Layout works at 768px (tablet)
+- [ ] Layout works at 1024px (small desktop)
+- [ ] Layout works at 1440px (standard desktop)
+- [ ] Layout works at 1920px (large desktop)
+- [ ] No horizontal scrollbar at any width
+- [ ] Touch targets are ≥ 44px on mobile
+- [ ] Content does not overlap with bottom tab bar on mobile
+
+### Learning Experience
+
+- [ ] A complete beginner can understand what to do
+- [ ] German text is accompanied by English explanation
+- [ ] Progress is communicated visually, not just numerically
+- [ ] Empty states guide the learner toward their next action
+- [ ] The interface supports the learning, not distracts from it
+- [ ] The experience feels encouraging, not pressuring
+
+### Brand Consistency
+
+- [ ] The brand violet appears only in designated contexts
+- [ ] The brand gradient appears only on progress and CTAs
+- [ ] Microcopy matches the Tone of Interface (supportive tutor)
+- [ ] The interface feels premium — not like a template or demo
+- [ ] The dark theme is consistent — no unexpected light backgrounds
+
+### Typography & Spacing
+
+- [ ] Font sizes follow the type scale (hero, page-title, body, caption, micro)
+- [ ] Font weights follow the hierarchy (bold → semibold → medium → normal → light)
+- [ ] Letter spacing is used only for uppercase micro-labels
+- [ ] Section spacing is consistent (`space-y-6 sm:space-y-8`)
+- [ ] Card internal padding is consistent (`p-5 sm:p-6`)
+- [ ] Grid gaps use the spacing scale (`gap-3`, `gap-4`, `gap-6`)
+
+### Component Reuse
+
+- [ ] Existing shared components are used where applicable
+- [ ] No duplicate implementations of existing patterns
+- [ ] New reusable patterns are identified for potential extraction
+- [ ] Inline SVGs for common icons are replaced with `Icons.tsx` components
+
+### Animation & Motion
+
+- [ ] Transitions use consistent durations (150ms, 200ms, 250ms, 300ms, 700ms)
+- [ ] Easings are `ease` or `ease-out` — no `ease-in`, no springs, no bounces
+- [ ] Page enter animation uses the standard `pageIn` keyframe
+- [ ] No animation is purely decorative — every motion serves a purpose
+- [ ] `prefers-reduced-motion` disables all animations
+
+### Performance
+
+- [ ] No unnecessary re-renders visible in React DevTools
+- [ ] Images are optimized (if applicable)
+- [ ] Skeleton loading states match final layout (no layout shift)
+- [ ] React Query configuration is appropriate for the data
+- [ ] No blocking synchronous operations in render
+
+### Information Hierarchy
+
+- [ ] The page title is the first thing the eye notices
+- [ ] Primary content/action is second
+- [ ] Supporting information is third
+- [ ] Secondary actions are fourth
+- [ ] The hierarchy is confirmed by the squint test (squint → identify the 3 most prominent elements → they should be: title, primary content, primary action)
+
+### Navigation
+
+- [ ] The same 7-tab navigation is present (desktop: header, mobile: bottom bar)
+- [ ] The active tab is visually indicated
+- [ ] Navigation does not compete with content for visual attention
+- [ ] Back navigation works correctly (browser back, in-page back links)
+- [ ] Deep links resolve to the correct page state
+
+### Cognitive Load
+
+- [ ] The page has 10 or fewer distinct visual patterns (cards, buttons, badges, etc.)
+- [ ] The layout is predictable — similar content uses similar patterns
+- [ ] No element appears or disappears unexpectedly
+- [ ] The learner doesn't need to "figure out" how anything works
+- [ ] The page could be described in one sentence
+
+### Beginner Friendliness
+
+- [ ] A new user with zero data sees encouraging empty states, not blank boxes
+- [ ] All actions have clear labels — no ambiguous icons without text
+- [ ] No prior knowledge of DeutschFlow is assumed
+- [ ] No prior knowledge of German is assumed
+- [ ] The value proposition of each feature is clear from its presentation
+
+### Final Sign-Off
+
+- [ ] All gates from Future Design Standards are satisfied
+- [ ] All checklist items above are checked
+- [ ] No visual regressions on existing pages
+- [ ] Build passes with zero errors (`npm run build`)
+- [ ] The reviewer would feel proud to show this to a learner
+
+---
+
+## How This System Guides DeutschFlow's Evolution
+
+This Brand & Design System is not a static document. It is the **operating system for every future design decision.** Here is how each section guides the product's evolution:
+
+### PRODUCT_VISION.md — The Destination
+
+Defines who we're building for and why. Every feature must serve the primary persona (Sarah, the complete beginner) and advance toward the 3-year vision of a complete CEFR curriculum with AI-native learning.
+
+### DESIGN_SYSTEM.md — The Rules
+
+Defines how things look and feel. The Brand Identity and Brand Signature sections ensure every new page feels like DeutschFlow — not like a generic dashboard. The Color Palette, Typography, and Spacing sections provide the technical tokens. The Component Patterns section shows how to build things correctly.
+
+### Visual Language — The Philosophy
+
+Explains why things look the way they do. When a designer proposes a new card variant, the Card Philosophy provides the framework for evaluating it. When an engineer wonders why buttons have exactly three styles, the Button Philosophy answers. The philosophy sections prevent cargo-cult design — copying patterns without understanding their purpose.
+
+### UX Principles — The Decision Framework
+
+Provides the 12 rules that resolve design disagreements. When the team debates whether a feature should be prominent or subtle, Principle 3 (Next Action Obvious) and Principle 7 (Content Gets Visual Priority) provide the answer. When someone proposes a "clever" interaction, Principle 12 (Consistency Over Novelty) asks whether cleverness serves the learner.
+
+### Future Design Standards — The Quality Gates
+
+Ensures every new feature meets the minimum bar before merge. These are not negotiable. A feature that uses raw hex colors or skips mobile testing does not ship. The gates prevent quality erosion as the product grows and more contributors join.
+
+### Design Review Checklist — The Ship Gate
+
+Provides the concrete, checkable criteria for approving UI work. Every box must be checked before a PR is merged. This removes subjectivity from code review — the checklist, not personal preference, determines whether something is ready.
+
+### How to Use This System
+
+1. **Before designing anything:** Read the Brand Identity, Brand Signature, and UX Principles. Internalize the philosophy.
+
+2. **While designing:** Reference the Visual Language for component philosophy, the Color Palette for tokens, and the Component Patterns for implementation. Use the Future Design Standards as your quality target.
+
+3. **Before requesting review:** Complete the Design Review Checklist yourself. Fix everything you can before asking a reviewer.
+
+4. **During review:** The reviewer uses the same checklist. Discussions reference specific principles ("this violates Principle 3 — the next action isn't obvious") rather than subjective opinions ("I don't like how this looks").
+
+5. **After merge:** If a pattern proved successful and reusable, propose adding it to the Component Patterns section. If a principle proved difficult to follow, propose clarifying it. This document evolves with the product.
+
+### The Ultimate Test
+
+Close your eyes. Imagine opening DeutschFlow for the first time. You know no German. You've never used the app before. Within 10 seconds, you should know: what you're supposed to do, where to click, and why you should keep using this product.
+
+Every section of this Design System exists to make that experience possible — for every learner, on every device, every time they open the app.
