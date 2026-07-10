@@ -135,8 +135,26 @@ export default function LessonPage() {
     }
   }, [showConfetti]);
 
+  // ⚠️ All hooks must be called before any conditional returns
+  const lesson = data?.lesson;
+  const vocabulary = data?.vocabulary ?? [];
+  const exercises = data?.exercises ?? [];
+  const currentIdx = allLessons?.findIndex((l) => l.id === parseInt(id)) ?? -1;
+  const prevLesson = currentIdx > 0 ? allLessons![currentIdx - 1] : null;
+  const nextLesson = currentIdx >= 0 && allLessons && currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
+
+  const lessonText = useMemo(() => {
+    const parts: string[] = [];
+    if (lesson?.description) parts.push(lesson.description);
+    if (lesson?.content) parts.push(lesson.content);
+    return parts.join(". ");
+  }, [lesson?.description, lesson?.content]);
+
+  const lessonSentences = useMemo(() => splitSentences(lessonText), [lessonText]);
+  const speech = useSentenceSpeech();
+
   if (isLoading) return <LessonSkeleton />;
-  if (error || !data)
+  if (error || !data || !lesson)
     return (
       <div className="text-center py-16">
         <div className="text-5xl mb-4">😕</div>
@@ -147,24 +165,6 @@ export default function LessonPage() {
         </button>
       </div>
     );
-
-  const { lesson, vocabulary, exercises } = data;
-
-  // Find previous and next lessons
-  const currentIdx = allLessons?.findIndex((l) => l.id === parseInt(id)) ?? -1;
-  const prevLesson = currentIdx > 0 ? allLessons![currentIdx - 1] : null;
-  const nextLesson = currentIdx >= 0 && allLessons && currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
-
-  // ── Read Aloud: extract lesson sentences for scoped speech ──
-  const lessonText = useMemo(() => {
-    const parts: string[] = [];
-    if (lesson.description) parts.push(lesson.description);
-    if (lesson.content) parts.push(lesson.content);
-    return parts.join(". ");
-  }, [lesson.description, lesson.content]);
-
-  const lessonSentences = useMemo(() => splitSentences(lessonText), [lessonText]);
-  const speech = useSentenceSpeech();
 
   const handleReadAloud = () => {
     speech.speakSentences(lessonSentences, "de-DE");
