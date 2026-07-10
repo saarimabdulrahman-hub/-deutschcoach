@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Providers } from "@/contexts/Providers";
 import "./globals.css";
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Master German vocabulary, grammar, and conversation with spaced repetition and interactive quizzes.",
 };
 
-export const viewport: Viewport = {
+export const viewport = {
   width: 768,
   initialScale: 1,
 };

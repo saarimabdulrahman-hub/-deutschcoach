@@ -133,12 +133,12 @@ export default function DashboardPage() {
       <StatsGrid data={data} />
 
       {/* Level progress */}
-      <div className="rounded-2xl p-5 flex items-center gap-6"
+      <div className="rounded-2xl p-6 flex items-center gap-8"
         style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
         <LevelProgressRing pct={data.level_progress_pct} />
-        <div>
-          <p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>Level Progress</p>
-          <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
+        <div className="flex-1">
+          <p className="text-lg font-bold" style={{ color: "var(--color-text)" }}>Level Progress</p>
+          <p className="text-sm mt-1.5" style={{ color: "var(--color-text-secondary)" }}>
             {data.level_progress_pct === 0
               ? "Start a lesson to begin!"
               : data.level_progress_pct < 25
@@ -149,6 +149,15 @@ export default function DashboardPage() {
                     ? "Over halfway there!"
                     : "Almost complete! 🎉"}
           </p>
+          <div className="mt-3 w-full rounded-full h-2" style={{ background: "var(--color-border)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${data.level_progress_pct}%`,
+                background: "linear-gradient(90deg, #7c3aed, #a78bfa)",
+              }}
+            />
+          </div>
         </div>
       </div>
 
