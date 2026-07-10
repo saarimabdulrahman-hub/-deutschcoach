@@ -6,7 +6,8 @@ from urllib.parse import urlparse, parse_qs
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./deutschcoach.db")
+DEFAULT_DB = f"sqlite:///{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deutschcoach.db')}"
+DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB)
 
 connect_args = {}
 
