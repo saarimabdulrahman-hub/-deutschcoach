@@ -95,7 +95,10 @@ export function TabBar({ onOpenCommand }: TabBarProps) {
             key={tab.key}
             onClick={() => router.push(tab.href)}
             className="relative px-3.5 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
-            style={{ color: active === tab.key ? "var(--color-text)" : "var(--color-text-muted)" }}
+            style={{
+              color: active === tab.key ? "var(--color-text)" : "var(--color-text-muted)",
+              ...(tab.key === "dashboard" ? { background: "#00ff00", color: "#000" } : {}),
+            }}
           >
             {active === tab.key && (
               <span
