@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import type { LessonDetail, LessonListItem } from "@/types";
 import { LessonViewer } from "@/components/curriculum/LessonViewer";
 import { VocabCard } from "@/components/curriculum/VocabCard";
-import { useSpeech } from "@/hooks/useSpeech";
+import { ReadAloudBar } from "@/components/curriculum/ReadAloudBar";
+import { useSentenceSpeech, useWordSpeech, splitSentences } from "@/hooks/useSpeech";
 import { SpeakIcon } from "@/components/ui/SpeakIcon";
 
 // ── Sub-components ────────────────────────────────────────────────────
 
 function VocabSectionHeader({ vocabulary }: { vocabulary: Array<{ german: string }> }) {
-  const { speak, speaking } = useSpeech();
+  const { speak, speaking } = useWordSpeech();
   const readAll = () => speak(vocabulary.map(v => v.german).join(". "), "de-DE");
 
   return (
@@ -154,6 +155,21 @@ export default function LessonPage() {
   const prevLesson = currentIdx > 0 ? allLessons![currentIdx - 1] : null;
   const nextLesson = currentIdx >= 0 && allLessons && currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
 
+  // ── Read Aloud: extract lesson sentences for scoped speech ──
+  const lessonText = useMemo(() => {
+    const parts: string[] = [];
+    if (lesson.description) parts.push(lesson.description);
+    if (lesson.content) parts.push(lesson.content);
+    return parts.join(". ");
+  }, [lesson.description, lesson.content]);
+
+  const lessonSentences = useMemo(() => splitSentences(lessonText), [lessonText]);
+  const speech = useSentenceSpeech();
+
+  const handleReadAloud = () => {
+    speech.speakSentences(lessonSentences, "de-DE");
+  };
+
   return (
     <div className="space-y-6">
       {/* ── Sticky progress bar ────────────────── */}
@@ -233,6 +249,20 @@ export default function LessonPage() {
           </div>
         </div>
       )}
+
+      {/* ── Read Aloud ─────────────────────────── */}
+      <ReadAloudBar
+        isPlaying={speech.isPlaying}
+        isPaused={speech.isPaused}
+        activeIndex={speech.activeIndex}
+        totalSentences={lessonSentences.length}
+        onPlay={handleReadAloud}
+        onPause={speech.pause}
+        onResume={speech.resume}
+        onStop={speech.stop}
+        onReplay={speech.replaySentence}
+        disabled={lessonSentences.length === 0}
+      />
 
       {/* ── Main content + Vocab ────────────────── */}
       <div className="grid lg:grid-cols-[1fr_320px] gap-8">

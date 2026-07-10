@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSpeech } from "@/hooks/useSpeech";
+import { useWordSpeech } from "@/hooks/useSpeech";
 import { SpeakIcon } from "@/components/ui/SpeakIcon";
 
 interface VocabCardProps {
@@ -13,7 +13,7 @@ interface VocabCardProps {
 
 export function VocabCard({ german, english, example, pos }: VocabCardProps) {
   const [flipped, setFlipped] = useState(false);
-  const { speak, speaking } = useSpeech();
+  const { speak, speaking } = useWordSpeech();
 
   return (
     <div

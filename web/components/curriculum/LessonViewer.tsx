@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useSpeech } from "@/hooks/useSpeech";
+import { useWordSpeech } from "@/hooks/useSpeech";
 import { SpeakIcon } from "@/components/ui/SpeakIcon";
 
 interface LessonViewerProps {
@@ -96,7 +96,7 @@ function isDialogue(text: string): boolean {
 }
 
 function DialogueBlock({ text }: { text: string }) {
-  const { speak, speaking } = useSpeech();
+  const { speak, speaking } = useWordSpeech();
 
   return (
     <div className="my-4 rounded-xl overflow-hidden" style={{ background: "var(--color-hover-bg)", border: "1px solid var(--color-border)" }}>
@@ -138,7 +138,7 @@ function renderParagraphs(text: string): React.ReactNode {
 }
 
 function SectionHeader({ title, sectionText }: { title: string; sectionText: string }) {
-  const { speak, speaking } = useSpeech();
+  const { speak, speaking } = useWordSpeech();
 
   return (
     <div className="flex items-center justify-between mb-4 pb-2" style={{ borderBottom: "1px solid var(--color-border)" }}>
