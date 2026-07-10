@@ -20,14 +20,15 @@ function Ring({ pct }: { pct: number }) {
       <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
         <defs>
           <linearGradient id="progGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="100%" stopColor="#a78bfa" />
+            <stop offset="0%" stopColor="#6d28d9" />
+            <stop offset="50%" stopColor="#7c3aed" />
+            <stop offset="100%" stopColor="#8b5cf6" />
           </linearGradient>
         </defs>
         <circle cx="60" cy="60" r={r} fill="none" stroke="var(--color-border)" strokeWidth="6" />
         <circle cx="60" cy="60" r={r} fill="none" stroke="url(#progGradient)" strokeWidth="6"
           strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 1s ease", filter: "drop-shadow(0 0 6px rgba(124,58,237,0.3))" }} />
+          style={{ transition: "stroke-dashoffset 1s ease", filter: "drop-shadow(0 0 6px rgba(124,58,237,0.2))" }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
