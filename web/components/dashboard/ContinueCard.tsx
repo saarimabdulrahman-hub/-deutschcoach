@@ -56,12 +56,12 @@ function MidProgressHero({ lesson, onResume }: {
   const mins = estimatedMinutes(lesson.progress_pct);
 
   return (
-    <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
-      style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
+    <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 surface-primary"
+      style={{ border: "1px solid var(--color-border)" }}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider"
-            style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>{lesson.level}</span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider glossy-accent"
+            style={{ color: "#fff" }}>{lesson.level}</span>
           <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>Unit {lesson.unit}</span>
         </div>
         <p className="text-base sm:text-lg font-bold mb-2" style={{ color: "var(--color-text)" }}>
@@ -76,8 +76,8 @@ function MidProgressHero({ lesson, onResume }: {
       </div>
       <button
         onClick={onResume}
-        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0"
-        style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--shadow-glow)" }}>
+        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0 glossy-accent"
+        style={{ color: "#fff" }}>
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -123,8 +123,8 @@ function NearlyCompleteHero({ lesson, onResume }: {
       </div>
       <button
         onClick={onResume}
-        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0"
-        style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--shadow-glow)" }}>
+        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0 glossy-accent"
+        style={{ color: "#fff" }}>
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -160,8 +160,8 @@ function LevelCompleteHero({ levelPct, onNext }: { levelPct: number; onNext: () 
       </div>
       <button
         onClick={onNext}
-        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0"
-        style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--shadow-glow)" }}>
+        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0 glossy-accent"
+        style={{ color: "#fff" }}>
         Continue to Next Level
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -189,8 +189,8 @@ function ReturningAfterBreakHero({ levelPct, onResume }: { levelPct: number; onR
       </div>
       <button
         onClick={onResume}
-        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0"
-        style={{ background: "var(--color-accent-gradient)", color: "#fff", boxShadow: "var(--shadow-glow)" }}>
+        className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 flex-shrink-0 glossy-accent"
+        style={{ color: "#fff" }}>
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
