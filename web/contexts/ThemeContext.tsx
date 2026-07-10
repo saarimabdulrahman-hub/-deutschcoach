@@ -168,3 +168,22 @@ export function useTheme() {
 }
 
 export { THEMES };
+
+// Derived list of themes for UI pickers — single source of truth
+export const THEME_LIST: { key: ThemeName; label: string; color: string }[] = [
+  { key: "indigo", label: "Indigo", color: "#6366f1" },
+  { key: "ocean", label: "Ocean", color: "#0ea5e9" },
+  { key: "steel", label: "Steel", color: "#64748b" },
+  { key: "onyx", label: "Onyx", color: "#e5e5e5" },
+  { key: "mono", label: "Mono", color: "#a3a3a3" },
+  { key: "amber", label: "Amber", color: "#d97706" },
+  { key: "sunset", label: "Sunset", color: "#f97316" },
+  { key: "copper", label: "Copper", color: "#e6a040" },
+  { key: "cherry", label: "Cherry", color: "#dc2626" },
+  { key: "rose", label: "Rose", color: "#e11d48" },
+  { key: "plum", label: "Plum", color: "#a855f7" },
+  { key: "lavender", label: "Lavender", color: "#8b5cf6" },
+  { key: "emerald", label: "Emerald", color: "#059669" },
+  { key: "forest", label: "Forest", color: "#4ade80" },
+  { key: "mint", label: "Mint", color: "#14b8a6" },
+];

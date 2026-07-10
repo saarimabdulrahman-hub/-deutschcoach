@@ -1,30 +1,12 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
+import { useTheme, THEME_LIST } from "@/contexts/ThemeContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { TabBar } from "@/components/ui/TabBar";
 import { CommandBar } from "@/components/ui/CommandBar";
 import { Logo } from "@/components/ui/Logo";
-
-const THEME_DOTS: { key: ThemeName; label: string; color: string }[] = [
-  { key: "indigo", label: "Indigo", color: "#6366f1" },
-  { key: "ocean", label: "Ocean", color: "#0ea5e9" },
-  { key: "steel", label: "Steel", color: "#64748b" },
-  { key: "onyx", label: "Onyx", color: "#e5e5e5" },
-  { key: "mono", label: "Mono", color: "#a3a3a3" },
-  { key: "amber", label: "Amber", color: "#d97706" },
-  { key: "sunset", label: "Sunset", color: "#f97316" },
-  { key: "copper", label: "Copper", color: "#e6a040" },
-  { key: "cherry", label: "Cherry", color: "#dc2626" },
-  { key: "rose", label: "Rose", color: "#e11d48" },
-  { key: "plum", label: "Plum", color: "#a855f7" },
-  { key: "lavender", label: "Lavender", color: "#8b5cf6" },
-  { key: "emerald", label: "Emerald", color: "#059669" },
-  { key: "forest", label: "Forest", color: "#4ade80" },
-  { key: "mint", label: "Mint", color: "#14b8a6" },
-];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, logout } = useAuth();
@@ -210,7 +192,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </button>
                 <div style={{ borderTop: "1px solid var(--color-border)", margin: "4px 0" }} />
                 <div className="grid grid-cols-5 gap-1.5 px-3 py-2.5">
-                  {THEME_DOTS.map((t) => (
+                  {THEME_LIST.map((t) => (
                     <button
                       key={t.key}
                       onClick={() => setTheme(t.key)}
@@ -230,7 +212,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   ))}
                 </div>
                 <div className="px-3 pb-2 text-center" style={{ color: "var(--color-text-muted)", fontSize: "10px" }}>
-                  {THEME_DOTS.find(t => t.key === theme)?.label}
+                  {THEME_LIST.find(t => t.key === theme)?.label}
                 </div>
               </div>
             )}

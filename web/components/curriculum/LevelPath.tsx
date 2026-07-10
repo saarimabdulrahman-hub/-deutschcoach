@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 interface LevelPathProps {
   levels: { level: string; title: string; lesson_count: number; completed_count: number }[];
   currentLevel: string;
@@ -39,8 +37,6 @@ function MiniRing({ pct, size }: { pct: number; size: number }) {
 }
 
 export function LevelPath({ levels, currentLevel, onSelect }: LevelPathProps) {
-  const router = useRouter();
-
   const levelMeta: Record<string, { emoji: string; name: string }> = {
     A1: { emoji: "🌱", name: "Beginner" },
     A2: { emoji: "🌿", name: "Elementary" },

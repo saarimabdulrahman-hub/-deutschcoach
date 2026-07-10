@@ -4,25 +4,7 @@ import { ProfileSection } from "@/components/settings/ProfileSection";
 import { SubscriptionSection } from "@/components/settings/SubscriptionSection";
 import { PreferencesSection } from "@/components/settings/PreferencesSection";
 import { DangerZone } from "@/components/settings/DangerZone";
-import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
-
-const THEME_OPTIONS: { key: ThemeName; label: string; color: string }[] = [
-  { key: "indigo", label: "Indigo", color: "#6366f1" },
-  { key: "ocean", label: "Ocean", color: "#0ea5e9" },
-  { key: "steel", label: "Steel", color: "#64748b" },
-  { key: "onyx", label: "Onyx", color: "#e5e5e5" },
-  { key: "mono", label: "Mono", color: "#a3a3a3" },
-  { key: "amber", label: "Amber", color: "#d97706" },
-  { key: "sunset", label: "Sunset", color: "#f97316" },
-  { key: "copper", label: "Copper", color: "#e6a040" },
-  { key: "cherry", label: "Cherry", color: "#dc2626" },
-  { key: "rose", label: "Rose", color: "#e11d48" },
-  { key: "plum", label: "Plum", color: "#a855f7" },
-  { key: "lavender", label: "Lavender", color: "#8b5cf6" },
-  { key: "emerald", label: "Emerald", color: "#059669" },
-  { key: "forest", label: "Forest", color: "#4ade80" },
-  { key: "mint", label: "Mint", color: "#14b8a6" },
-];
+import { useTheme, THEME_LIST } from "@/contexts/ThemeContext";
 
 const sectionCard = "rounded-xl p-6";
 
@@ -68,7 +50,7 @@ export default function SettingsPage() {
         </div>
         <p className="text-sm mb-4" style={{ color: "var(--color-text-muted)" }}>Choose a theme. Changes apply instantly.</p>
         <div className="flex flex-wrap gap-2.5">
-          {THEME_OPTIONS.map((t) => (
+          {THEME_LIST.map((t) => (
             <button
               key={t.key}
               onClick={() => setTheme(t.key)}
