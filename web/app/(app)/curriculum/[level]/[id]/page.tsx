@@ -155,10 +155,10 @@ export default function LessonPage() {
   const nextLesson = currentIdx >= 0 && allLessons && currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       {/* ── Sticky progress bar ────────────────── */}
       <div className="sticky top-14 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2" style={{ background: "var(--color-page-bg)" }}>
-        <div className="max-w-6xl mx-auto flex items-center gap-3">
+        <div className="max-w-7xl mx-auto flex items-center gap-3">
           <button onClick={() => router.push("/curriculum")}
             className="flex items-center gap-1 text-sm hover:text-slate-200 transition-colors flex-shrink-0"
             style={{ color: "var(--color-text-muted)" }}>
@@ -235,8 +235,8 @@ export default function LessonPage() {
       )}
 
       {/* ── Main content + Vocab ────────────────── */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div className="space-y-6">
           {/* Lesson content */}
           <div className="rounded-2xl p-5 sm:p-6"
             style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
@@ -269,7 +269,7 @@ export default function LessonPage() {
         </div>
 
         {/* Vocabulary sidebar */}
-        <div className="lg:col-span-1">
+        <div>
           <div className="rounded-2xl p-5 sm:p-6 sticky top-24"
             style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
             <VocabSectionHeader vocabulary={vocabulary} />
