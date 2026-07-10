@@ -109,21 +109,13 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* ── Welcome ─────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--color-text-muted)" }}>
-            {today}
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--color-text)" }}>
-            {getGreeting()}, {firstName} <span className="inline-block">👋</span>
-          </h1>
-        </div>
-        {data.streak > 0 && (
-          <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "#f59e0b" }}>
-            <span className="text-lg">🔥</span>
-            {data.streak} day{data.streak !== 1 ? "s" : ""} streak
-          </div>
-        )}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--color-text-muted)" }}>
+          {today}
+        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--color-text)" }}>
+          {getGreeting()}, {firstName} <span className="inline-block">👋</span>
+        </h1>
       </div>
 
       {/* ── Hero — Progress + Continue Learning ──── */}
