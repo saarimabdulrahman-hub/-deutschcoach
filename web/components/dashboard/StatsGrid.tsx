@@ -38,40 +38,41 @@ function CountUpValue({ value, suffix = "" }: { value: number | string; suffix?:
   return <span ref={ref}>{typeof value === "string" && isNaN(parseInt(value)) ? value : displayValue}</span>;
 }
 
+function LevelRing({ pct }: { pct: number }) {
+  const radius = 44;
+  const circumference = 2 * Math.PI * radius;
+
+  return (
+    <div className="relative w-full aspect-square max-w-[100px] mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r={radius} fill="none" stroke="var(--color-border)" strokeWidth="6" />
+        <circle
+          cx="50" cy="50" r={radius} fill="none"
+          stroke="url(#statsLevelGradient)" strokeWidth="6"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - (pct / 100) * circumference}
+          style={{ transition: "stroke-dashoffset 1s ease" }}
+        />
+        <defs>
+          <linearGradient id="statsLevelGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#7c3aed" />
+            <stop offset="100%" stopColor="#a78bfa" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
+      </div>
+    </div>
+  );
+}
+
 export function StatsGrid({ data }: { data: DashboardData }) {
   const cards = [
-    {
-      label: "Streak",
-      value: data.streak,
-      suffix: " days",
-      icon: "🔥",
-      bg: "rgba(245,158,11,0.08)",
-      color: "#f59e0b",
-    },
-    {
-      label: "Cards Due",
-      value: data.cards_due_today,
-      suffix: "",
-      icon: "🃏",
-      bg: "rgba(99,102,241,0.08)",
-      color: "#6366f1",
-    },
-    {
-      label: "Quiz Average",
-      value: data.avg_quiz_score,
-      suffix: "%",
-      icon: "✅",
-      bg: "rgba(34,197,94,0.08)",
-      color: "#22c55e",
-    },
-    {
-      label: "Progress",
-      value: data.level_progress_pct,
-      suffix: "%",
-      icon: "📊",
-      bg: "rgba(139,92,246,0.08)",
-      color: "#8b5cf6",
-    },
+    { label: "Streak", value: data.streak, suffix: " days", icon: "🔥", bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
+    { label: "Cards Due", value: data.cards_due_today, suffix: "", icon: "🃏", bg: "rgba(99,102,241,0.08)", color: "#6366f1" },
+    { label: "Quiz Avg", value: data.avg_quiz_score, suffix: "%", icon: "✅", bg: "rgba(34,197,94,0.08)", color: "#22c55e" },
   ];
 
   return (
@@ -79,14 +80,11 @@ export function StatsGrid({ data }: { data: DashboardData }) {
       {cards.map((card) => (
         <div
           key={card.label}
-          className="flex-1 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1"
+          className="flex-1 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between"
           style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-3 mb-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-              style={{ background: card.bg }}
-            >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: card.bg }}>
               {card.icon}
             </div>
             <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
@@ -101,6 +99,20 @@ export function StatsGrid({ data }: { data: DashboardData }) {
           </div>
         </div>
       ))}
+
+      {/* Level progress — 5th card, same row, same size */}
+      <div
+        className="flex-1 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-center"
+        style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}
+      >
+        <p className="text-xs font-medium uppercase tracking-wider mb-4 text-center" style={{ color: "var(--color-text-muted)" }}>
+          Level
+        </p>
+        <LevelRing pct={data.level_progress_pct} />
+        <p className="text-xs text-center mt-3" style={{ color: "var(--color-text-muted)" }}>
+          {data.level_progress_pct < 25 ? "Getting started" : data.level_progress_pct < 75 ? "In progress" : "Almost there"}
+        </p>
+      </div>
     </div>
   );
 }

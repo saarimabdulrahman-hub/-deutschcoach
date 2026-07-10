@@ -36,33 +36,6 @@ function getTodaysTip() {
   return LANGUAGE_TIPS[dayOfYear % LANGUAGE_TIPS.length];
 }
 
-function LevelProgressRing({ pct }: { pct: number }) {
-  const radius = 50;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (pct / 100) * circumference;
-
-  return (
-    <div className="relative w-36 h-36 flex-shrink-0">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="var(--color-border)" strokeWidth="7" />
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="url(#levelGradient)" strokeWidth="7"
-          strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 1s ease" }} />
-        <defs>
-          <linearGradient id="levelGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="100%" stopColor="#a78bfa" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>{pct}%</span>
-        <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Complete</span>
-      </div>
-    </div>
-  );
-}
-
 function DashboardSkeleton() {
   return (
     <div className="space-y-8">
@@ -71,11 +44,10 @@ function DashboardSkeleton() {
         <div className="h-4 w-40 rounded shimmer" />
       </div>
       <div className="flex gap-4">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="flex-1 h-28 rounded-2xl shimmer" />
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex-1 h-32 rounded-2xl shimmer" />
         ))}
       </div>
-      <div className="h-40 rounded-2xl shimmer" />
       <div className="grid grid-cols-2 gap-6">
         <div className="h-56 rounded-2xl shimmer" />
         <div className="h-56 rounded-2xl shimmer" />
@@ -129,37 +101,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats + Level progress in one row */}
       <StatsGrid data={data} />
-
-      {/* Level progress */}
-      <div className="rounded-2xl p-6 flex items-center gap-8"
-        style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-        <LevelProgressRing pct={data.level_progress_pct} />
-        <div className="flex-1">
-          <p className="text-lg font-bold" style={{ color: "var(--color-text)" }}>Level Progress</p>
-          <p className="text-sm mt-1.5" style={{ color: "var(--color-text-secondary)" }}>
-            {data.level_progress_pct === 0
-              ? "Start a lesson to begin!"
-              : data.level_progress_pct < 25
-                ? "You're getting started!"
-                : data.level_progress_pct < 50
-                  ? "Making good progress!"
-                  : data.level_progress_pct < 75
-                    ? "Over halfway there!"
-                    : "Almost complete! 🎉"}
-          </p>
-          <div className="mt-3 w-full rounded-full h-2" style={{ background: "var(--color-border)" }}>
-            <div
-              className="h-full rounded-full transition-all duration-700"
-              style={{
-                width: `${data.level_progress_pct}%`,
-                background: "linear-gradient(90deg, #7c3aed, #a78bfa)",
-              }}
-            />
-          </div>
-        </div>
-      </div>
 
       {/* Main content area */}
       <div className="grid grid-cols-3 gap-4">
