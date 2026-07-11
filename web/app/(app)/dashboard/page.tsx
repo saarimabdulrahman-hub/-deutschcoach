@@ -44,28 +44,28 @@ function Hero() {
         <div className="absolute inset-0 rounded-full" style={{ background:"radial-gradient(circle at 55% 40%, rgba(255,255,255,0.06) 0%, rgba(200,170,255,0.03) 35%, transparent 65%)" }} />
       </div>
 
-      {/* Full-width gate image — covers entire hero background */}
+      {/* Gate image — fills width, gate visible in center-right */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "url('/gate.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center 30%",
+          backgroundSize: "110% auto",
+          backgroundPosition: "55% 35%",
           backgroundRepeat: "no-repeat",
           opacity: 1,
         }} />
 
-      {/* Purple overlay — tints the photo to match DeutschFlow brand */}
+      {/* Purple tint — integrates image into brand, light enough to see gate */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(135deg, rgba(60,20,120,0.55) 0%, rgba(40,10,80,0.4) 30%, rgba(20,5,50,0.3) 60%, rgba(60,20,120,0.45) 100%)" }} />
-      {/* Edge darkening for text readability */}
+        style={{ background: "linear-gradient(135deg, rgba(50,15,100,0.4) 0%, rgba(30,8,60,0.25) 35%, rgba(20,5,50,0.2) 60%, rgba(50,15,100,0.35) 100%)" }} />
+      {/* Edge darkening — left for text, right soft, gate area clear */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, rgba(4,4,20,0.7) 0%, rgba(4,4,20,0.3) 30%, transparent 55%, transparent 70%, rgba(4,4,20,0.25) 85%, rgba(4,4,20,0.6) 100%)" }} />
-      {/* Bottom gradient — keeps text readable */}
+        style={{ background: "linear-gradient(90deg, rgba(4,4,20,0.65) 0%, rgba(4,4,20,0.2) 28%, transparent 52%, transparent 72%, rgba(4,4,20,0.2) 88%, rgba(4,4,20,0.55) 100%)" }} />
+      {/* Bottom gradient */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(to top, rgba(4,4,20,0.6) 0%, transparent 50%)" }} />
-      {/* Vignette */}
+        style={{ background: "linear-gradient(to top, rgba(4,4,20,0.55) 0%, transparent 45%)" }} />
+      {/* Soft vignette */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: "inset 0 0 60px 20px rgba(0,0,0,0.4)" }} />
+        style={{ boxShadow: "inset 0 0 50px 15px rgba(0,0,0,0.35)" }} />
 
       {/* Content */}
       <div className="relative z-10 flex items-center h-full w-full px-6 sm:px-8 lg:px-10">
