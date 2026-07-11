@@ -37,7 +37,6 @@ const shinyCard: React.CSSProperties = {
 // HERO — Cinematic centerpiece with Brandenburg Gate at center
 // ═══════════════════════════════════════════════════════════════════
 function Hero() {
-  const router = useRouter();
   return (
     <div className="relative overflow-hidden rounded-[20px] h-[250px] sm:h-[290px] lg:h-[310px]"
       style={{
@@ -51,7 +50,7 @@ function Hero() {
 
       {/* Hero background image (vector CastleScene kept as backup) */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ backgroundImage: "url('/hero.webp')", backgroundSize: "150%", backgroundPosition: "right center", backgroundRepeat: "no-repeat" }} />
+        style={{ backgroundImage: "url('/hero.webp')", backgroundSize: "cover", backgroundPosition: "center right" }} />
 
       {/* Light purple tint — barely tints, lets image dominate */}
       <div className="absolute inset-0 pointer-events-none"
@@ -90,26 +89,6 @@ function Hero() {
         </div>
 
         <div className="flex-1 hidden sm:block" />
-
-        {/* 4+5. CTA — stronger glass, fuller button */}
-        <div className="hidden lg:flex items-center rounded-2xl p-7 w-[290px] flex-shrink-0"
-          style={{
-            background: "rgba(10,14,30,0.28)",
-            backdropFilter: "blur(32px)",
-            WebkitBackdropFilter: "blur(32px)",
-            border: "1px solid rgba(123,63,251,0.25)",
-            boxShadow: "0 16px 48px rgba(0,0,0,0.6), 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 0 40px rgba(123,63,251,0.1)",
-          }}>
-          <div className="w-full">
-            <p className="text-base font-bold mb-2.5" style={{ color: "#fff" }}>Ready to begin?</p>
-            <p className="text-xs mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>Start your first lesson and track your progress.</p>
-            <button onClick={() => router.push("/curriculum")}
-              className="w-full px-6 py-4 rounded-xl text-sm font-bold glossy-accent flex items-center justify-center gap-2">
-              Start Your First Lesson
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
