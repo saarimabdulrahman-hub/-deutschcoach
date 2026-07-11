@@ -29,40 +29,37 @@ function Hero() {
   const router = useRouter();
   return (
     <div className="relative overflow-hidden rounded-[20px] h-[250px] sm:h-[270px] flex items-center"
-      style={{ border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 8px 40px rgba(123,63,251,0.1)" }}>
-      {/* Background layers */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(170deg, #06061a 0%, #0c0828 20%, #140a40 40%, #1a0d50 55%, #140a40 70%, #0c0828 85%, #06061a 100%)" }} />
-      <div className="absolute inset-0 opacity-35" style={{ background: "radial-gradient(ellipse at 55% 35%, rgba(162,75,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 55%, rgba(123,63,251,0.08) 0%, transparent 40%), radial-gradient(ellipse at 60% 40%, rgba(213,108,255,0.05) 0%, transparent 35%)" }} />
-      {/* Moon */}
+      style={{
+        border: "1px solid rgba(255,255,255,0.06)",
+        boxShadow: "0 8px 40px rgba(123,63,251,0.1)",
+        backgroundImage: `url('https://images.unsplash.com/photo-1599946347371-68eb71b16afc?w=1200&q=80'),
+          linear-gradient(170deg, rgba(6,6,26,0.55) 0%, rgba(12,8,40,0.35) 20%, rgba(26,13,80,0.3) 50%, rgba(12,8,40,0.35) 80%, rgba(6,6,26,0.55) 100%)`,
+        backgroundSize: "cover, 100% 100%",
+        backgroundPosition: "center",
+        backgroundBlendMode: "overlay",
+      }}>
+      {/* Purple tint overlay */}
+      <div className="absolute inset-0 opacity-40 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at 55% 35%, rgba(162,75,255,0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 55%, rgba(123,63,251,0.2) 0%, transparent 40%), radial-gradient(ellipse at 60% 40%, rgba(213,108,255,0.15) 0%, transparent 35%)" }} />
+      {/* Moon glow */}
       <div className="absolute pointer-events-none" style={{ left: "47%", top: "10%", width: 120, height: 120, transform: "translateX(-50%)" }}>
-        <div className="absolute rounded-full" style={{ inset: -25, background: "radial-gradient(circle, rgba(213,108,255,0.14) 0%, rgba(162,75,255,0.05) 30%, transparent 60%)", filter: "blur(10px)" }} />
-        <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 55% 40%, rgba(255,255,255,0.07) 0%, rgba(213,108,255,0.05) 30%, rgba(162,75,255,0.03) 60%, transparent 100%)" }} />
+        <div className="absolute rounded-full" style={{ inset: -30, background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(213,108,255,0.08) 25%, transparent 60%)", filter: "blur(14px)" }} />
+        <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 55% 40%, rgba(255,255,255,0.08) 0%, rgba(213,108,255,0.04) 30%, transparent 70%)" }} />
       </div>
-      {/* Stars */}
-      {Array.from({length:40}).map((_,i) => {
-        const x=(i*37+13)%100; const y=(i*53+7)%85;
+      {/* Stars — reduced count over photo */}
+      {Array.from({length:25}).map((_,i) => {
+        const x=(i*41+17)%100; const y=(i*59+11)%80;
         return (<div key={i} className="absolute rounded-full pointer-events-none"
           style={{ left:`${x}%`, top:`${y}%`, width: i%5===0?2:1, height: i%5===0?2:1,
-            background: `rgba(255,255,255,${[0.2,0.3,0.15,0.4,0.25][i%5]})`,
+            background: `rgba(255,255,255,${[0.3,0.2,0.4,0.25,0.15][i%5]})`,
             animation: `twinkle ${2+(i%3)}s ease-in-out ${i*0.2}s infinite` }} />);
       })}
-      {/* Brandenburg Gate — CENTERED */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[30%] h-[85%] pointer-events-none hidden sm:block" style={{ opacity: 0.13 }}>
-        <svg viewBox="0 0 200 280" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-          <defs><linearGradient id="gG" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stopColor="#fff" stopOpacity="0.5"/><stop offset="40%" stopColor="#fff" stopOpacity="0.15"/><stop offset="100%" stopColor="#fff" stopOpacity="0.02"/></linearGradient></defs>
-          <g stroke="url(#gG)" strokeWidth="2.5" fill="none">
-            <polygon points="10,55 100,-10 190,55" fill="rgba(255,255,255,0.02)"/>
-            <line x1="5" y1="55" x2="195" y2="55" strokeWidth="3.5"/>
-            <line x1="5" y1="155" x2="195" y2="155" strokeWidth="3.5"/>
-            {[14,40,68,94,106,132,160,186].map((x,i)=>(<line key={i} x1={x} y1="55" x2={x} y2="155"/>))}
-            <rect x="70" y="78" width="60" height="77" fill="rgba(255,255,255,0.03)" stroke="none"/>
-          </g>
-        </svg>
-      </div>
-      {/* Fog */}
-      <div className="absolute bottom-0 left-0 right-0 h-[30%] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(123,63,251,0.1) 0%, rgba(162,75,255,0.03) 50%, transparent 100%)" }} />
+      {/* Fog at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[35%] pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(30,10,60,0.5) 0%, rgba(20,10,50,0.2) 40%, transparent 100%)" }} />
       {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "inset 0 0 80px 20px rgba(0,0,0,0.5), inset 0 0 30px 10px rgba(0,0,0,0.3)" }} />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ boxShadow: "inset 0 0 100px 30px rgba(0,0,0,0.6), inset 0 0 40px 10px rgba(0,0,0,0.4)" }} />
 
       {/* Content row: TEXT | GATE | CTA */}
       <div className="relative z-10 flex items-center w-full px-6 sm:px-8 lg:px-12">
