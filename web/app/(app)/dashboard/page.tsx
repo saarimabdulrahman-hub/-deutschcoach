@@ -134,14 +134,15 @@ function PlanCard({ icon, iconBg, iconColor, title, subtitle, footer, href }: {
   const router = useRouter();
   return (
     <button onClick={() => router.push(href)}
-      className="text-left rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 w-full" style={cardStyle}>
-      <div className="w-11 h-11 rounded-[13px] flex items-center justify-center text-xl mb-3"
-        style={{ background: iconBg, color: iconColor }}>{icon}</div>
-      <p className="text-base font-semibold mb-1" style={{ color: "#fff" }}>{title}</p>
-      <p className="text-[13px] mb-3" style={{ color: "var(--color-text-muted)" }}>{subtitle}</p>
-      <div className="flex items-center justify-between text-xs" style={{ color: "var(--color-text-muted)" }}>
-        <span>{footer}</span>
-        <span className="text-lg">›</span>
+      className="text-left rounded-xl p-5 transition-all duration-200 hover:-translate-y-0.5 w-full" style={cardStyle}>
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-lg flex-shrink-0"
+          style={{ background: iconBg, color: iconColor }}>{icon}</div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-semibold truncate" style={{ color: "#fff" }}>{title}</p>
+          <p className="text-[13px] truncate" style={{ color: "var(--color-text-muted)" }}>{subtitle}</p>
+        </div>
+        <span className="text-lg flex-shrink-0" style={{ color: "var(--color-text-muted)" }}>›</span>
       </div>
     </button>
   );
@@ -151,11 +152,13 @@ function KpiCard({ icon, iconBg, iconColor, value, unit, label }: {
   icon: string; iconBg: string; iconColor: string; value: string | number; unit: string; label: string;
 }) {
   return (
-    <div className="rounded-2xl p-4 flex flex-col gap-2 justify-center transition-all duration-200 hover:-translate-y-1"
-      style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.025), transparent 50%), #111127", border: "1px solid rgba(186,120,255,0.18)", borderRadius: 16, boxShadow: "0 0 35px rgba(168,85,247,.06)" }}>
-      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm" style={{ background: iconBg, color: iconColor }}>{icon}</div>
-      <p className="text-xs uppercase tracking-[.08em] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</p>
-      <p className="text-[26px] font-bold leading-none" style={{ color: "#fff" }}>{value}<span className="text-sm ml-1" style={{ color: "var(--color-text-muted)" }}>{unit}</span></p>
+    <div className="rounded-xl p-2.5 flex flex-col justify-center transition-all duration-200 hover:-translate-y-0.5"
+      style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.025), transparent 50%), #111127", border: "1px solid rgba(186,120,255,0.18)", borderRadius: 14, boxShadow: "0 0 35px rgba(168,85,247,.06)" }}>
+      <div className="flex items-center gap-1.5 mb-1">
+        <div className="w-6 h-6 rounded-[7px] flex items-center justify-center text-xs" style={{ background: iconBg, color: iconColor }}>{icon}</div>
+        <p className="text-[11px] uppercase tracking-[.06em] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</p>
+      </div>
+      <p className="text-2xl font-bold leading-none" style={{ color: "#fff" }}>{value}<span className="text-sm ml-0.5" style={{ color: "var(--color-text-muted)" }}>{unit}</span></p>
     </div>
   );
 }
@@ -175,18 +178,18 @@ function StatCell({ icon, value, label }: { icon: string; value: string; label: 
 }
 
 function ProgressRing({ pct }: { pct: number }) {
-  const r=58; const circ=2*Math.PI*r; const off=circ-(pct/100)*circ;
+  const r=44; const circ=2*Math.PI*r; const off=circ-(pct/100)*circ;
   return (
-    <div className="relative w-32 h-32 sm:w-36 sm:h-36 flex-shrink-0">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 130 130">
-        <defs><linearGradient id="prg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#7B3FFB"/><stop offset="100%" stopColor="#A24BFF"/></linearGradient></defs>
-        <circle cx="65" cy="65" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="7"/>
-        <circle cx="65" cy="65" r={r} fill="none" stroke="url(#prg)" strokeWidth="7" strokeLinecap="round"
-          strokeDasharray={circ} strokeDashoffset={off} style={{transition:"stroke-dashoffset 1s ease",filter:"drop-shadow(0 0 8px rgba(123,63,251,0.3))"}}/>
+    <div className="relative w-24 h-24 flex-shrink-0">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <defs><linearGradient id="prg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#A855F7"/><stop offset="50%" stopColor="#C084FC"/><stop offset="100%" stopColor="#D946EF"/></linearGradient></defs>
+        <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6"/>
+        <circle cx="50" cy="50" r={r} fill="none" stroke="url(#prg)" strokeWidth="6" strokeLinecap="round"
+          strokeDasharray={circ} strokeDashoffset={off} style={{transition:"stroke-dashoffset 1s ease",filter:"drop-shadow(0 0 6px rgba(123,63,251,0.3))"}}/>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold" style={{color:"#fff"}}>{pct}%</span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest mt-0.5" style={{color:"var(--color-text-muted)"}}>Complete</span>
+        <span className="text-2xl font-bold" style={{color:"#fff"}}>{pct}%</span>
+        <span className="text-[9px] font-semibold uppercase tracking-widest mt-0.5" style={{color:"var(--color-text-muted)"}}>Complete</span>
       </div>
     </div>
   );
@@ -210,33 +213,33 @@ export default function DashboardPage() {
   const greeting = getGreeting();
 
   return (
-    <div className="space-y-4 pb-4 dashboard-shell" style={{ maxWidth: 1280, margin: "0 auto" }}>
+    <div className="space-y-3 pb-4 dashboard-shell" style={{ maxWidth: 1280, margin: "0 auto" }}>
       {/* ── Greeting + Stats ───────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--color-text-muted)" }}>{formatDate()}</p>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold" style={{ color: "var(--color-text)" }}>{greeting.hi}, {firstName}! 👋</h1>
           <p className="text-xs sm:text-sm mt-1.5" style={{ color: "var(--color-text-muted)" }}>Kleine Schritte jeden Tag, große Fortschritte fürs Leben.</p>
         </div>
-        <div className="flex gap-3 flex-shrink-0">
-          <div className="rounded-2xl py-3.5 px-4 flex flex-col justify-center min-w-[172px]" style={cardStyle}>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🔥</div>
-              <span className="text-[11px] font-medium uppercase tracking-[.08em]" style={{color:"var(--color-text-muted)"}}>Day Streak</span>
+        <div className="flex gap-2 flex-shrink-0">
+          <div className="rounded-2xl py-2.5 px-3.5 flex flex-col justify-center min-w-[110px]" style={cardStyle}>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-[8px] flex items-center justify-center text-xs" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🔥</div>
+              <span className="text-[10px] font-medium uppercase tracking-[.08em]" style={{color:"var(--color-text-muted)"}}>Day Streak</span>
             </div>
-            <p className="text-[28px] font-bold mt-3 mb-1" style={{color:"#fff"}}>{data.streak}</p>
-            <p className="text-[11.5px]" style={{color:"var(--color-text-muted)"}}>{data.streak>0?"Keep going!":"Start today!"}</p>
+            <p className="text-2xl font-bold mt-1.5 leading-none" style={{color:"#fff"}}>{data.streak}</p>
+            <p className="text-[10px] mt-0.5" style={{color:"var(--color-text-muted)"}}>{data.streak>0?"Keep going!":"Start today!"}</p>
           </div>
-          <div className="rounded-2xl py-3.5 px-4 flex flex-col justify-center min-w-[172px]" style={cardStyle}>
-            <span className="text-[11px] font-medium uppercase tracking-[.08em] mb-3" style={{color:"var(--color-text-muted)"}}>Current Level</span>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[11px] font-extrabold" style={{background:"linear-gradient(135deg,#A855F7,#C084FC,#D946EF)",color:"#fff"}}>A1</div>
-              <b className="text-[15px]" style={{color:"#fff"}}>A1 Beginner</b>
+          <div className="rounded-2xl py-2.5 px-3.5 flex flex-col justify-center min-w-[210px]" style={cardStyle}>
+            <span className="text-[10px] font-medium uppercase tracking-[.08em] mb-1.5" style={{color:"var(--color-text-muted)"}}>Current Level</span>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-[7px] flex items-center justify-center text-[10px] font-extrabold" style={{background:"linear-gradient(135deg,#A855F7,#C084FC,#D946EF)",color:"#fff"}}>A1</div>
+              <b className="text-[13px]" style={{color:"#fff"}}>A1 Beginner</b>
             </div>
-            <div className="w-full h-1.5 rounded-full mt-2.5" style={{background:"#2A2A45",overflow:"hidden"}}>
+            <div className="w-full h-1 rounded-full mt-1.5" style={{background:"#2A2A45",overflow:"hidden"}}>
               <div className="h-full rounded-full" style={{width:`${data.level_progress_pct}%`,background:"linear-gradient(135deg,#A855F7,#C084FC,#D946EF)"}}/>
             </div>
-            <p className="text-[11.5px] mt-2" style={{color:"var(--color-text-muted)"}}>120 / 300 XP to A2</p>
+            <p className="text-[10px] mt-1" style={{color:"var(--color-text-muted)"}}>120 / 300 XP to A2</p>
           </div>
         </div>
       </div>
@@ -246,7 +249,7 @@ export default function DashboardPage() {
 
       {/* ── Today's Plan ──────────────────── */}
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--color-text-muted)" }}>Today's Plan</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest mb-2.5" style={{ color: "var(--color-text-muted)" }}>Today's Plan</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <PlanCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" title="Your First Lesson" subtitle="Greetings & Introductions" footer="~10 min · Beginner-friendly"
             href={data.continue_lesson ? `/curriculum/${data.continue_lesson.level.toLowerCase()}/${data.continue_lesson.id}` : "/curriculum"} />
@@ -258,9 +261,9 @@ export default function DashboardPage() {
       {/* ── Your Progress | KPI Grid | Review  (midRow) ── */}
       <div>
         <p className="text-sm font-medium uppercase tracking-[.13em] mb-2.5" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
-        <div className="grid grid-cols-[300px_1fr_288px] gap-3 items-stretch hidden lg:grid">
+        <div className="grid grid-cols-[260px_1fr_260px] gap-2 items-stretch hidden lg:grid">
           {/* Left: Progress ring card */}
-          <div className="rounded-[20px] p-5 flex flex-col items-center text-center justify-center gap-1.5" style={cardStyle}>
+          <div className="rounded-[20px] p-3.5 flex flex-col items-center text-center justify-center gap-1" style={cardStyle}>
             <ProgressRing pct={data.level_progress_pct} />
             <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
             <p className="text-sm max-w-[210px]" style={{ color: "var(--color-text-muted)" }}>Start your first lesson to see your progress here.</p>
@@ -268,7 +271,7 @@ export default function DashboardPage() {
               style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
           </div>
           {/* Center: KPI Grid 3x2 */}
-          <div className="grid grid-cols-3 grid-rows-2 gap-3">
+          <div className="grid grid-cols-3 grid-rows-2 gap-2">
             <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
             <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0}`} unit="" label="Words learned"/>
             <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value="80+" unit="" label="Grammar Topics"/>
@@ -318,30 +321,27 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Recent Activity ─────────────── */}
-      <div className="rounded-[20px] p-5 sm:p-6 text-center" style={cardStyle}>
-        <p className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-left" style={{ color: "var(--color-text-muted)" }}>Recent Activity</p>
-        <span className="text-4xl mb-4 block">🌱</span>
-        <p className="text-sm font-semibold mb-1" style={{ color: "#fff" }}>Your journey begins</p>
-        <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>Complete your first lesson to see activity here.</p>
-        <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-bold glossy-accent">Start Lesson →</button>
-      </div>
-
-      {/* ── Tip of the Day ────────────────── */}
-      <div className="rounded-2xl p-5 sm:p-6 flex items-center gap-6" style={cardStyle}>
-        <div className="flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--color-text-muted)" }}>Tip of the Day</p>
-          <p className="text-sm sm:text-base leading-relaxed mb-3" style={{ color: "var(--color-text-secondary)" }}>Review before bed — sleep helps your brain consolidate new vocabulary.</p>
-          <button onClick={()=>router.push("/curriculum")} className="text-xs font-medium hover:underline" style={{ color: "var(--color-accent-light)" }}>Browse lessons →</button>
+      {/* ── Activity + Tip side by side ─── */}
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div className="rounded-[20px] p-4 flex flex-col gap-3" style={cardStyle}>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{ background: "rgba(59,130,246,.14)", color: "#3B82F6" }}>📋</div>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Recent Activity</p>
+          </div>
+          <div className="text-center">
+            <span className="text-3xl mb-3 block">🌱</span>
+            <p className="text-sm font-semibold mb-1" style={{ color: "#fff" }}>Your journey begins</p>
+            <p className="text-xs mb-3" style={{ color: "var(--color-text-muted)" }}>Complete your first lesson to see activity here.</p>
+            <button onClick={()=>router.push("/curriculum")} className="px-5 py-2 rounded-xl text-xs font-bold glossy-accent">Start Lesson →</button>
+          </div>
         </div>
-        <div className="hidden sm:block flex-shrink-0" style={{ width: 80, height: 80 }}>
-          <svg viewBox="0 0 80 80" className="w-full h-full">
-            <rect x="10" y="50" width="60" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>
-            <rect x="14" y="42" width="16" height="10" rx="5" fill="rgba(162,75,255,0.15)"/>
-            <rect x="30" y="38" width="38" height="16" rx="8" fill="rgba(123,63,251,0.1)"/>
-            <circle cx="26" cy="28" r="10" fill="rgba(255,255,255,0.08)"/>
-            <rect x="28" y="30" width="16" height="12" rx="2" fill="rgba(162,75,255,0.2)" transform="rotate(-5 36 36)"/>
-          </svg>
+        <div className="rounded-[20px] p-4 flex flex-col gap-3" style={cardStyle}>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{ background: "rgba(245,158,11,.14)", color: "#F59E0B" }}>💡</div>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Tip of the Day</p>
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>Review before bed — sleep helps your brain consolidate new vocabulary.</p>
+          <button onClick={()=>router.push("/curriculum")} className="text-xs font-medium hover:underline" style={{ color: "var(--color-accent-light)" }}>Browse lessons →</button>
         </div>
       </div>
     </div>
