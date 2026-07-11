@@ -30,75 +30,81 @@ function Hero() {
   return (
     <div className="relative overflow-hidden rounded-[20px] h-[190px] sm:h-[210px]"
       style={{
-        border: "1px solid rgba(123,63,251,0.12)",
-        boxShadow: "0 0 60px rgba(123,63,251,0.08), 0 4px 20px rgba(0,0,0,0.4)",
-        background: "linear-gradient(170deg, #040418 0%, #0a0528 25%, #0d0835 50%, #0a0528 75%, #040418 100%)",
+        border: "1px solid rgba(123,63,251,0.15)",
+        boxShadow: "0 0 80px rgba(123,63,251,0.12), 0 0 40px rgba(139,70,255,0.06), 0 4px 20px rgba(0,0,0,0.5)",
+        background: "linear-gradient(170deg, #050420 0%, #0c062d 25%, #110940 55%, #0c062d 75%, #050420 100%)",
       }}>
-      {/* Purple ambient glow — background atmosphere */}
+      {/* 1. Stronger ambient purple — luminous, not black */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(123,63,251,0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(162,75,255,0.08) 0%, transparent 40%), radial-gradient(ellipse at 30% 50%, rgba(139,70,255,0.06) 0%, transparent 35%)" }} />
+        style={{ background: "radial-gradient(ellipse at 50% 25%, rgba(139,70,255,0.22) 0%, transparent 45%), radial-gradient(ellipse at 55% 40%, rgba(162,75,255,0.14) 0%, transparent 40%), radial-gradient(ellipse at 70% 50%, rgba(123,63,251,0.1) 0%, transparent 35%), radial-gradient(ellipse at 30% 50%, rgba(139,70,255,0.08) 0%, transparent 35%), radial-gradient(ellipse at 50% 55%, rgba(213,108,255,0.06) 0%, transparent 30%)" }} />
 
-      {/* Brandenburg Gate — continuous background, large, blended edges */}
+      {/* 7. Planet/moon — brighter, larger */}
+      <div className="absolute pointer-events-none" style={{ left:"50%",top:"10%",width:100,height:100,transform:"translateX(-50%)" }}>
+        <div className="absolute rounded-full" style={{ inset:-30,background:"radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(213,180,255,0.08) 20%, transparent 55%)",filter:"blur(12px)" }} />
+        <div className="absolute inset-0 rounded-full" style={{ background:"radial-gradient(circle at 55% 40%, rgba(255,255,255,0.06) 0%, rgba(200,170,255,0.03) 35%, transparent 65%)" }} />
+      </div>
+
+      {/* 2. Brandenburg Gate — 15% larger, higher, stronger blending */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "url('/gate.jpg')",
-          backgroundSize: "58% auto",
-          backgroundPosition: "center 40%",
+          backgroundSize: "66% auto",
+          backgroundPosition: "center 35%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.75,
-          maskImage: "radial-gradient(ellipse at 50% 45%, black 30%, transparent 70%)",
-          WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, black 30%, transparent 70%)",
+          opacity: 0.8,
+          maskImage: "radial-gradient(ellipse at 50% 42%, black 35%, transparent 65%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 50% 42%, black 35%, transparent 65%)",
         }} />
 
-      {/* Gradient overlays — blend gate edges seamlessly */}
+      {/* 8. Gradient overlays — softer transitions, no visible image edges */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, rgba(4,4,24,0.85) 0%, rgba(4,4,24,0.5) 25%, transparent 45%, transparent 55%, rgba(4,4,24,0.5) 75%, rgba(4,4,24,0.85) 100%)" }} />
-      <div className="absolute bottom-0 left-0 right-0 h-[55%] pointer-events-none"
-        style={{ background: "linear-gradient(to top, rgba(4,4,24,0.95) 0%, rgba(8,4,30,0.6) 30%, transparent 70%)" }} />
+        style={{ background: "linear-gradient(90deg, rgba(5,4,32,0.9) 0%, rgba(5,4,32,0.45) 22%, transparent 42%, transparent 58%, rgba(5,4,32,0.45) 78%, rgba(5,4,32,0.9) 100%)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-[50%] pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(5,4,32,0.95) 0%, rgba(10,6,36,0.5) 35%, transparent 75%)" }} />
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: "inset 0 0 80px 25px rgba(0,0,0,0.55)" }} />
+        style={{ boxShadow: "inset 0 0 60px 20px rgba(0,0,0,0.45)" }} />
 
-      {/* Content: LEFT TEXT | GATE BG | RIGHT CTA */}
+      {/* Content */}
       <div className="relative z-10 flex items-center h-full w-full px-6 sm:px-8 lg:px-10">
-        {/* Left text — overlays the banner */}
-        <div className="flex-1 max-w-[420px]">
+        {/* 3. Left text — wider max-w, slightly larger heading */}
+        <div className="flex-1 max-w-[460px]">
           <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest mb-2"
-            style={{ color: "rgba(255,255,255,0.45)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>Welcome to DeutschFlow</p>
-          <h2 className="text-[1.35rem] sm:text-[1.65rem] lg:text-[2rem] font-extrabold leading-[1.06] mb-2.5"
-            style={{ color: "#fff", textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}>
+            style={{ color: "rgba(255,255,255,0.5)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>Welcome to DeutschFlow</p>
+          <h2 className="text-[1.4rem] sm:text-[1.7rem] lg:text-[2.1rem] font-extrabold leading-[1.04] mb-2.5"
+            style={{ color: "#fff", textShadow: "0 2px 16px rgba(0,0,0,0.55)" }}>
             Your German learning<br />journey starts here
           </h2>
           <p className="text-[11px] sm:text-xs leading-relaxed max-w-sm"
-            style={{ color: "rgba(255,255,255,0.4)", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
+            style={{ color: "rgba(255,255,255,0.45)", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
             Structured lessons, smart flashcards, and an AI tutor—everything you need to go from zero to fluent.
           </p>
-          <div className="flex items-center gap-4 mt-3 text-[10px] sm:text-[11px]"
-            style={{ color: "rgba(255,255,255,0.3)" }}>
+          {/* 9. Feature row — slightly more gap, brighter */}
+          <div className="flex items-center gap-5 mt-3 text-[10px] sm:text-[11px]"
+            style={{ color: "rgba(255,255,255,0.35)" }}>
             <span>✓ Beginner-friendly</span><span className="opacity-25">|</span>
             <span>⏱ 10 min lessons</span><span className="opacity-25">|</span>
             <span>📚 80+ lessons</span>
           </div>
         </div>
 
-        {/* Spacer — gate occupies this area as background */}
         <div className="flex-1 hidden sm:block" />
 
-        {/* Right: Glass CTA — larger, floating */}
-        <div className="hidden lg:flex items-center rounded-2xl p-7 w-[280px] flex-shrink-0"
+        {/* 4+5. CTA — stronger glass, fuller button */}
+        <div className="hidden lg:flex items-center rounded-2xl p-7 w-[290px] flex-shrink-0"
           style={{
-            background: "rgba(10,14,30,0.35)",
-            backdropFilter: "blur(28px)",
-            WebkitBackdropFilter: "blur(28px)",
-            border: "1px solid rgba(123,63,251,0.2)",
-            boxShadow: "0 16px 48px rgba(0,0,0,0.6), 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 0 30px rgba(123,63,251,0.08)",
+            background: "rgba(10,14,30,0.28)",
+            backdropFilter: "blur(32px)",
+            WebkitBackdropFilter: "blur(32px)",
+            border: "1px solid rgba(123,63,251,0.25)",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.6), 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 0 40px rgba(123,63,251,0.1)",
           }}>
           <div className="w-full">
             <p className="text-base font-bold mb-2.5" style={{ color: "#fff" }}>Ready to begin?</p>
             <p className="text-xs mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>Start your first lesson and track your progress.</p>
             <button onClick={() => router.push("/curriculum")}
-              className="w-full px-6 py-3.5 rounded-xl text-sm font-bold glossy-accent flex items-center justify-center gap-2">
+              className="w-full px-6 py-4 rounded-xl text-sm font-bold glossy-accent flex items-center justify-center gap-2">
               Start Your First Lesson
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
             </button>
