@@ -77,7 +77,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Header bar */}
       <header
-        className="sticky top-0 z-30 flex items-center justify-between h-14 px-4 sm:px-6"
+        className="sticky top-0 z-30 flex items-center justify-between h-12 sm:h-13 px-4 sm:px-6"
         style={{
           background: "var(--color-header-bg)",
           borderBottom: "1px solid var(--color-border)",

@@ -6,7 +6,6 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardData } from "@/types";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { GateIllustration } from "@/components/dashboard/GateIllustration";
 
 const GREETINGS = [
   { hi: "Guten Morgen", en: "Good morning" },
@@ -29,65 +28,81 @@ const cardStyle: React.CSSProperties = {
 function Hero() {
   const router = useRouter();
   return (
-    <div className="relative overflow-hidden rounded-[20px] h-[300px] sm:h-[320px] flex items-center"
+    <div className="relative overflow-hidden rounded-[20px] h-[190px] sm:h-[210px]"
       style={{
-        border: "1px solid rgba(255,255,255,0.06)",
-        boxShadow: "0 12px 48px rgba(123,63,251,0.12)",
-        background: "linear-gradient(180deg, #040418 0%, #0a0628 30%, #0d0830 55%, #0a0628 80%, #040418 100%)",
+        border: "1px solid rgba(123,63,251,0.12)",
+        boxShadow: "0 0 60px rgba(123,63,251,0.08), 0 4px 20px rgba(0,0,0,0.4)",
+        background: "linear-gradient(170deg, #040418 0%, #0a0528 25%, #0d0835 50%, #0a0528 75%, #040418 100%)",
       }}>
-      {/* Illustrated Gate — the centerpiece, extends ~55% of hero width */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center" style={{ zIndex: 0, width: "100%" }}>
-        <div className="w-[50%] sm:w-[44%] h-[95%]">
-          <GateIllustration />
-        </div>
-      </div>
+      {/* Purple ambient glow — background atmosphere */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(123,63,251,0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(162,75,255,0.08) 0%, transparent 40%), radial-gradient(ellipse at 30% 50%, rgba(139,70,255,0.06) 0%, transparent 35%)" }} />
 
-      {/* Fog overlay — blends gate base into background */}
-      <div className="absolute bottom-0 left-0 right-0 h-[45%] pointer-events-none"
-        style={{ background: "linear-gradient(to top, rgba(8,4,24,0.9) 0%, rgba(12,8,40,0.5) 30%, rgba(15,10,45,0.15) 60%, transparent 100%)" }} />
+      {/* Brandenburg Gate — continuous background, large, blended edges */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/gate.jpg')",
+          backgroundSize: "58% auto",
+          backgroundPosition: "center 40%",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.75,
+          maskImage: "radial-gradient(ellipse at 50% 45%, black 30%, transparent 70%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, black 30%, transparent 70%)",
+        }} />
+
+      {/* Gradient overlays — blend gate edges seamlessly */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "linear-gradient(90deg, rgba(4,4,24,0.85) 0%, rgba(4,4,24,0.5) 25%, transparent 45%, transparent 55%, rgba(4,4,24,0.5) 75%, rgba(4,4,24,0.85) 100%)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-[55%] pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(4,4,24,0.95) 0%, rgba(8,4,30,0.6) 30%, transparent 70%)" }} />
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: "inset 0 0 100px 30px rgba(0,0,0,0.6), inset 0 0 40px 10px rgba(0,0,0,0.35)" }} />
+        style={{ boxShadow: "inset 0 0 80px 25px rgba(0,0,0,0.55)" }} />
 
-      {/* Content Row: TEXT | GATE (illustration) | CTA */}
-      <div className="relative z-10 flex items-center w-full px-6 sm:px-8 lg:px-12">
-        <div className="flex-1 max-w-[380px]">
-          <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-2.5"
-            style={{ color: "rgba(255,255,255,0.4)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>Welcome to DeutschFlow</p>
-          <h2 className="text-2xl sm:text-3xl lg:text-[2.25rem] font-bold leading-[1.08] mb-3.5"
+      {/* Content: LEFT TEXT | GATE BG | RIGHT CTA */}
+      <div className="relative z-10 flex items-center h-full w-full px-6 sm:px-8 lg:px-10">
+        {/* Left text — overlays the banner */}
+        <div className="flex-1 max-w-[420px]">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest mb-2"
+            style={{ color: "rgba(255,255,255,0.45)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>Welcome to DeutschFlow</p>
+          <h2 className="text-[1.35rem] sm:text-[1.65rem] lg:text-[2rem] font-extrabold leading-[1.06] mb-2.5"
             style={{ color: "#fff", textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}>
             Your German learning<br />journey starts here
           </h2>
-          <p className="text-xs sm:text-sm leading-relaxed max-w-sm"
-            style={{ color: "rgba(255,255,255,0.45)", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
+          <p className="text-[11px] sm:text-xs leading-relaxed max-w-sm"
+            style={{ color: "rgba(255,255,255,0.4)", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
             Structured lessons, smart flashcards, and an AI tutor—everything you need to go from zero to fluent.
           </p>
-          <div className="flex items-center gap-5 mt-5 text-[10px] sm:text-xs"
-            style={{ color: "rgba(255,255,255,0.35)" }}>
+          <div className="flex items-center gap-4 mt-3 text-[10px] sm:text-[11px]"
+            style={{ color: "rgba(255,255,255,0.3)" }}>
             <span>✓ Beginner-friendly</span><span className="opacity-25">|</span>
             <span>⏱ 10 min lessons</span><span className="opacity-25">|</span>
             <span>📚 80+ lessons</span>
           </div>
         </div>
 
-        <div className="hidden sm:block flex-1" />
+        {/* Spacer — gate occupies this area as background */}
+        <div className="flex-1 hidden sm:block" />
 
-        <div className="hidden lg:block rounded-2xl p-6 w-[250px] flex-shrink-0"
+        {/* Right: Glass CTA — larger, floating */}
+        <div className="hidden lg:flex items-center rounded-2xl p-7 w-[280px] flex-shrink-0"
           style={{
-            background: "rgba(12,16,32,0.25)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            boxShadow: "0 12px 40px rgba(0,0,0,0.55), 0 1px 0 0 rgba(255,255,255,0.06) inset",
+            background: "rgba(10,14,30,0.35)",
+            backdropFilter: "blur(28px)",
+            WebkitBackdropFilter: "blur(28px)",
+            border: "1px solid rgba(123,63,251,0.2)",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.6), 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 0 30px rgba(123,63,251,0.08)",
           }}>
-          <p className="text-base font-bold mb-2" style={{ color: "#fff" }}>Ready to begin?</p>
-          <p className="text-xs mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>Start your first lesson and track your progress.</p>
-          <button onClick={() => router.push("/curriculum")}
-            className="w-full px-6 py-3.5 rounded-xl text-sm font-bold glossy-accent flex items-center justify-center gap-2">
-            Start Your First Lesson
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-          </button>
+          <div className="w-full">
+            <p className="text-base font-bold mb-2.5" style={{ color: "#fff" }}>Ready to begin?</p>
+            <p className="text-xs mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>Start your first lesson and track your progress.</p>
+            <button onClick={() => router.push("/curriculum")}
+              className="w-full px-6 py-3.5 rounded-xl text-sm font-bold glossy-accent flex items-center justify-center gap-2">
+              Start Your First Lesson
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
