@@ -47,19 +47,18 @@ function Hero() {
       {/* Gate image — fills width, gate visible in center-right */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: "url('/gate.png')",
+          backgroundImage: "url('/gate.png?v=2')",
           backgroundSize: "cover",
           backgroundPosition: "center 35%",
           backgroundRepeat: "no-repeat",
-          opacity: 1,
         }} />
 
-      {/* Purple tint — integrates image into brand, light enough to see gate */}
+      {/* Light purple tint — barely tints, lets image dominate */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(135deg, rgba(50,15,100,0.4) 0%, rgba(30,8,60,0.25) 35%, rgba(20,5,50,0.2) 60%, rgba(50,15,100,0.35) 100%)" }} />
-      {/* Edge darkening — left for text, right soft, gate area clear */}
+        style={{ background: "linear-gradient(135deg, rgba(50,15,100,0.25) 0%, rgba(30,8,60,0.15) 35%, rgba(20,5,50,0.1) 60%, rgba(50,15,100,0.2) 100%)" }} />
+      {/* Edge darkening — left for text readability, right soft */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, rgba(4,4,20,0.65) 0%, rgba(4,4,20,0.2) 28%, transparent 52%, transparent 72%, rgba(4,4,20,0.2) 88%, rgba(4,4,20,0.55) 100%)" }} />
+        style={{ background: "linear-gradient(90deg, rgba(4,4,20,0.6) 0%, rgba(4,4,20,0.15) 30%, transparent 55%, transparent 75%, rgba(4,4,20,0.15) 90%, rgba(4,4,20,0.5) 100%)" }} />
       {/* Bottom gradient */}
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(to top, rgba(4,4,20,0.55) 0%, transparent 45%)" }} />
