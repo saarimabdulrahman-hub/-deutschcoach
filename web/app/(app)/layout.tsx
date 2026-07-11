@@ -92,7 +92,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </span>
             <span
               className="text-xl font-bold tracking-[1px]"
-              style={{ background: "linear-gradient(135deg, #8b5cf6, #d946ef)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+              style={{ background: "linear-gradient(135deg, #ec4899, #d946ef, #8b5cf6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
               Flow
             </span>

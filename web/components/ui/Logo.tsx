@@ -14,16 +14,16 @@ export function Logo({ size = 40 }: { size?: number }) {
           <stop offset="100%" stopColor="#14111f" />
         </linearGradient>
         <linearGradient id="logoStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.6" />
-          <stop offset="50%" stopColor="#a855f7" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#d946ef" stopOpacity="0.55" />
+          <stop offset="0%" stopColor="#ec4899" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#d946ef" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.6" />
         </linearGradient>
         <linearGradient id="logoLetter" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#c4b5fd" />
+          <stop offset="100%" stopColor="#f0abfc" />
         </linearGradient>
         <linearGradient id="logoAccent" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#a855f7" />
+          <stop offset="0%" stopColor="#ec4899" />
           <stop offset="100%" stopColor="#d946ef" />
         </linearGradient>
       </defs>

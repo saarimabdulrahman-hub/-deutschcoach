@@ -33,6 +33,20 @@ const shinyCard: React.CSSProperties = {
   boxShadow: "0 0 35px rgba(168,85,247,.08)",
 };
 
+// Review & Practice group — themed border/glow that shines INWARD (inset)
+const reviewWrap: React.CSSProperties = {
+  background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+  border: "1px solid rgba(217,70,239,0.30)",
+  borderRadius: 20,
+  boxShadow: "inset 0 0 26px rgba(217,70,239,0.20), inset 0 0 0 1px rgba(217,70,239,0.14)",
+};
+// Subtle inner card for the review group
+const reviewItem: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(186,120,255,0.12)",
+  borderRadius: 14,
+};
+
 // ═══════════════════════════════════════════════════════════════════
 // HERO — Cinematic centerpiece with Brandenburg Gate at center
 // ═══════════════════════════════════════════════════════════════════
@@ -40,8 +54,8 @@ function Hero() {
   return (
     <div className="relative overflow-hidden rounded-[20px] h-[250px] sm:h-[290px] lg:h-[310px]"
       style={{
-        border: "1px solid rgba(123,63,251,0.15)",
-        boxShadow: "0 0 80px rgba(123,63,251,0.12), 0 0 40px rgba(139,70,255,0.06), 0 4px 20px rgba(0,0,0,0.5)",
+        border: "1px solid rgba(217,70,239,0.25)",
+        boxShadow: "0 0 40px rgba(217,70,239,0.20), 0 0 80px rgba(123,63,251,0.12), 0 4px 24px rgba(0,0,0,0.55)",
         background: "linear-gradient(170deg, #050420 0%, #0c062d 25%, #110940 55%, #0c062d 75%, #050420 100%)",
       }}>
       {/* 1. Stronger ambient purple — luminous, not black */}
@@ -151,7 +165,7 @@ function StatCell({ icon, value, label }: { icon: string; value: string; label: 
 function ProgressRing({ pct }: { pct: number }) {
   const r=44; const circ=2*Math.PI*r; const off=circ-(pct/100)*circ;
   return (
-    <div className="relative w-24 h-24 flex-shrink-0">
+    <div className="relative w-24 h-24 flex-shrink-0 rounded-full" style={{ boxShadow: "0 0 0 1px rgba(217,70,239,0.28), 0 0 18px rgba(217,70,239,0.22)" }}>
       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
         <defs><linearGradient id="prg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#ec4899"/><stop offset="50%" stopColor="#d946ef"/><stop offset="100%" stopColor="#8b5cf6"/></linearGradient></defs>
         <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6"/>
@@ -208,7 +222,7 @@ export default function DashboardPage() {
               <b className="text-[13px]" style={{color:"#fff"}}>A1 Beginner</b>
             </div>
             <div className="w-full h-1 rounded-full mt-1.5" style={{background:"#2A2A45",overflow:"hidden"}}>
-              <div className="h-full rounded-full" style={{width:`${data.level_progress_pct}%`,background:"linear-gradient(135deg,#ec4899,#d946ef,#8b5cf6)"}}/>
+              <div className="h-full rounded-full" style={{width:`${data.level_progress_pct}%`,background:"linear-gradient(90deg,#ec4899,#f472b6,#d946ef,#8b5cf6)",boxShadow:"0 0 8px rgba(217,70,239,0.5)"}}/>
             </div>
             <p className="text-[10px] mt-1" style={{color:"var(--color-text-muted)"}}>120 / 300 XP to A2</p>
           </div>
@@ -231,15 +245,17 @@ export default function DashboardPage() {
 
       {/* ── Your Progress | KPI Grid | Review  (midRow) ── */}
       <div>
-        <p className="text-sm font-medium uppercase tracking-[.13em] mb-2.5" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
         <div className="grid grid-cols-[260px_1fr_260px] gap-2 items-stretch hidden lg:grid">
-          {/* Left: Progress ring card */}
-          <div className="rounded-[20px] p-3.5 flex flex-col items-center text-center justify-center gap-1" style={cardStyle}>
-            <ProgressRing pct={data.level_progress_pct} />
-            <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
-            <p className="text-sm max-w-[210px]" style={{ color: "var(--color-text-muted)" }}>Start your first lesson to see your progress here.</p>
-            <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all mt-1.5"
-              style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+          {/* Left: Progress ring card (heading inside) */}
+          <div className="rounded-[20px] p-3.5 flex flex-col gap-2" style={cardStyle}>
+            <p className="text-[11px] font-semibold uppercase tracking-[.13em]" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
+            <div className="flex flex-col items-center text-center justify-center gap-1 flex-1">
+              <ProgressRing pct={data.level_progress_pct} />
+              <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
+              <p className="text-sm max-w-[210px]" style={{ color: "var(--color-text-muted)" }}>Start your first lesson to see your progress here.</p>
+              <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all mt-1.5"
+                style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+            </div>
           </div>
           {/* Center: KPI Grid 3x2 */}
           <div className="grid grid-cols-3 grid-rows-2 gap-2">
@@ -250,26 +266,32 @@ export default function DashboardPage() {
             <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards to Review"/>
             <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
           </div>
-          {/* Right: Review & Practice */}
-          <div className="flex flex-col gap-3">
-            <div className="rounded-[20px] p-4 flex items-center gap-3 flex-1" style={cardStyle}>
-              <div className="iconbox w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🃏</div>
-              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Flashcards Complete</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Nothing due — excellent work!</p></div>
-              <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
-            </div>
-            <div className="rounded-[20px] p-4 flex items-center gap-3 flex-1" style={cardStyle}>
-              <div className="iconbox w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(168,85,247,.14)",color:"#A855F7"}}>🎯</div>
-              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Discover Your Level</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Find out what you already know</p></div>
-              <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
+          {/* Right: Review & Practice (heading + inner-glow wrapper) */}
+          <div className="rounded-[20px] p-3.5 flex flex-col gap-2.5" style={reviewWrap}>
+            <p className="text-[11px] font-semibold uppercase tracking-[.13em]" style={{ color: "var(--color-text-muted)" }}>Review & Practice</p>
+            <div className="flex flex-col gap-2.5 flex-1">
+              <div className="rounded-[14px] p-3.5 flex items-center gap-3 flex-1" style={reviewItem}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🃏</div>
+                <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Flashcards Complete</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Nothing due — excellent work!</p></div>
+                <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
+              </div>
+              <div className="rounded-[14px] p-3.5 flex items-center gap-3 flex-1" style={reviewItem}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(168,85,247,.14)",color:"#A855F7"}}>🎯</div>
+                <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Discover Your Level</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Find out what you already know</p></div>
+                <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
+              </div>
             </div>
           </div>
         </div>
         {/* Mobile: stacked layout */}
         <div className="lg:hidden space-y-3">
-          <div className="rounded-[20px] p-5 flex flex-col items-center text-center gap-2" style={cardStyle}>
-            <ProgressRing pct={data.level_progress_pct} />
-            <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
-            <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold" style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+          <div className="rounded-[20px] p-5 flex flex-col gap-2" style={cardStyle}>
+            <p className="text-[11px] font-semibold uppercase tracking-[.13em]" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
+            <div className="flex flex-col items-center text-center gap-2">
+              <ProgressRing pct={data.level_progress_pct} />
+              <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
+              <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold" style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
@@ -279,12 +301,13 @@ export default function DashboardPage() {
             <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards to Review"/>
             <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="rounded-[20px] p-4 flex items-center gap-3" style={cardStyle}>
+          <div className="rounded-[20px] p-3.5 flex flex-col gap-2.5" style={reviewWrap}>
+            <p className="text-[11px] font-semibold uppercase tracking-[.13em]" style={{ color: "var(--color-text-muted)" }}>Review & Practice</p>
+            <div className="rounded-[14px] p-3.5 flex items-center gap-3" style={reviewItem}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🃏</div>
               <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Flashcards Complete</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Nothing due</p></div>
             </div>
-            <div className="rounded-[20px] p-4 flex items-center gap-3" style={cardStyle}>
+            <div className="rounded-[14px] p-3.5 flex items-center gap-3" style={reviewItem}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(168,85,247,.14)",color:"#A855F7"}}>🎯</div>
               <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Discover Your Level</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Find out what you know</p></div>
             </div>
