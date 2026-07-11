@@ -44,45 +44,41 @@ function Hero() {
         <div className="absolute inset-0 rounded-full" style={{ background:"radial-gradient(circle at 55% 40%, rgba(255,255,255,0.06) 0%, rgba(200,170,255,0.03) 35%, transparent 65%)" }} />
       </div>
 
-      {/* 2. Brandenburg Gate — zoomed out, shifted right */}
+      {/* 2. Brandenburg Gate — no mask, blended purely with overlays */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "url('/gate.jpg')",
-          backgroundSize: "50% auto",
+          backgroundSize: "35% auto",
           backgroundPosition: "58% 35%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.85,
-          maskImage: "radial-gradient(ellipse at 58% 42%, black 40%, transparent 60%)",
-          WebkitMaskImage: "radial-gradient(ellipse at 58% 42%, black 40%, transparent 60%)",
+          opacity: 0.9,
         }} />
 
-      {/* 8. Gradient overlays — softer transitions, no visible image edges */}
+      {/* 8. Gradient overlays — dissolve image edges into purple atmosphere */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, rgba(5,4,32,0.9) 0%, rgba(5,4,32,0.45) 25%, transparent 45%, transparent 68%, rgba(5,4,32,0.4) 82%, rgba(5,4,32,0.85) 100%)" }} />
-      <div className="absolute bottom-0 left-0 right-0 h-[50%] pointer-events-none"
-        style={{ background: "linear-gradient(to top, rgba(5,4,32,0.95) 0%, rgba(10,6,36,0.5) 35%, transparent 75%)" }} />
-
-      {/* Vignette */}
+        style={{ background: "linear-gradient(90deg, rgba(8,6,40,0.6) 0%, rgba(8,6,40,0.25) 25%, rgba(8,6,40,0.05) 58%, rgba(8,6,40,0.08) 68%, rgba(8,6,40,0.35) 85%, rgba(8,6,40,0.7) 100%)" }} />
       <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: "inset 0 0 60px 20px rgba(0,0,0,0.45)" }} />
+        style={{ background: "linear-gradient(to top, rgba(8,6,40,0.7) 0%, rgba(8,6,40,0.3) 40%, transparent 100%)" }} />
+      {/* Vignette — soft, not harsh */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ boxShadow: "inset 0 0 50px 15px rgba(0,0,0,0.35)" }} />
 
       {/* Content */}
       <div className="relative z-10 flex items-center h-full w-full px-6 sm:px-8 lg:px-10">
-        {/* 3. Left text — wider max-w, slightly larger heading */}
+        {/* 3. Left text — blends with purple atmosphere */}
         <div className="flex-1 max-w-[460px]">
           <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest mb-2"
-            style={{ color: "rgba(255,255,255,0.5)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>Welcome to DeutschFlow</p>
+            style={{ color: "rgba(220,200,255,0.55)", textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>Welcome to DeutschFlow</p>
           <h2 className="text-[1.4rem] sm:text-[1.7rem] lg:text-[2.1rem] font-extrabold leading-[1.04] mb-2.5"
-            style={{ color: "#fff", textShadow: "0 2px 16px rgba(0,0,0,0.55)" }}>
+            style={{ color: "#fff", textShadow: "0 2px 12px rgba(80,40,160,0.6)" }}>
             Your German learning<br />journey starts here
           </h2>
           <p className="text-[11px] sm:text-xs leading-relaxed max-w-sm"
-            style={{ color: "rgba(255,255,255,0.45)", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
+            style={{ color: "rgba(200,180,240,0.5)", textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>
             Structured lessons, smart flashcards, and an AI tutor—everything you need to go from zero to fluent.
           </p>
-          {/* 9. Feature row — slightly more gap, brighter */}
           <div className="flex items-center gap-5 mt-3 text-[10px] sm:text-[11px]"
-            style={{ color: "rgba(255,255,255,0.35)" }}>
+            style={{ color: "rgba(180,160,220,0.4)" }}>
             <span>✓ Beginner-friendly</span><span className="opacity-25">|</span>
             <span>⏱ 10 min lessons</span><span className="opacity-25">|</span>
             <span>📚 80+ lessons</span>
