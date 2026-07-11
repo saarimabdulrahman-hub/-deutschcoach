@@ -36,29 +36,29 @@ function Hero() {
       }}>
       {/* 1. Stronger ambient purple — luminous, not black */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 25%, rgba(139,70,255,0.22) 0%, transparent 45%), radial-gradient(ellipse at 55% 40%, rgba(162,75,255,0.14) 0%, transparent 40%), radial-gradient(ellipse at 70% 50%, rgba(123,63,251,0.1) 0%, transparent 35%), radial-gradient(ellipse at 30% 50%, rgba(139,70,255,0.08) 0%, transparent 35%), radial-gradient(ellipse at 50% 55%, rgba(213,108,255,0.06) 0%, transparent 30%)" }} />
+        style={{ background: "radial-gradient(ellipse at 58% 25%, rgba(139,70,255,0.22) 0%, transparent 45%), radial-gradient(ellipse at 60% 40%, rgba(162,75,255,0.14) 0%, transparent 40%), radial-gradient(ellipse at 75% 50%, rgba(123,63,251,0.1) 0%, transparent 35%), radial-gradient(ellipse at 35% 50%, rgba(139,70,255,0.08) 0%, transparent 35%), radial-gradient(ellipse at 55% 55%, rgba(213,108,255,0.06) 0%, transparent 30%)" }} />
 
-      {/* 7. Planet/moon — brighter, larger */}
-      <div className="absolute pointer-events-none" style={{ left:"50%",top:"10%",width:100,height:100,transform:"translateX(-50%)" }}>
+      {/* 7. Planet/moon — follows gate position */}
+      <div className="absolute pointer-events-none" style={{ left:"58%",top:"10%",width:100,height:100,transform:"translateX(-50%)" }}>
         <div className="absolute rounded-full" style={{ inset:-30,background:"radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(213,180,255,0.08) 20%, transparent 55%)",filter:"blur(12px)" }} />
         <div className="absolute inset-0 rounded-full" style={{ background:"radial-gradient(circle at 55% 40%, rgba(255,255,255,0.06) 0%, rgba(200,170,255,0.03) 35%, transparent 65%)" }} />
       </div>
 
-      {/* 2. Brandenburg Gate — 15% larger, higher, stronger blending */}
+      {/* 2. Brandenburg Gate — zoomed out, shifted right */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "url('/gate.jpg')",
-          backgroundSize: "66% auto",
-          backgroundPosition: "center 35%",
+          backgroundSize: "50% auto",
+          backgroundPosition: "58% 35%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.8,
-          maskImage: "radial-gradient(ellipse at 50% 42%, black 35%, transparent 65%)",
-          WebkitMaskImage: "radial-gradient(ellipse at 50% 42%, black 35%, transparent 65%)",
+          opacity: 0.85,
+          maskImage: "radial-gradient(ellipse at 58% 42%, black 40%, transparent 60%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 58% 42%, black 40%, transparent 60%)",
         }} />
 
       {/* 8. Gradient overlays — softer transitions, no visible image edges */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, rgba(5,4,32,0.9) 0%, rgba(5,4,32,0.45) 22%, transparent 42%, transparent 58%, rgba(5,4,32,0.45) 78%, rgba(5,4,32,0.9) 100%)" }} />
+        style={{ background: "linear-gradient(90deg, rgba(5,4,32,0.9) 0%, rgba(5,4,32,0.45) 25%, transparent 45%, transparent 68%, rgba(5,4,32,0.4) 82%, rgba(5,4,32,0.85) 100%)" }} />
       <div className="absolute bottom-0 left-0 right-0 h-[50%] pointer-events-none"
         style={{ background: "linear-gradient(to top, rgba(5,4,32,0.95) 0%, rgba(10,6,36,0.5) 35%, transparent 75%)" }} />
 
