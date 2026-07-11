@@ -48,8 +48,8 @@ function Hero() {
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "url('/gate.png?v=2')",
-          backgroundSize: "cover",
-          backgroundPosition: "center 35%",
+          backgroundSize: "85% auto",
+          backgroundPosition: "58% 35%",
           backgroundRepeat: "no-repeat",
         }} />
 
