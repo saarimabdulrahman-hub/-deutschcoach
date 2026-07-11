@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardData } from "@/types";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { WordField } from "@/components/dashboard/WordField";
+import { CastleScene } from "@/components/dashboard/CastleScene";
 import { ReadingArt } from "@/components/dashboard/ReadingArt";
 
 const GREETINGS = [
@@ -50,8 +50,8 @@ function Hero() {
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: "radial-gradient(ellipse at 58% 25%, rgba(139,70,255,0.22) 0%, transparent 45%), radial-gradient(ellipse at 60% 40%, rgba(162,75,255,0.14) 0%, transparent 40%), radial-gradient(ellipse at 75% 50%, rgba(123,63,251,0.1) 0%, transparent 35%), radial-gradient(ellipse at 35% 50%, rgba(139,70,255,0.08) 0%, transparent 35%), radial-gradient(ellipse at 55% 55%, rgba(213,108,255,0.06) 0%, transparent 30%)" }} />
 
-      {/* German word field — hero background */}
-      <WordField />
+      {/* Neuschwanstein castle — neon-vector hero background */}
+      <CastleScene />
 
       {/* Light purple tint — barely tints, lets image dominate */}
       <div className="absolute inset-0 pointer-events-none"
