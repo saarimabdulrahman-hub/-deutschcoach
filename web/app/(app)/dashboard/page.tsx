@@ -15,13 +15,21 @@ const GREETINGS = [
 function getGreeting() { const h = new Date().getHours(); return h < 12 ? GREETINGS[0] : h < 18 ? GREETINGS[1] : GREETINGS[2]; }
 function formatDate() { return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }).toUpperCase(); }
 
+// Premium glass card — matches sandbox preview style
 const cardStyle: React.CSSProperties = {
-  background: "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 40%, transparent 70%), var(--color-card-bg)",
-  border: "1px solid rgba(190, 170, 240, 0.15)",
+  background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+  border: "1px solid rgba(186, 120, 255, 0.18)",
   borderRadius: 20,
-  boxShadow: "0 8px 24px rgba(0,0,0,0.3), 0 1px 0 0 rgba(255,255,255,0.04) inset",
-  backdropFilter: "blur(6px)",
-  WebkitBackdropFilter: "blur(6px)",
+  boxShadow: "0 0 35px rgba(168,85,247,.08)",
+  transition: "transform .2s ease, border-color .2s ease",
+};
+
+// Shiny elevated card — for KPI and stat cells
+const shinyCard: React.CSSProperties = {
+  background: "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 50%), #111127",
+  border: "1px solid rgba(186, 120, 255, 0.22)",
+  borderRadius: 16,
+  boxShadow: "0 0 35px rgba(168,85,247,.08)",
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -120,35 +128,48 @@ function Hero() {
 // SMALL COMPONENTS
 // ═══════════════════════════════════════════════════════════════════
 
-function PlanCard({ icon, iconBg, title, subtitle, footer, href }: {
-  icon: string; iconBg: string; title: string; subtitle: string; footer: string; href: string;
+function PlanCard({ icon, iconBg, iconColor, title, subtitle, footer, href }: {
+  icon: string; iconBg: string; iconColor: string; title: string; subtitle: string; footer: string; href: string;
 }) {
   const router = useRouter();
   return (
     <button onClick={() => router.push(href)}
-      className="text-left rounded-2xl p-5 transition-all duration-250 hover:-translate-y-1 w-full" style={cardStyle}>
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-3"
-        style={{ background: iconBg, border: "1px solid rgba(255,255,255,0.04)" }}>{icon}</div>
-      <p className="text-sm font-semibold mb-1" style={{ color: "var(--color-text)" }}>{title}</p>
-      <p className="text-xs mb-3" style={{ color: "var(--color-text-muted)" }}>{subtitle}</p>
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] font-medium" style={{ color: "var(--color-text-muted)" }}>{footer}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: "var(--color-text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+      className="text-left rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 w-full" style={cardStyle}>
+      <div className="w-11 h-11 rounded-[13px] flex items-center justify-center text-xl mb-3"
+        style={{ background: iconBg, color: iconColor }}>{icon}</div>
+      <p className="text-base font-semibold mb-1" style={{ color: "#fff" }}>{title}</p>
+      <p className="text-[13px] mb-3" style={{ color: "var(--color-text-muted)" }}>{subtitle}</p>
+      <div className="flex items-center justify-between text-xs" style={{ color: "var(--color-text-muted)" }}>
+        <span>{footer}</span>
+        <span className="text-lg">›</span>
       </div>
     </button>
+  );
+}
+
+function KpiCard({ icon, iconBg, iconColor, value, unit, label }: {
+  icon: string; iconBg: string; iconColor: string; value: string | number; unit: string; label: string;
+}) {
+  return (
+    <div className="rounded-2xl p-4 flex flex-col gap-2 justify-center transition-all duration-200 hover:-translate-y-1"
+      style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.025), transparent 50%), #111127", border: "1px solid rgba(186,120,255,0.18)", borderRadius: 16, boxShadow: "0 0 35px rgba(168,85,247,.06)" }}>
+      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm" style={{ background: iconBg, color: iconColor }}>{icon}</div>
+      <p className="text-xs uppercase tracking-[.08em] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</p>
+      <p className="text-[26px] font-bold leading-none" style={{ color: "#fff" }}>{value}<span className="text-sm ml-1" style={{ color: "var(--color-text-muted)" }}>{unit}</span></p>
+    </div>
   );
 }
 
 function StatCell({ icon, value, label }: { icon: string; value: string; label: string }) {
   return (
     <div className="rounded-xl p-3 transition-all duration-250 hover:-translate-y-0.5"
-      style={{ background: "rgba(20, 15, 50, 0.4)", border: "1px solid rgba(180, 160, 230, 0.08)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", backdropFilter: "blur(2px)" }}>
+      style={{ background: "rgba(30, 20, 65, 0.45)", border: "1px solid rgba(190, 170, 240, 0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", backdropFilter: "blur(4px)" }}>
       <div className="flex items-center gap-2 mb-1.5">
         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
-          style={{ background: "rgba(139,70,255,0.12)", border: "1px solid rgba(180,160,230,0.1)" }}>{icon}</div>
-        <p className="text-base font-bold" style={{ color: "var(--color-text)" }}>{value}</p>
+          style={{ background: "rgba(139,70,255,0.15)", border: "1px solid rgba(190,170,240,0.12)" }}>{icon}</div>
+        <p className="text-base font-bold" style={{ color: "#fff" }}>{value}</p>
       </div>
-      <p className="text-[9px] font-medium uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>{label}</p>
+      <p className="text-[9px] font-medium uppercase tracking-wider" style={{ color: "rgba(210,200,240,0.5)" }}>{label}</p>
     </div>
   );
 }
@@ -198,15 +219,24 @@ export default function DashboardPage() {
           <p className="text-xs sm:text-sm mt-1.5" style={{ color: "var(--color-text-muted)" }}>Kleine Schritte jeden Tag, große Fortschritte fürs Leben.</p>
         </div>
         <div className="flex gap-3 flex-shrink-0">
-          <div className="rounded-2xl p-4 flex items-center gap-3 min-w-[140px]" style={cardStyle}>
-            <span className="text-2xl">🔥</span>
-            <div><p className="text-xl font-bold" style={{ color: "#fff" }}>{data.streak}</p><p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Day Streak</p><p className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{data.streak>0?"Keep going!":"Start today!"}</p></div>
+          <div className="rounded-2xl py-3.5 px-4 flex flex-col justify-center min-w-[172px]" style={cardStyle}>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🔥</div>
+              <span className="text-[11px] font-medium uppercase tracking-[.08em]" style={{color:"var(--color-text-muted)"}}>Day Streak</span>
+            </div>
+            <p className="text-[28px] font-bold mt-3 mb-1" style={{color:"#fff"}}>{data.streak}</p>
+            <p className="text-[11.5px]" style={{color:"var(--color-text-muted)"}}>{data.streak>0?"Keep going!":"Start today!"}</p>
           </div>
-          <div className="rounded-2xl p-4 flex flex-col justify-center min-w-[160px]" style={cardStyle}>
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>Current Level</p>
-            <div className="flex items-center gap-2 mb-2"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>A1</span><span className="text-sm font-bold" style={{ color: "var(--color-text)" }}>A1 Beginner</span></div>
-            <div className="w-full h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${data.level_progress_pct}%`, background: "var(--color-accent-gradient)" }}/></div>
-            <p className="text-[10px] mt-1.5" style={{ color: "var(--color-text-muted)" }}>120 / 300 XP to A2</p>
+          <div className="rounded-2xl py-3.5 px-4 flex flex-col justify-center min-w-[172px]" style={cardStyle}>
+            <span className="text-[11px] font-medium uppercase tracking-[.08em] mb-3" style={{color:"var(--color-text-muted)"}}>Current Level</span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[11px] font-extrabold" style={{background:"linear-gradient(135deg,#A855F7,#C084FC,#D946EF)",color:"#fff"}}>A1</div>
+              <b className="text-[15px]" style={{color:"#fff"}}>A1 Beginner</b>
+            </div>
+            <div className="w-full h-1.5 rounded-full mt-2.5" style={{background:"#2A2A45",overflow:"hidden"}}>
+              <div className="h-full rounded-full" style={{width:`${data.level_progress_pct}%`,background:"linear-gradient(135deg,#A855F7,#C084FC,#D946EF)"}}/>
+            </div>
+            <p className="text-[11.5px] mt-2" style={{color:"var(--color-text-muted)"}}>120 / 300 XP to A2</p>
           </div>
         </div>
       </div>
@@ -218,50 +248,83 @@ export default function DashboardPage() {
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--color-text-muted)" }}>Today's Plan</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <PlanCard icon="📖" iconBg="rgba(77,163,255,0.1)" title="Your First Lesson" subtitle="Greetings & Introductions" footer="10 min · Beginner-friendly"
+          <PlanCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" title="Your First Lesson" subtitle="Greetings & Introductions" footer="~10 min · Beginner-friendly"
             href={data.continue_lesson ? `/curriculum/${data.continue_lesson.level.toLowerCase()}/${data.continue_lesson.id}` : "/curriculum"} />
-          <PlanCard icon="Aa" iconBg="rgba(162,75,255,0.1)" title="German Grammar" subtitle="Understand how sentences work" footer="Start with articles & pronouns" href="/grammar" />
-          <PlanCard icon="🗣️" iconBg="rgba(45,229,115,0.1)" title="Practice Speaking" subtitle="Chat with Emma — your AI coach" footer="No experience needed" href="/chat" />
+          <PlanCard icon="Aa" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" title="German Grammar" subtitle="Understand how sentences work" footer="Start with articles & pronouns" href="/grammar" />
+          <PlanCard icon="🎤" iconBg="rgba(217,70,239,.14)" iconColor="#D946EF" title="Practice Speaking" subtitle="Chat with Emma — your AI coach" footer="No experience needed" href="/chat" />
         </div>
       </div>
 
-      {/* ── Your Progress ─────────────────── */}
+      {/* ── Your Progress | KPI Grid | Review  (midRow) ── */}
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
-        <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6" style={cardStyle}>
-          <ProgressRing pct={data.level_progress_pct} />
-          <div className="flex-1 w-full">
-            <div className="text-center sm:text-left mb-5">
-              <p className="text-lg font-bold mb-1" style={{ color: "var(--color-text)" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
-              <p className="text-sm mb-3" style={{ color: "var(--color-text-muted)" }}>Start your first lesson to see your progress here.</p>
-              <button onClick={()=>router.push("/curriculum")} className="px-5 py-2 rounded-xl text-sm font-medium transition-all" style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+        <p className="text-sm font-medium uppercase tracking-[.13em] mb-2.5" style={{ color: "var(--color-text-muted)" }}>Your Progress</p>
+        <div className="grid grid-cols-[300px_1fr_288px] gap-3 items-stretch hidden lg:grid">
+          {/* Left: Progress ring card */}
+          <div className="rounded-[20px] p-5 flex flex-col items-center text-center justify-center gap-1.5" style={cardStyle}>
+            <ProgressRing pct={data.level_progress_pct} />
+            <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
+            <p className="text-sm max-w-[210px]" style={{ color: "var(--color-text-muted)" }}>Start your first lesson to see your progress here.</p>
+            <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all mt-1.5"
+              style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+          </div>
+          {/* Center: KPI Grid 3x2 */}
+          <div className="grid grid-cols-3 grid-rows-2 gap-3">
+            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
+            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0}`} unit="" label="Words learned"/>
+            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value="80+" unit="" label="Grammar Topics"/>
+            <KpiCard icon="🎯" iconBg="rgba(245,158,11,.14)" iconColor="#F59E0B" value={data.avg_quiz_score>0?`${data.avg_quiz_score}%`: "0%"} unit="" label="Quiz average"/>
+            <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards due"/>
+            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
+          </div>
+          {/* Right: Review & Practice */}
+          <div className="flex flex-col gap-3">
+            <div className="rounded-[20px] p-4 flex items-center gap-3 flex-1" style={cardStyle}>
+              <div className="iconbox w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🃏</div>
+              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Flashcards Complete</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Nothing due — excellent work!</p></div>
+              <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              <StatCell icon="📖" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0} / 80`} label="Lessons Completed"/>
-              <StatCell icon="📝" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0} words`} label="Vocabulary Learned"/>
-              <StatCell icon="📖" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/10)):0} topics`} label="Grammar Topics"/>
-              <StatCell icon="✅" value={`${data.avg_quiz_score>0?data.avg_quiz_score:0}%`} label="Quiz Accuracy"/>
-              <StatCell icon="🃏" value={`${data.cards_due_today} cards`} label="Cards to Review"/>
-              <StatCell icon="⏱" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)*10):0}m`} label="Study Time"/>
+            <div className="rounded-[20px] p-4 flex items-center gap-3 flex-1" style={cardStyle}>
+              <div className="iconbox w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(168,85,247,.14)",color:"#A855F7"}}>🎯</div>
+              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Discover Your Level</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Find out what you already know</p></div>
+              <span className="text-lg" style={{color:"var(--color-text-muted)"}}>›</span>
+            </div>
+          </div>
+        </div>
+        {/* Mobile: stacked layout */}
+        <div className="lg:hidden space-y-3">
+          <div className="rounded-[20px] p-5 flex flex-col items-center text-center gap-2" style={cardStyle}>
+            <ProgressRing pct={data.level_progress_pct} />
+            <p className="text-base font-bold" style={{ color: "#fff" }}>{data.level_progress_pct===0?"Ready to begin":`${data.level_progress_pct}% complete`}</p>
+            <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-semibold" style={{background:"transparent",color:"var(--color-accent-light)",border:"1px solid var(--color-accent)"}}>View Roadmap</button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
+            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0}`} unit="" label="Words learned"/>
+            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value="80+" unit="" label="Grammar Topics"/>
+            <KpiCard icon="🎯" iconBg="rgba(245,158,11,.14)" iconColor="#F59E0B" value={data.avg_quiz_score>0?`${data.avg_quiz_score}%`: "0%"} unit="" label="Quiz average"/>
+            <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards due"/>
+            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="rounded-[20px] p-4 flex items-center gap-3" style={cardStyle}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(245,158,11,.14)",color:"#F59E0B"}}>🃏</div>
+              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Flashcards Complete</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Nothing due</p></div>
+            </div>
+            <div className="rounded-[20px] p-4 flex items-center gap-3" style={cardStyle}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"rgba(168,85,247,.14)",color:"#A855F7"}}>🎯</div>
+              <div className="flex-1"><p className="text-[15px] font-semibold" style={{color:"#fff"}}>Discover Your Level</p><p className="text-xs mt-0.5" style={{color:"var(--color-text-muted)"}}>Find out what you know</p></div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Review + Activity ─────────────── */}
-      <div className="grid sm:grid-cols-2 gap-3">
-        <div className="rounded-2xl p-5 sm:p-6 space-y-4" style={cardStyle}>
-          <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "var(--color-text-muted)" }}>Review & Practice</p>
-          <div className="flex items-center gap-3 group cursor-pointer"><div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(123,63,251,0.1)" }}>🃏</div><div className="flex-1"><p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>Flashcards Complete</p><p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Nothing due — excellent work!</p></div><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" style={{ color: "var(--color-text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg></div>
-          <div className="flex items-center gap-3 group cursor-pointer"><div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(46,213,115,0.1)" }}>🎯</div><div className="flex-1"><p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>Discover Your Level</p><p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Find out what you already know</p></div><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" style={{ color: "var(--color-text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg></div>
-        </div>
-        <div className="rounded-2xl p-5 sm:p-6 text-center" style={cardStyle}>
-          <p className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-left" style={{ color: "var(--color-text-muted)" }}>Recent Activity</p>
-          <span className="text-4xl mb-4 block">🌱</span>
-          <p className="text-sm font-semibold mb-1" style={{ color: "var(--color-text)" }}>Your journey begins</p>
-          <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>Complete your first lesson to see activity here.</p>
-          <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-bold glossy-accent">Start Lesson →</button>
-        </div>
+      {/* ── Recent Activity ─────────────── */}
+      <div className="rounded-[20px] p-5 sm:p-6 text-center" style={cardStyle}>
+        <p className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-left" style={{ color: "var(--color-text-muted)" }}>Recent Activity</p>
+        <span className="text-4xl mb-4 block">🌱</span>
+        <p className="text-sm font-semibold mb-1" style={{ color: "#fff" }}>Your journey begins</p>
+        <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>Complete your first lesson to see activity here.</p>
+        <button onClick={()=>router.push("/curriculum")} className="px-5 py-2.5 rounded-xl text-sm font-bold glossy-accent">Start Lesson →</button>
       </div>
 
       {/* ── Tip of the Day ────────────────── */}
