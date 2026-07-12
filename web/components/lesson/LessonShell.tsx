@@ -5,6 +5,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ProgressSegments, type LessonStep } from "./ProgressSegments";
 import { ExitConfirmSheet } from "./ExitConfirmSheet";
+import type { LessonAction, LessonError } from "./types";
 
 // Reusable, content-agnostic Lesson Shell (Sprint 6.2A · LESSON_WIREFRAMES Part A).
 // Every lesson stage renders inside this frame so the learner never feels they
@@ -13,13 +14,7 @@ import { ExitConfirmSheet } from "./ExitConfirmSheet";
 // slot, and the sticky thumb-zone footer CTA. It knows nothing about lesson data.
 
 export type { LessonStep };
-
-export interface LessonAction {
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-}
+export type { LessonAction };
 
 export interface LessonShellProps {
   // Header
@@ -42,7 +37,7 @@ export interface LessonShellProps {
 
   // Shell states
   loading?: boolean;
-  error?: { message?: string; onRetry?: () => void } | null;
+  error?: LessonError | null;
   empty?: React.ReactNode;
   offline?: boolean;
 

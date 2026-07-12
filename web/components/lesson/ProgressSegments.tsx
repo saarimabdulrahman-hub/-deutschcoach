@@ -1,16 +1,14 @@
 "use client";
 
+import type { LessonStep } from "./types";
+
 // Segmented lesson progress (Sprint 6.2A · per LESSON_WIREFRAMES Part A).
 // Communicates structure + position + remaining WITHOUT a bare percentage:
 // "Step X of Y", a segment per stage, plus the current stage name.
 // Screen-reader + colorblind safe — the textual step/label carries the meaning,
 // the bar is supplementary.
 
-export interface LessonStep {
-  key: string;
-  label: string;
-  status?: "done" | "current" | "upcoming" | "skipped"; // optional; derived from currentStep otherwise
-}
+export type { LessonStep };
 
 interface ProgressSegmentsProps {
   steps: LessonStep[];

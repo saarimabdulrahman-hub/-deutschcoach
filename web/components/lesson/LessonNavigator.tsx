@@ -5,6 +5,7 @@ import { LessonShell } from "./LessonShell";
 import { ExitConfirmSheet } from "./ExitConfirmSheet";
 import { useLessonNavigation, type LessonNavApi } from "./useLessonNavigation";
 import type { LessonStageDef } from "./lessonStages";
+import type { LessonAction, LessonError } from "./types";
 
 // Lesson navigation & progression (Sprint 6.2D). Owns a SINGLE, persistent
 // LessonShell and swaps only the stage content (via `renderStage`) so the frame
@@ -12,13 +13,6 @@ import type { LessonStageDef } from "./lessonStages";
 // mobile back, and drives the accessible exit flow. Content-agnostic, no backend.
 
 export type { LessonNavApi };
-
-interface PrimaryActionOverride {
-  label?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-}
 
 interface LessonNavigatorProps {
   lessonTitle: string;
@@ -33,10 +27,10 @@ interface LessonNavigatorProps {
   onComplete?: (key: string) => void;
 
   // A stage that needs a custom CTA (e.g. "Check answer" before "Continue") passes this.
-  primaryAction?: PrimaryActionOverride | null;
+  primaryAction?: Partial<LessonAction> | null;
 
   loading?: boolean;
-  error?: { message?: string; onRetry?: () => void } | null;
+  error?: LessonError | null;
   allowDiscard?: boolean;        // show "Discard progress" in the exit sheet
   useHistory?: boolean;          // integrate browser/gesture back (default true)
 }
