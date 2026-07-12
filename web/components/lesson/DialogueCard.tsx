@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { ReplayButton } from "@/components/audio/ReplayButton";
+import { SlowPlaybackButton } from "@/components/audio/SlowPlaybackButton";
+import { type AudioState, isAudioBlocked } from "@/components/audio/types";
 
 // One line of a conversation, as a calm, highly-readable card (Sprint 6.2B).
 // The German dominates; speaker/pronunciation are secondary; translation stays
-// collapsed and visually separated; audio controls are subtle and UI-only.
+// collapsed and visually separated. Audio controls come from the shared audio
+// system (Sprint 6.2C) — no bespoke audio buttons live here. React.memo so a
+// single line's audio change doesn't re-render the rest of the conversation.
 
 export interface DialogueLine {
   id: string | number;
@@ -18,21 +23,18 @@ export interface DialogueLine {
 interface DialogueCardProps {
   line: DialogueLine;
   tone?: "primary" | "neutral";   // speaker differentiation using existing tokens only
-  audioDisabled?: boolean;        // renders the replay/slow controls disabled (UI state)
-  onReplay?: (id: DialogueLine["id"]) => void; // UI-only; no real playback in this sprint
+  audioState?: AudioState;        // drives the shared audio controls (default "idle")
+  slow?: boolean;                 // 0.5× engaged for this line
+  onReplay?: (id: DialogueLine["id"]) => void; // UI-only; no real playback this sprint
   onSlow?: (id: DialogueLine["id"]) => void;   // UI-only
 }
 
-const IconReplay = () => (
-  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M20 20v-5h-5M20 9a8 8 0 00-14.9-3M4 15a8 8 0 0014.9 3" />
-  </svg>
-);
-
-export function DialogueCard({ line, tone = "neutral", audioDisabled, onReplay, onSlow }: DialogueCardProps) {
+export const DialogueCard = React.memo(function DialogueCard({ line, tone = "neutral", audioState = "idle", slow, onReplay, onSlow }: DialogueCardProps) {
   const [open, setOpen] = useState(false); // translation collapsed by default
   const initial = line.speaker.trim().charAt(0).toUpperCase() || "?";
   const transId = `dlg-trans-${line.id}`;
+  const audioLabel = `${line.speaker}'s line`;
+  const audioDisabled = isAudioBlocked(audioState) || audioState === "loading" || audioState === "buffering";
 
   return (
     <article role="listitem" className="rounded-2xl p-4 sm:p-5"
@@ -49,21 +51,15 @@ export function DialogueCard({ line, tone = "neutral", audioDisabled, onReplay, 
         </div>
 
         <div className="flex-1 min-w-0">
-          {/* Speaker name + subtle audio controls */}
+          {/* Speaker name + shared audio controls */}
           <div className="flex items-center justify-between gap-2 mb-1.5">
             <span className="text-[11px] font-semibold uppercase tracking-wider inline-flex items-center gap-1.5" style={{ color: "var(--color-text-muted)" }}>
               {line.speaker}
               {line.completed && (<><span aria-hidden style={{ color: "#22c55e" }}>✓</span><span className="sr-only">, read</span></>)}
             </span>
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <button type="button" onClick={() => onReplay?.(line.id)} disabled={audioDisabled}
-                aria-label={`Replay ${line.speaker}'s line`}
-                className="w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/5 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-transform"
-                style={{ color: "var(--color-text-muted)" }}><IconReplay /></button>
-              <button type="button" onClick={() => onSlow?.(line.id)} disabled={audioDisabled}
-                aria-label={`Play ${line.speaker}'s line slowly`}
-                className="h-11 min-w-11 px-2 flex items-center justify-center rounded-lg text-[11px] font-bold hover:bg-white/5 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-transform"
-                style={{ color: "var(--color-text-muted)" }}>0.5×</button>
+            <div className="flex items-center gap-0.5 flex-shrink-0 -mr-1">
+              <ReplayButton label={audioLabel} disabled={audioDisabled} onReplay={onReplay ? () => onReplay(line.id) : undefined} />
+              <SlowPlaybackButton label={audioLabel} active={slow} disabled={audioDisabled} onToggle={onSlow ? () => onSlow(line.id) : undefined} />
             </div>
           </div>
 
@@ -91,4 +87,4 @@ export function DialogueCard({ line, tone = "neutral", audioDisabled, onReplay, 
       </div>
     </article>
   );
-}
+});

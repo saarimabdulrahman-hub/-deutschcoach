@@ -82,7 +82,7 @@ export function DialogueStage({
               ))
             : lines.map((line) => (
                 <DialogueCard key={line.id} line={line} tone={toneFor(line.speaker)}
-                  audioDisabled={audioDisabled} onReplay={onReplayLine} onSlow={onSlowLine} />
+                  audioState={audioDisabled ? "disabled" : "idle"} onReplay={onReplayLine} onSlow={onSlowLine} />
               ))}
         </div>
       </div>
