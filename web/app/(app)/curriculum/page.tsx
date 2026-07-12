@@ -214,7 +214,7 @@ export default function CurriculumPage() {
 
             {/* CENTER: Empty spacer (background image slot — ready for your image) */}
 
-            {/* RIGHT: Progress widget — two purple bars side by side */}
+            {/* RIGHT: Progress widget — bar (left) + circle (right) */}
             <div className="hidden md:flex flex-col justify-center flex-shrink-0" style={{ flexBasis: "25%" }}>
               <div className="rounded-2xl p-4"
                 style={{
@@ -228,29 +228,33 @@ export default function CurriculumPage() {
                 <p className="text-xs font-bold mb-3" style={{ color: "#fff" }}>
                   Unit {currentUnitNum || 1} of {units.length || 2}
                 </p>
-                {/* Two progress bars side by side */}
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  <div>
-                    <p className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>Lessons</p>
-                    <div className="h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                {/* Left: progress bar + label */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="h-1.5 rounded-full mb-1" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
                       <div className="h-full rounded-full transition-all duration-500"
                         style={{
                           width: `${currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%`,
                           background: "linear-gradient(90deg, #6D3BFF, #8B5CF6)",
                         }} />
                     </div>
-                    <p className="text-[9px] mt-1" style={{ color: "var(--color-text-muted)" }}>{currentUnit?.completed ?? 0}/{currentUnit?.total ?? 0}</p>
+                    <p className="text-[9px]" style={{ color: "var(--color-text-muted)" }}>
+                      {currentUnit?.completed ?? 0} of {currentUnit?.total ?? 0} lessons
+                    </p>
                   </div>
-                  <div>
-                    <p className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>Overall</p>
-                    <div className="h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                      <div className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%`,
-                          background: "linear-gradient(90deg, #A78BFA, #C4B5FD)",
-                        }} />
-                    </div>
-                    <p className="text-[9px] mt-1" style={{ color: "var(--color-text-muted)" }}>{currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%</p>
+                  {/* Right: circular progress */}
+                  <div className="relative w-11 h-11 flex-shrink-0">
+                    <svg className="w-full h-full -rotate-90" viewBox="0 0 48 48">
+                      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+                      <circle cx="24" cy="24" r="20" fill="none"
+                        stroke="url(#heroPctGrad)" strokeWidth="4" strokeLinecap="round"
+                        strokeDasharray={2 * Math.PI * 20}
+                        strokeDashoffset={2 * Math.PI * 20 * (1 - (currentUnit ? currentUnit.completed / Math.max(currentUnit.total, 1) : 0))}
+                        style={{ transition: "stroke-dashoffset 0.8s ease", filter: "drop-shadow(0 0 4px rgba(109,59,255,0.4))" }} />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: "#fff" }}>
+                      {currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%
+                    </span>
                   </div>
                 </div>
               </div>
