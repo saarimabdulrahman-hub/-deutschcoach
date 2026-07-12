@@ -83,7 +83,7 @@ export default function LessonPage() {
 
     switch (stage.key) {
       case "warm-welcome":
-        return <LessonWelcome lesson={data.lesson} onStart={nav.goNext} />;
+        return <LessonWelcome lesson={data.lesson} vocabCount={data.vocabulary.length} exerciseCount={data.exercises.length} onStart={nav.goNext} />;
 
       case "dialogue":
         return <DialogueContent

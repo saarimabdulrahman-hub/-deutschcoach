@@ -20,7 +20,7 @@ export function SpeakingPlaceholder({ vocabulary }: Props) {
         </p>
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Type or speak:</span>
-          <input placeholder="Ich heiße …" readOnly={false}
+          <input placeholder="Ich heiße …"
             className="flex-1 rounded-lg px-3 py-2.5 text-sm" style={{ background: "var(--color-page-bg)", color: "var(--color-text)", border: "1px solid var(--color-border)" }} />
         </div>
         {suggestion && <p className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{suggestion}</p>}
