@@ -6,7 +6,6 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardData } from "@/types";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { ReadingArt } from "@/components/dashboard/ReadingArt";
 
 const GREETINGS = [
   { hi: "Guten Morgen", en: "Good morning" },
@@ -339,9 +338,9 @@ export default function DashboardPage() {
             <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>Review before bed — sleep helps your brain consolidate new vocabulary.</p>
             <button onClick={()=>router.push("/curriculum")} className="text-xs font-medium hover:underline self-start" style={{ color: "var(--color-accent-light)" }}>Browse lessons →</button>
           </div>
-          {/* Reading art — woman reading in bed at night */}
-          <div className="hidden sm:block flex-shrink-0" aria-hidden="true">
-            <ReadingArt />
+          {/* Reading art — generated image (ReadingArt component kept as backup) */}
+          <div className="hidden sm:block flex-shrink-0 rounded-[14px] overflow-hidden" aria-hidden="true" style={{ width: 90, height: 90 }}>
+            <img src="/tip.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         </div>
       </div>
