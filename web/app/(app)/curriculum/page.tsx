@@ -312,7 +312,7 @@ export default function CurriculumPage() {
         </div>
 
         {/* RIGHT: Roadmap timeline — 30% */}
-        <div className="lg:w-72 flex-shrink-0">
+        <div className="lg:w-72 flex-shrink-0 flex flex-col">
           <div className="rounded-2xl p-5" style={{ background: "#121224", border: "1px solid rgba(255,255,255,0.05)" }}>
             <h3 className="text-sm font-bold mb-4" style={{ color: "var(--color-text)" }}>Roadmap</h3>
             <div className="space-y-0">
@@ -322,13 +322,11 @@ export default function CurriculumPage() {
                 const isLast = i === units.length - 1;
                 return (
                   <div key={u.unit} className="flex gap-3">
-                    {/* Timeline column */}
                     <div className="flex flex-col items-center flex-shrink-0">
                       <div className="w-3 h-3 rounded-full flex-shrink-0"
                         style={{ background: isComp ? "#22c55e" : isCurrent ? "var(--color-accent)" : "var(--color-border)" }} />
                       {!isLast && <div className="w-0.5 flex-1 min-h-[24px]" style={{ background: "var(--color-border)" }} />}
                     </div>
-                    {/* Content */}
                     <div className={`pb-4 ${isLast ? "" : ""}`}>
                       <p className="text-sm font-semibold" style={{ color: isCurrent ? "var(--color-text)" : "var(--color-text-secondary)" }}>
                         Unit {u.unit}{u.theme ? ` · ${u.theme}` : ""}
@@ -343,9 +341,9 @@ export default function CurriculumPage() {
             </div>
           </div>
 
-          {/* CEFR Journey below the roadmap */}
+          {/* CEFR Journey — flex-1 to fill remaining height */}
           {levels && levels.length > 0 && (
-            <div className="rounded-2xl p-5 mt-4" style={{ background: "#121224", border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div className="rounded-2xl p-5 mt-4 flex-1 flex flex-col" style={{ background: "#121224", border: "1px solid rgba(255,255,255,0.05)" }}>
               <h3 className="text-sm font-bold mb-3" style={{ color: "var(--color-text)" }}>CEFR Journey</h3>
               <LevelPath levels={levels} currentLevel={viewLevel} onSelect={setOverride} />
             </div>
