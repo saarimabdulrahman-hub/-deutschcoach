@@ -132,10 +132,15 @@ async def _stream_anthropic(messages: list[dict], system: str) -> AsyncGenerator
             if attempt == retries:
                 yield json.dumps(EmmaStreamError(detail="Emma is taking too long — try again in a moment.").model_dump())
             await asyncio.sleep(0.5 * (attempt + 1))
-        except Exception as e:
+        except (httpx.HTTPStatusError, json.JSONDecodeError, ConnectionError) as e:
             if attempt == retries:
                 logger.exception("Emma stream error")
-                yield json.dumps(EmmaStreamError(detail=f"Something went wrong: {str(e)[:200]}").model_dump())
+                yield json.dumps(EmmaStreamError(detail="An unexpected error occurred. Please try again.").model_dump())
+            await asyncio.sleep(0.5 * (attempt + 1))
+        except Exception:
+            if attempt == retries:
+                logger.exception("Emma stream error")
+                yield json.dumps(EmmaStreamError(detail="An unexpected error occurred. Please try again.").model_dump())
             await asyncio.sleep(0.5 * (attempt + 1))
 
 
@@ -164,7 +169,9 @@ async def _non_streaming_response(messages: list[dict], system: str) -> EmmaResp
                     },
                 )
                 if resp.status_code != 200:
-                    raise HTTPException(status_code=502, detail=f"LLM API error: {resp.text[:200]}")
+                    body_text = await resp.aread() if hasattr(resp, 'aread') else ""
+                    logger.error("Anthropic API error %s: %s", resp.status_code, str(body_text)[:500])
+                    raise HTTPException(status_code=502, detail="The AI service is temporarily unavailable. Please try again later.")
                 data = resp.json()
                 reply = ""
                 if isinstance(data.get("content"), list):
