@@ -197,12 +197,12 @@ export default function CurriculumPage() {
                   </p>
                 </div>
               </div>
-              {/* Metadata — stacked vertically */}
-              <div className="space-y-1.5 mb-4 text-xs sm:text-sm" style={{ color: "var(--color-text-muted)" }}>
-                <p>⏱ ~{MIN_PER_LESSON}m</p>
-                <p>📖 8 words</p>
-                <p>✍ grammar</p>
-                <p>📝 practice</p>
+              {/* Metadata row */}
+              <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm mb-4" style={{ color: "var(--color-text-muted)" }}>
+                <span>⏱ ~{MIN_PER_LESSON}m</span>
+                <span>📖 8 words</span>
+                <span>✍ grammar</span>
+                <span>📝 practice</span>
               </div>
               {/* CTA */}
               <button onClick={() => goLesson(nextLesson!.id)}
