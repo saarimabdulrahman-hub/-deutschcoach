@@ -217,45 +217,6 @@ export default function CurriculumPage() {
               </button>
             </div>
 
-            {/* RIGHT: Unit Progress — bigger circle centered, shorter card */}
-            <div className="hidden md:flex flex-col ml-auto flex-shrink-0" style={{ justifyContent: "flex-start", paddingTop: 4 }}>
-              <div className="rounded-[16px] p-4 flex items-center gap-4"
-                style={{
-                  background: "rgba(20,20,35,0.75)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-                  width: 210,
-                }}>
-                {/* Left: text + bar */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>Unit Progress</p>
-                  <p className="text-[10px] mb-2" style={{ color: "var(--color-text-secondary)" }}>1 of 2 lessons</p>
-                  <div className="h-[5px] rounded-full" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                    <div className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%`,
-                        background: "linear-gradient(90deg, #6D3BFF, #8B5CF6)",
-                      }} />
-                  </div>
-                </div>
-                {/* Right: bigger circle — centered vertically */}
-                <div className="relative flex-shrink-0" style={{ width: 68, height: 68 }}>
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 68 68">
-                    <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
-                    <circle cx="34" cy="34" r="28" fill="none"
-                      stroke="url(#heroPctGrad)" strokeWidth="5" strokeLinecap="round"
-                      strokeDasharray={2 * Math.PI * 28}
-                      strokeDashoffset={2 * Math.PI * 28 * (1 - (currentUnit ? currentUnit.completed / Math.max(currentUnit.total, 1) : 0))}
-                      style={{ transition: "stroke-dashoffset 0.8s ease", filter: "drop-shadow(0 0 5px rgba(109,59,255,0.4))" }} />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold" style={{ color: "#fff" }}>
-                    {currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* SVG gradient for progress ring */}
