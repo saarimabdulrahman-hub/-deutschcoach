@@ -13,10 +13,11 @@ import { WarmupContent } from "@/components/lesson/WarmupContent";
 import { DialogueContent } from "@/components/lesson/DialogueContent";
 import { VocabularyContent } from "@/components/lesson/VocabularyContent";
 import { GrammarContent } from "@/components/lesson/GrammarContent";
-import { PracticeContent } from "@/components/lesson/PracticeContent";
 import { SpeakingPlaceholder } from "@/components/lesson/SpeakingPlaceholder";
-import { MiniReviewContent } from "@/components/lesson/MiniReviewContent";
 import { CompletionContent } from "@/components/lesson/CompletionContent";
+import { MatchingExercise } from "@/components/interaction/MatchingExercise";
+import { FillInExercise } from "@/components/interaction/FillInExercise";
+import { RecallExercise } from "@/components/interaction/RecallExercise";
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
@@ -38,9 +39,6 @@ function extractDialogue(content: string | null): { id: number; speaker: string;
   }
   return lines;
 }
-
-/** Build a content-characterisation string for continuing lessons. */
-function vocabTitle(words: string[]): string { return words.slice(0, 3).join(", "); }
 
 // ── Page ──────────────────────────────────────────────────────────────
 
@@ -104,18 +102,23 @@ export default function LessonPage() {
         return <GrammarContent grammarTopics={data.grammar_topics} />;
 
       case "guided-practice":
+        return <MatchingExercise pairs={data.vocabulary.map((v) => ({
+          id: v.id, left: v.german, right: v.english,
+        }))} />;
+
       case "interactive-exercise":
-        return <PracticeContent exercises={data.exercises.map((e, i) => ({
-          type: (e as any).type ?? "exercise",
-          question: (e as any).question ?? "",
-          answer: (e as any).answer ?? "",
+        return <FillInExercise items={data.exercises.map((e, i) => ({
+          id: i, front: (e as any).question ?? "", back: (e as any).answer ?? "",
+          hint: (e as any).hint ?? (e as any).question ? "Fill in the blank." : undefined,
         }))} />;
 
       case "speaking":
         return <SpeakingPlaceholder vocabulary={vocabWords} />;
 
       case "mini-review":
-        return <MiniReviewContent vocabulary={data.vocabulary} />;
+        return <RecallExercise items={data.vocabulary.map((v) => ({
+          id: v.id, front: v.german, back: v.english,
+        }))} />;
 
       case "celebration":
         return <CompletionContent mode="celebration"
