@@ -214,45 +214,43 @@ export default function CurriculumPage() {
 
             {/* CENTER: Empty spacer (background image slot — ready for your image) */}
 
-            {/* RIGHT: Progress widget — bar (left) + circle (right) */}
+            {/* RIGHT: Unit Progress — 60/40 split with circular KPI */}
             <div className="hidden md:flex flex-col justify-center flex-shrink-0" style={{ flexBasis: "25%" }}>
-              <div className="rounded-2xl p-4"
+              <div className="rounded-[16px] p-4"
                 style={{
                   background: "rgba(20,20,35,0.75)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
                   border: "1px solid rgba(255,255,255,0.08)",
                   boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+                  maxWidth: 260,
                 }}>
-                <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--color-text-muted)" }}>Unit Progress</p>
-                <p className="text-xs font-bold mb-3" style={{ color: "#fff" }}>
-                  Unit {currentUnitNum || 1} of {units.length || 2}
-                </p>
-                {/* Left: progress bar + label */}
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="h-1.5 rounded-full mb-1" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div className="flex items-center gap-4">
+                  {/* LEFT: 60% — title + subtitle + bar */}
+                  <div className="flex-1 min-w-0" style={{ flexBasis: "60%" }}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--color-text-muted)" }}>Unit Progress</p>
+                    <p className="text-[10px] mb-2" style={{ color: "var(--color-text-secondary)" }}>
+                      1 of 2 lessons
+                    </p>
+                    <div className="h-[5px] rounded-full" style={{ background: "rgba(255,255,255,0.08)", overflow: "hidden", width: "75%" }}>
                       <div className="h-full rounded-full transition-all duration-500"
                         style={{
-                          width: `${currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%`,
+                          width: "42%",
                           background: "linear-gradient(90deg, #6D3BFF, #8B5CF6)",
                         }} />
                     </div>
-                    <p className="text-[9px]" style={{ color: "var(--color-text-muted)" }}>
-                      {currentUnit?.completed ?? 0} of {currentUnit?.total ?? 0} lessons
-                    </p>
                   </div>
-                  {/* Right: circular progress */}
-                  <div className="relative w-11 h-11 flex-shrink-0">
-                    <svg className="w-full h-full -rotate-90" viewBox="0 0 48 48">
-                      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
-                      <circle cx="24" cy="24" r="20" fill="none"
-                        stroke="url(#heroPctGrad)" strokeWidth="4" strokeLinecap="round"
-                        strokeDasharray={2 * Math.PI * 20}
-                        strokeDashoffset={2 * Math.PI * 20 * (1 - (currentUnit ? currentUnit.completed / Math.max(currentUnit.total, 1) : 0))}
+                  {/* RIGHT: 40% — circular KPI */}
+                  <div className="flex-shrink-0 relative" style={{ width: 64, height: 64 }}>
+                    <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                      <circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+                      <circle cx="32" cy="32" r="27" fill="none"
+                        stroke="url(#heroPctGrad)" strokeWidth="5" strokeLinecap="round"
+                        strokeDasharray={2 * Math.PI * 27}
+                        strokeDashoffset={2 * Math.PI * 27 * (1 - (currentUnit ? currentUnit.completed / Math.max(currentUnit.total, 1) : 0))}
                         style={{ transition: "stroke-dashoffset 0.8s ease", filter: "drop-shadow(0 0 4px rgba(109,59,255,0.4))" }} />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: "#fff" }}>
+                    <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold" style={{ color: "#fff" }}>
                       {currentUnit ? Math.round((currentUnit.completed / Math.max(currentUnit.total, 1)) * 100) : 0}%
                     </span>
                   </div>
