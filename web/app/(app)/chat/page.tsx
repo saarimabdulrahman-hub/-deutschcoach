@@ -7,11 +7,11 @@ export default function ChatPage() {
     <div className="space-y-2">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: "var(--color-hover-bg)" }}>
-          🗣️
+          👩‍🏫
         </div>
         <div>
-          <h1 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Language Coach</h1>
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Chat with Emma — your English-speaking coach for explanations, practice & corrections</p>
+          <h1 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Emma · Your German Tutor</h1>
+          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Explain, correct, practice — Emma guides you through German, one question at a time</p>
         </div>
       </div>
       <ChatInterface />
