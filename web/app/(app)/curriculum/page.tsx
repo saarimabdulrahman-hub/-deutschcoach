@@ -227,31 +227,48 @@ export default function CurriculumPage() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* LEFT: Main learning area — 70% */}
         <div className="flex-1 min-w-0 space-y-6" style={{ flexBasis: "70%" }}>
-          {/* Today's Mission — outer card, text beside icon */}
+          {/* Today's Mission — glass-effect outer card with ambient glow */}
           {nextLesson && (
-            <section aria-labelledby="mission-heading" className="rounded-2xl p-5"
-              style={{ background: "#111126", border: "1px solid rgba(255,255,255,0.04)", boxShadow: "0 20px 40px rgba(0,0,0,0.35)" }}>
-              <h2 id="mission-heading" className="text-[22px] font-extrabold mb-4" style={{ color: "#FFFFFF" }}>Today's Mission</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {[
-                  { icon: "📖", iconBg: "rgba(168,85,247,0.18)", iconColor: "#A855F7", title: `Complete Lesson ${nextLesson.order}`, subtitle: nextLesson.title, meta: `~${MIN_PER_LESSON} min`, onClick: () => goLesson(nextLesson!.id) },
-                  { icon: "🃏", iconBg: "rgba(255,180,60,0.18)", iconColor: "#E19C18", title: cardsDue > 0 ? `Review ${cardsDue} cards` : "Vocabulary — all caught up", subtitle: cardsDue > 0 ? "Reinforce what you've learned" : "No cards due right now", meta: cardsDue > 0 ? "~2 min" : "✓", onClick: () => router.push("/review") },
-                  { icon: "🎤", iconBg: "rgba(34,197,94,0.16)", iconColor: "#22C55E", title: "Practice speaking", subtitle: "Chat with Emma — your AI coach", meta: "~2 min", onClick: () => router.push("/chat") },
-                ].map((m, i) => (
-                  <button key={i} onClick={m.onClick}
-                    className="text-left rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-3.5"
-                    style={{ background: "#17172D", border: "1px solid rgba(255,255,255,0.04)" }}>
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-                      style={{ background: m.iconBg, color: m.iconColor }}>
-                      {m.icon}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[15px] font-bold mb-0.5 truncate" style={{ color: "#FFFFFF" }}>{m.title}</p>
-                      <p className="text-[12px] truncate" style={{ color: "#9CA3AF" }}>{m.subtitle}</p>
-                      <span className="text-[10px] font-semibold mt-1.5 block" style={{ color: "#6B7280" }}>{m.meta}</span>
-                    </div>
-                  </button>
-                ))}
+            <section aria-labelledby="mission-heading" className="relative rounded-[20px] p-6 overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, rgba(20,16,50,0.85), rgba(25,20,55,0.75))",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(109,59,255,0.06) inset",
+              }}>
+              {/* Subtle purple glow behind the card */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at 30% 50%, rgba(109,59,255,0.08) 0%, transparent 60%)" }} />
+              <div className="relative z-10">
+                <h2 id="mission-heading" className="text-[22px] font-extrabold mb-5" style={{ color: "#FFFFFF" }}>Today's Mission</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    { icon: "📖", iconBg: "rgba(168,85,247,0.15)", iconColor: "#A855F7", glow: "rgba(168,85,247,0.08)", title: `Complete Lesson ${nextLesson.order}`, subtitle: nextLesson.title, meta: `~${MIN_PER_LESSON} min`, onClick: () => goLesson(nextLesson!.id) },
+                    { icon: "🃏", iconBg: "rgba(255,180,60,0.15)", iconColor: "#E19C18", glow: "rgba(255,180,60,0.06)", title: cardsDue > 0 ? `Review ${cardsDue} cards` : "Vocabulary — all caught up", subtitle: cardsDue > 0 ? "Reinforce what you've learned" : "No cards due right now", meta: cardsDue > 0 ? "~2 min" : "✓", onClick: () => router.push("/review") },
+                    { icon: "🎤", iconBg: "rgba(34,197,94,0.13)", iconColor: "#22C55E", glow: "rgba(34,197,94,0.05)", title: "Practice speaking", subtitle: "Chat with Emma — your AI coach", meta: "~2 min", onClick: () => router.push("/chat") },
+                  ].map((m, i) => (
+                    <button key={i} onClick={m.onClick}
+                      className="text-left rounded-xl p-4 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-3.5 group relative overflow-hidden"
+                      style={{
+                        background: "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                      }}>
+                      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        style={{ background: `radial-gradient(ellipse at 20% 50%, ${m.glow}, transparent 70%)` }} />
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 relative z-10"
+                        style={{ background: m.iconBg, color: m.iconColor }}>
+                        {m.icon}
+                      </div>
+                      <div className="min-w-0 relative z-10">
+                        <p className="text-[15px] font-bold mb-0.5 truncate" style={{ color: "#FFFFFF" }}>{m.title}</p>
+                        <p className="text-[12px] truncate" style={{ color: "#9CA3AF" }}>{m.subtitle}</p>
+                        <span className="text-[10px] font-semibold mt-1.5 block" style={{ color: "#6B7280" }}>{m.meta}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </section>
           )}
@@ -276,35 +293,42 @@ export default function CurriculumPage() {
                     <div key={l.id} role="button" tabIndex={0}
                       onClick={() => router.push(`/curriculum/${viewLevel.toLowerCase()}/${l.id}`)}
                       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/curriculum/${viewLevel.toLowerCase()}/${l.id}`); } }}
-                      className="flex items-center gap-5 rounded-2xl px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+                      className="flex items-center gap-5 rounded-2xl px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden"
                       style={{
-                        background: isActive ? "#17172D" : "#111126",
-                        border: isActive ? "1px solid rgba(168,85,247,0.3)" : "1px solid rgba(255,255,255,0.04)",
-                        boxShadow: isActive ? "0 0 20px rgba(217,70,239,0.1)" : "none",
+                        background: isActive
+                          ? "linear-gradient(180deg, rgba(217,70,239,0.08), rgba(109,59,255,0.04))"
+                          : "linear-gradient(180deg, rgba(255,255,255,0.02), transparent)",
+                        border: isActive ? "1px solid rgba(168,85,247,0.25)" : "1px solid rgba(255,255,255,0.04)",
+                        boxShadow: isActive ? "0 0 30px rgba(217,70,239,0.08), 0 0 0 1px rgba(168,85,247,0.15) inset" : "0 4px 12px rgba(0,0,0,0.15)",
                       }}>
+                      {isActive && (
+                        <div className="absolute inset-0 pointer-events-none"
+                          style={{ background: "radial-gradient(ellipse at 5% 50%, rgba(109,59,255,0.06), transparent 60%)" }} />
+                      )}
                       {/* Number circle */}
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold relative z-10"
                         style={{
-                          background: isComp ? "rgba(34,197,94,0.15)" : isActive ? "linear-gradient(180deg, #FFB547, #D97706)" : "transparent",
+                          background: isComp ? "rgba(34,197,94,0.12)" : isActive ? "linear-gradient(180deg, #FFB547, #D97706)" : "transparent",
                           color: isComp ? "#22C55E" : isActive ? "#fff" : "#6B7280",
-                          border: (!isComp && !isActive) ? "1px solid #2A2644" : "none",
-                          boxShadow: isActive ? "0 0 10px rgba(255,180,60,0.15)" : "none",
+                          border: (!isComp && !isActive) ? "1px solid rgba(255,255,255,0.06)" : "none",
+                          boxShadow: isActive ? "0 0 14px rgba(255,180,60,0.18)" : "none",
                         }}>
                         {isComp ? "✓" : l.order}
                       </div>
                       {/* Lesson info */}
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 relative z-10">
                         <p className="text-[15px] font-semibold truncate" style={{ color: isComp ? "#6B7280" : "#D1D5DB" }}>{l.title}</p>
                         <p className="text-xs mt-0.5 truncate" style={{ color: "#6B7280" }}>{(l.topics || []).slice(0, 3).join(" · ")}</p>
                       </div>
                       {/* Duration */}
-                      <span className="text-xs flex-shrink-0 hidden sm:block" style={{ color: "#6B7280" }}>~{MIN_PER_LESSON} min</span>
+                      <span className="text-xs flex-shrink-0 hidden sm:block relative z-10" style={{ color: "#6B7280" }}>~{MIN_PER_LESSON} min</span>
                       {/* Status chip */}
-                      <span className="flex-shrink-0 text-[11px] font-semibold px-3 py-1 rounded-full"
+                      <span className="flex-shrink-0 text-[11px] font-semibold px-3 py-1 rounded-full relative z-10"
                         style={{
-                          background: isComp ? "rgba(34,197,94,0.12)" : isActive ? "linear-gradient(90deg, #C026FF, #8B5CF6)" : "rgba(255,255,255,0.04)",
+                          background: isComp ? "rgba(34,197,94,0.1)" : isActive ? "linear-gradient(90deg, #C026FF, #8B5CF6)" : "rgba(255,255,255,0.03)",
                           color: isComp ? "#22C55E" : isActive ? "#fff" : "#6B7280",
-                          boxShadow: isActive ? "0 0 12px rgba(217,70,239,0.25)" : "none",
+                          border: isActive ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.04)",
+                          boxShadow: isActive ? "0 0 12px rgba(217,70,239,0.2)" : "none",
                         }}>
                         {isComp ? "Completed" : isActive ? "Current" : "Locked"}
                       </span>
@@ -314,7 +338,12 @@ export default function CurriculumPage() {
               </div>
             </section>
           ) : lessons && lessons.length === 0 ? (
-            <div className="rounded-2xl p-8 text-center" style={{ background: "#111126", border: "1px solid rgba(255,255,255,0.04)", boxShadow: "0 20px 40px rgba(0,0,0,0.35)" }}>
+            <div className="rounded-[20px] p-8 text-center"
+              style={{
+                background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent)",
+                border: "1px solid rgba(255,255,255,0.04)",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              }}>
               <div className="text-4xl mb-3">📚</div>
               <p className="text-sm font-medium mb-1" style={{ color: "#FFFFFF" }}>{viewLevel} lessons are coming soon</p>
               <p className="text-xs" style={{ color: "#9CA3AF" }}>We're building this level — check back shortly.</p>
@@ -324,50 +353,87 @@ export default function CurriculumPage() {
 
         {/* RIGHT: Roadmap timeline — 30%, full height */}
         <div className="flex-1 min-w-0 flex flex-col" style={{ flexBasis: "30%" }}>
-          <div className="rounded-2xl p-5 flex-1 flex flex-col" style={{ background: "#111126", border: "1px solid rgba(255,255,255,0.04)", boxShadow: "0 20px 40px rgba(0,0,0,0.35)" }}>
-            <h3 className="text-sm font-bold mb-4" style={{ color: "#FFFFFF" }}>Roadmap</h3>
-            <div className="space-y-0 flex-1">
-              {units.map((u, i) => {
-                const isCurrent = u.unit === currentUnit?.unit;
-                const isComp = u.isComplete;
-                const isLast = i === units.length - 1;
-                return (
-                  <div key={u.unit} className="flex gap-3">
-                    <div className="flex flex-col items-center flex-shrink-0">
-                      <div className="w-3 h-3 rounded-full flex-shrink-0"
-                        style={{
-                          background: isComp ? "#22C55E" : isCurrent ? "#D946EF" : "#4B5563",
-                          boxShadow: isCurrent ? "0 0 6px rgba(217,70,239,0.4), inset 0 0 0 1.5px #fff" : isComp ? "0 0 6px rgba(34,197,94,0.2)" : "none",
-                        }} />
-                      {!isLast && <div className="w-0.5 flex-1 min-h-[28px]" style={{ background: isComp ? "#22C55E" : "#2A2644" }} />}
+          <div className="rounded-[20px] p-5 flex-1 flex flex-col relative overflow-hidden"
+            style={{
+              background: "linear-gradient(180deg, rgba(20,16,50,0.7), rgba(18,14,45,0.6))",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(109,59,255,0.04) inset",
+            }}>
+            {/* Ambient glow behind the roadmap */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(109,59,255,0.06), transparent 60%)" }} />
+            <div className="relative z-10 flex flex-col flex-1">
+              <h3 className="text-sm font-bold mb-5" style={{ color: "#FFFFFF" }}>Roadmap</h3>
+              <div className="space-y-0 flex-1">
+                {units.map((u, i) => {
+                  const isCurrent = u.unit === currentUnit?.unit;
+                  const isComp = u.isComplete;
+                  const isLast = i === units.length - 1;
+                  const pct = Math.round((u.completed / Math.max(u.total, 1)) * 100);
+                  return (
+                    <div key={u.unit} className="flex gap-3.5">
+                      <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0 transition-all duration-500"
+                          style={{
+                            background: isComp ? "#22C55E" : isCurrent ? "#D946EF" : "#4B5563",
+                            boxShadow: isCurrent ? "0 0 8px rgba(217,70,239,0.5), 0 0 0 2px rgba(217,70,239,0.15)" : isComp ? "0 0 4px rgba(34,197,94,0.3)" : "none",
+                          }} />
+                        {!isLast && (
+                          <div className="w-0.5 flex-1 min-h-[32px] rounded-full transition-all duration-500"
+                            style={{
+                              background: isComp ? "linear-gradient(180deg, #22C55E, rgba(34,197,94,0.3))" : "rgba(255,255,255,0.06)",
+                            }} />
+                        )}
+                      </div>
+                      <div className={isLast ? "pb-0" : "pb-5"}>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="text-sm font-semibold" style={{ color: isCurrent ? "#FFFFFF" : "#D1D5DB" }}>
+                            Unit {u.unit}{u.theme ? ` · ${u.theme}` : ""}
+                          </p>
+                          {isCurrent && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                              style={{ background: "linear-gradient(90deg, #C026FF, #8B5CF6)", color: "#fff", boxShadow: "0 0 8px rgba(217,70,239,0.2)" }}>
+                              {pct}%
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs" style={{ color: "#6B7280" }}>
+                          {u.total} lessons · {isComp ? "Complete" : isCurrent ? "In progress" : "Up next"}
+                        </p>
+                      </div>
                     </div>
-                    <div className={isLast ? "pb-0" : "pb-4"}>
-                      <p className="text-sm font-semibold" style={{ color: isCurrent ? "#FFFFFF" : "#D1D5DB" }}>
-                        Unit {u.unit}{u.theme ? ` · ${u.theme}` : ""}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: "#6B7280" }}>
-                        {u.total} lessons · {isComp ? "Complete" : isCurrent ? "In progress" : "Up next"}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
+                className="mt-4 text-xs font-semibold transition-colors duration-200 self-start px-3 py-1.5 -ml-3 rounded-lg"
+                style={{ color: "#A855F7" }}>
+                View full roadmap →
+              </button>
             </div>
-            <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
-              className="mt-3 text-xs font-semibold hover:underline self-start"
-              style={{ color: "#A855F7" }}>
-              View full roadmap →
-            </button>
           </div>
         </div>
       </div>
 
-      {/* ── Complete Journey (horizontal, replacing tools) ── */}
+      {/* ── Complete Journey (premium, layered) ── */}
       {levels && levels.length > 0 && (
         <section aria-labelledby="journey-heading">
-          <h2 id="journey-heading" className="text-[22px] font-extrabold mb-4" style={{ color: "#FFFFFF" }}>Complete Journey</h2>
-          <div className="rounded-2xl p-5" style={{ background: "#111126", border: "1px solid rgba(255,255,255,0.04)", boxShadow: "0 20px 40px rgba(0,0,0,0.35)" }}>
-            <LevelPath levels={levels} currentLevel={viewLevel} onSelect={setOverride} />
+          <h2 id="journey-heading" className="text-[22px] font-extrabold mb-5" style={{ color: "#FFFFFF" }}>Complete Journey</h2>
+          <div className="rounded-[20px] p-6 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, rgba(20,16,50,0.8), rgba(18,14,45,0.65))",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(109,59,255,0.04) inset",
+            }}>
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(109,59,255,0.06), transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(255,60,166,0.04), transparent 50%)" }} />
+            <div className="relative z-10">
+              <LevelPath levels={levels} currentLevel={viewLevel} onSelect={setOverride} />
+            </div>
           </div>
         </section>
       )}
