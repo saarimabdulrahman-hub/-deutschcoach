@@ -351,68 +351,82 @@ export default function CurriculumPage() {
           ) : null}
         </div>
 
-        {/* RIGHT: Roadmap timeline — 30%, full height */}
+        {/* RIGHT: Roadmap — vertical timeline with individual lessons */}
         <div className="flex-1 min-w-0 flex flex-col" style={{ flexBasis: "30%" }}>
-          <div className="rounded-[20px] p-5 flex-1 flex flex-col relative overflow-hidden"
+          <div className="rounded-[16px] p-5 flex-1 flex flex-col"
             style={{
-              background: "linear-gradient(180deg, rgba(20,16,50,0.7), rgba(18,14,45,0.6))",
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              border: "1px solid rgba(255,255,255,0.05)",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(109,59,255,0.04) inset",
+              background: "#12162B",
+              border: "1px solid rgba(255,255,255,0.06)",
+              boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
             }}>
-            {/* Ambient glow behind the roadmap */}
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(109,59,255,0.06), transparent 60%)" }} />
-            <div className="relative z-10 flex flex-col flex-1">
-              <h3 className="text-sm font-bold mb-5" style={{ color: "#FFFFFF" }}>Roadmap</h3>
-              <div className="space-y-0 flex-1">
-                {units.map((u, i) => {
-                  const isCurrent = u.unit === currentUnit?.unit;
-                  const isComp = u.isComplete;
-                  const isLast = i === units.length - 1;
-                  const pct = Math.round((u.completed / Math.max(u.total, 1)) * 100);
-                  return (
-                    <div key={u.unit} className="flex gap-3.5">
-                      <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0 transition-all duration-500"
-                          style={{
-                            background: isComp ? "#22C55E" : isCurrent ? "#D946EF" : "#4B5563",
-                            boxShadow: isCurrent ? "0 0 8px rgba(217,70,239,0.5), 0 0 0 2px rgba(217,70,239,0.15)" : isComp ? "0 0 4px rgba(34,197,94,0.3)" : "none",
-                          }} />
-                        {!isLast && (
-                          <div className="w-0.5 flex-1 min-h-[32px] rounded-full transition-all duration-500"
-                            style={{
-                              background: isComp ? "linear-gradient(180deg, #22C55E, rgba(34,197,94,0.3))" : "rgba(255,255,255,0.06)",
-                            }} />
-                        )}
-                      </div>
-                      <div className={isLast ? "pb-0" : "pb-5"}>
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-semibold" style={{ color: isCurrent ? "#FFFFFF" : "#D1D5DB" }}>
-                            Unit {u.unit}{u.theme ? ` · ${u.theme}` : ""}
-                          </p>
-                          {isCurrent && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                              style={{ background: "linear-gradient(90deg, #C026FF, #8B5CF6)", color: "#fff", boxShadow: "0 0 8px rgba(217,70,239,0.2)" }}>
-                              {pct}%
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs" style={{ color: "#6B7280" }}>
-                          {u.total} lessons · {isComp ? "Complete" : isCurrent ? "In progress" : "Up next"}
+            <h3 className="text-sm font-bold mb-5" style={{ color: "#F8FAFC" }}>Roadmap</h3>
+
+            {/* Timeline items */}
+            <div className="flex-1">
+              {currentUnit?.lessons.map((l, i) => {
+                const isActive = nextLesson?.id === l.id;
+                const isComp = l.completed;
+                const isLast = i === currentUnit.lessons.length - 1;
+                return (
+                  <div key={l.id} className="flex gap-3">
+                    {/* Timeline column */}
+                    <div className="flex flex-col items-center flex-shrink-0 pt-1">
+                      <div className="rounded-full flex-shrink-0"
+                        style={{
+                          width: 12, height: 12,
+                          background: isComp ? "#22C55E" : isActive ? "#8B5CF6" : "#374151",
+                          boxShadow: isActive ? "0 0 8px rgba(139,92,246,0.5)" : isComp ? "0 0 4px rgba(34,197,94,0.3)" : "none",
+                        }} />
+                      {!isLast && (
+                        <div style={{ width: 2, flex: 1, minHeight: 28, background: "linear-gradient(180deg, #6D28D9, rgba(109,40,217,0.15))" }} />
+                      )}
+                    </div>
+                    {/* Content */}
+                    <div className={`flex-1 min-w-0 flex items-center justify-between ${isLast ? "" : "pb-5"}`}>
+                      <div className="min-w-0 mr-2">
+                        <p className="text-[13px] font-semibold truncate" style={{ color: isComp ? "#6B7280" : "#F8FAFC" }}>
+                          {l.title}
+                        </p>
+                        <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B7280" }}>
+                          {(l.topics || []).slice(0, 2).join(", ")}
                         </p>
                       </div>
+                      {/* Status badge */}
+                      <span className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                        style={{
+                          background: isComp ? "rgba(34,197,94,0.1)" : isActive ? "#8B5CF6" : "#374151",
+                          color: isComp ? "#22C55E" : isActive ? "#F8FAFC" : "#6B7280",
+                        }}>
+                        {isComp ? "Done" : isActive ? "Current" : "Locked"}
+                      </span>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
+
+              {/* Review node (orange accent, always last) */}
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center flex-shrink-0 pt-1">
+                  <div className="rounded-full flex-shrink-0"
+                    style={{ width: 12, height: 12, background: "#F59E0B", boxShadow: "0 0 4px rgba(245,158,11,0.3)" }} />
+                </div>
+                <div className="flex-1 min-w-0 flex items-center justify-between">
+                  <div className="min-w-0 mr-2">
+                    <p className="text-[13px] font-semibold truncate" style={{ color: "#9CA3AF" }}>Unit {currentUnitNum} Review</p>
+                    <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B7280" }}>Review everything</p>
+                  </div>
+                  <span className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{ background: "#374151", color: "#6B7280" }}>Locked</span>
+                </div>
               </div>
-              <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
-                className="mt-4 text-xs font-semibold transition-colors duration-200 self-start px-3 py-1.5 -ml-3 rounded-lg"
-                style={{ color: "#A855F7" }}>
-                View full roadmap →
-              </button>
             </div>
+
+            {/* Full-width CTA */}
+            <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
+              className="w-full mt-4 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 hover:brightness-110"
+              style={{ background: "#4C1D95", color: "#F8FAFC" }}>
+              View Full Roadmap
+            </button>
           </div>
         </div>
       </div>
