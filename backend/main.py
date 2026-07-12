@@ -6,7 +6,7 @@ import os
 import logging
 from dotenv import load_dotenv
 
-from app.routers import auth, curriculum, grammar, quiz, srs, dashboard, payments, user, chat
+from app.routers import auth, curriculum, grammar, quiz, srs, dashboard, payments, user, chat, emma
 
 load_dotenv()
 
@@ -66,6 +66,7 @@ app.include_router(dashboard.router)
 app.include_router(payments.router)
 app.include_router(user.router)
 app.include_router(chat.router)
+app.include_router(emma.router)
 
 
 @app.get("/health")
