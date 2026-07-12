@@ -17,10 +17,16 @@ interface LessonCardProps {
 
 export function LessonCard({ id, title, level, unit, order, topics, completed, isNext, index }: LessonCardProps) {
   const router = useRouter();
+  const go = () => router.push(`/curriculum/${level.toLowerCase()}/${id}`);
+  const status = completed ? "Completed" : isNext ? "Next up" : "Not started";
 
   return (
     <div
-      onClick={() => router.push(`/curriculum/${level.toLowerCase()}/${id}`)}
+      role="button"
+      tabIndex={0}
+      aria-label={`${title}. Unit ${unit}. ${status}.`}
+      onClick={go}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } }}
       className={`group relative rounded-2xl transition-all duration-200 cursor-pointer`}
       style={{
         background: completed
