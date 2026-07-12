@@ -77,12 +77,16 @@ function MessageBubble({ msg }: { msg: EmmaMessage }) {
 }
 
 // Minimal markdown → HTML for bold, italic, inline code, blockquote.
+// All user/programmatic text is entity-escaped before transformations.
 function renderMarkdownInline(text: string): string {
-  return text
+  const escaped = text
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  return escaped
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/`(.+?)`/g, "<code>$1</code>")
-    .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
+    .replace(/^&gt; (.+)$/gm, "<blockquote>$1</blockquote>") // ">" was escaped to "&gt;"
     .replace(/\n/g, "<br/>");
 }
 
