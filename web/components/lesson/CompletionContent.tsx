@@ -26,7 +26,7 @@ export function CompletionContent({ mode, title, wordCount, patternName, nextTit
         <p className="text-base mt-2" style={{ color: "var(--color-text-secondary)" }}>
           You can now {title.toLowerCase()}.
         </p>
-        <button onClick={onFinish} className="mt-6 px-6 py-3 rounded-xl text-sm font-semibold w-full sm:w-auto"
+        <button onClick={onFinish} className="mt-6 px-6 py-3 rounded-xl text-sm font-semibold w-full sm:w-auto min-h-[48px]"
           style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>
           See what you learned →
         </button>

@@ -42,7 +42,7 @@ export function LessonWelcome({ lesson, vocabCount, exerciseCount, onStart }: Pr
           )}
         </ul>
       </div>
-      <button onClick={onStart} className="mt-6 px-6 py-3 rounded-xl text-sm font-semibold w-full sm:w-auto"
+      <button onClick={onStart} className="mt-6 px-6 py-3.5 rounded-xl text-sm sm:text-base font-semibold w-full sm:w-auto min-h-[48px]"
         style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>
         Start lesson →
       </button>
