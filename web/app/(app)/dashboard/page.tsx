@@ -32,12 +32,13 @@ const shinyCard: React.CSSProperties = {
   boxShadow: "0 0 35px rgba(168,85,247,.08)",
 };
 
-// Review & Practice group — themed border/glow that shines INWARD (inset)
+// Review & Practice group — themed border/glow that shines INWARD (inset),
+// lighter on the bottom side so it fades open rather than boxing in.
 const reviewWrap: React.CSSProperties = {
   background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
-  border: "1px solid rgba(217,70,239,0.30)",
+  border: "1px solid rgba(217,70,239,0.18)",
   borderRadius: 20,
-  boxShadow: "inset 0 0 26px rgba(217,70,239,0.20), inset 0 0 0 1px rgba(217,70,239,0.14)",
+  boxShadow: "inset 0 -2px 8px rgba(217,70,239,0.06), inset 0 0 16px rgba(217,70,239,0.14)",
 };
 // Subtle inner card for the review group
 const reviewItem: React.CSSProperties = {
