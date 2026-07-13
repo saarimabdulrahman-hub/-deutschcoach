@@ -395,7 +395,7 @@ export default function CurriculumPage() {
             {/* Timeline — relative container for the continuous line */}
             <div className="relative mb-6">
               {/* Continuous vertical line behind all dots */}
-              <div className="absolute left-[5px] top-0 bottom-0 w-[2px] rounded-full"
+              <div className="absolute left-[7px] top-0 bottom-0 w-[2px] rounded-full"
                 style={{ background: "linear-gradient(180deg, #6D28D9 0%, rgba(109,40,217,0.2) 100%)" }} />
 
               {currentUnit?.lessons.map((l, i) => {
@@ -409,19 +409,19 @@ export default function CurriculumPage() {
                     <div className="relative flex-shrink-0 flex items-start pt-[5px]">
                       {/* Outer glow ring */}
                       {isActive && (
-                        <div className="absolute rounded-full" style={{ width: 16, height: 16, left: -3, top: 2, background: "radial-gradient(circle, rgba(139,92,246,0.25), transparent 65%)" }} />
+                        <div className="absolute rounded-full" style={{ width: 22, height: 22, left: -4, top: 2, background: "radial-gradient(circle, rgba(139,92,246,0.25), transparent 65%)" }} />
                       )}
-                      {/* Dot — glass-like transparent */}
+                      {/* Dot — glass-like transparent, larger */}
                       <div className="relative rounded-full flex-shrink-0 z-10"
                         style={{
-                          width: 12, height: 12,
+                          width: 16, height: 16,
                           background: isComp ? "rgba(34,197,94,0.45)" : isActive ? "rgba(139,92,246,0.45)" : "rgba(75,85,99,0.35)",
                           border: isActive ? "1px solid rgba(139,92,246,0.25)" : "none",
-                          boxShadow: isActive ? "0 0 10px rgba(139,92,246,0.15)" : "none",
+                          boxShadow: isActive ? "0 0 12px rgba(139,92,246,0.2)" : "none",
                         }}>
                         {isActive && (
                           <div className="absolute rounded-full"
-                            style={{ width: 6, height: 6, left: 3, top: 3, background: "rgba(255,255,255,0.4)", border: "none" }} />
+                            style={{ width: 8, height: 8, left: 4, top: 4, background: "rgba(255,255,255,0.4)", border: "none" }} />
                         )}
                       </div>
                     </div>
@@ -455,8 +455,8 @@ export default function CurriculumPage() {
               {/* Review node */}
               <div className="flex gap-4 relative" style={{ minHeight: 52 }}>
                 <div className="flex-shrink-0 flex items-start pt-[5px]">
-                  <div className="relative z-10 rounded-full" style={{ width: 12, height: 12, background: "rgba(245,158,11,0.5)", boxShadow: "0 0 8px rgba(245,158,11,0.2)" }}>
-                    <div className="absolute rounded-full" style={{ width: 6, height: 6, left: 3, top: 3, background: "rgba(255,255,255,0.4)", border: "none" }} />
+                  <div className="relative z-10 rounded-full" style={{ width: 16, height: 16, background: "rgba(245,158,11,0.5)", boxShadow: "0 0 10px rgba(245,158,11,0.25)" }}>
+                    <div className="absolute rounded-full" style={{ width: 8, height: 8, left: 4, top: 4, background: "rgba(255,255,255,0.4)", border: "none" }} />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0 flex items-center justify-between" style={{ height: 52 }}>
