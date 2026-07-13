@@ -378,18 +378,19 @@ export default function CurriculumPage() {
                     <div className="relative flex-shrink-0 flex items-start pt-[5px]">
                       {/* Outer glow ring */}
                       {isActive && (
-                        <div className="absolute rounded-full" style={{ width: 16, height: 16, left: -3, top: 2, background: "radial-gradient(circle, rgba(139,92,246,0.45), transparent 70%)" }} />
+                        <div className="absolute rounded-full" style={{ width: 16, height: 16, left: -3, top: 2, background: "radial-gradient(circle, rgba(139,92,246,0.25), transparent 65%)" }} />
                       )}
-                      {/* Dot */}
+                      {/* Dot — glass-like transparent */}
                       <div className="relative rounded-full flex-shrink-0 z-10"
                         style={{
                           width: 12, height: 12,
-                          background: isComp ? "#22C55E" : isActive ? "#8B5CF6" : "#4B5563",
-                          boxShadow: isActive ? "0 0 0 3px rgba(139,92,246,0.2)" : "none",
+                          background: isComp ? "rgba(34,197,94,0.45)" : isActive ? "rgba(139,92,246,0.45)" : "rgba(75,85,99,0.35)",
+                          border: isActive ? "1px solid rgba(139,92,246,0.25)" : "none",
+                          boxShadow: isActive ? "0 0 10px rgba(139,92,246,0.15)" : "none",
                         }}>
                         {isActive && (
                           <div className="absolute rounded-full"
-                            style={{ width: 6, height: 6, left: 3, top: 3, background: "#FFFFFF", opacity: 0.7 }} />
+                            style={{ width: 6, height: 6, left: 3, top: 3, background: "rgba(255,255,255,0.4)", border: "none" }} />
                         )}
                       </div>
                     </div>
@@ -405,13 +406,13 @@ export default function CurriculumPage() {
                           {l.title}
                         </p>
                       </div>
-                      {/* Status badge — fixed width, compact */}
+                      {/* Status badge — transparent capsule */}
                       <span className="flex-shrink-0 text-[11px] font-medium px-3 py-1 rounded-full text-center transition-colors duration-300"
                         style={{
                           width: 72,
-                          background: isComp ? "rgba(34,197,94,0.08)" : isActive ? "#8B5CF6" : "rgba(75,85,99,0.25)",
-                          color: isComp ? "#22C55E" : isActive ? "#F8FAFC" : "#6B7280",
-                          opacity: isComp ? 1 : isActive ? 1 : 0.35,
+                          background: isComp ? "rgba(34,197,94,0.08)" : isActive ? "rgba(139,92,246,0.12)" : "rgba(75,85,99,0.1)",
+                          color: isComp ? "#22C55E" : isActive ? "#A78BFA" : "rgba(107,114,128,0.5)",
+                          border: isActive ? "1px solid rgba(139,92,246,0.25)" : "1px solid transparent",
                         }}>
                         {isComp ? "Done" : isActive ? "Current" : "Locked"}
                       </span>
@@ -423,8 +424,8 @@ export default function CurriculumPage() {
               {/* Review node */}
               <div className="flex gap-4 relative" style={{ minHeight: 52 }}>
                 <div className="flex-shrink-0 flex items-start pt-[5px]">
-                  <div className="relative z-10 rounded-full" style={{ width: 12, height: 12, background: "#F59E0B", boxShadow: "0 0 6px rgba(245,158,11,0.35)" }}>
-                    <div className="absolute rounded-full" style={{ width: 6, height: 6, left: 3, top: 3, background: "#FFFFFF", opacity: 0.6 }} />
+                  <div className="relative z-10 rounded-full" style={{ width: 12, height: 12, background: "rgba(245,158,11,0.5)", boxShadow: "0 0 8px rgba(245,158,11,0.2)" }}>
+                    <div className="absolute rounded-full" style={{ width: 6, height: 6, left: 3, top: 3, background: "rgba(255,255,255,0.4)", border: "none" }} />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0 flex items-center justify-between" style={{ height: 52 }}>
@@ -433,7 +434,7 @@ export default function CurriculumPage() {
                     <p className="text-[13px] truncate leading-tight" style={{ color: "#6B7280" }}>Unit {currentUnitNum} Review</p>
                   </div>
                   <span className="flex-shrink-0 text-[11px] font-medium px-3 py-1 rounded-full text-center transition-colors duration-300"
-                    style={{ width: 72, background: "rgba(75,85,99,0.25)", color: "#6B7280", opacity: 0.35 }}>
+                    style={{ width: 72, background: "rgba(75,85,99,0.1)", color: "rgba(107,114,128,0.5)" }}>
                     Locked
                   </span>
                 </div>
