@@ -351,51 +351,67 @@ export default function CurriculumPage() {
           ) : null}
         </div>
 
-        {/* RIGHT: Roadmap — vertical timeline with individual lessons */}
+        {/* RIGHT: Roadmap — dense compact card, layered dots, continuous timeline */}
         <div className="flex-1 min-w-0 flex flex-col" style={{ flexBasis: "30%" }}>
-          <div className="rounded-[16px] p-5 flex-1 flex flex-col"
+          <div className="rounded-[15px] p-6"
             style={{
               background: "#12162B",
               border: "1px solid rgba(255,255,255,0.06)",
               boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
             }}>
-            <h3 className="text-sm font-bold mb-5" style={{ color: "#F8FAFC" }}>Roadmap</h3>
+            <h3 className="text-lg font-bold mb-5" style={{ color: "#F8FAFC" }}>Roadmap</h3>
 
-            {/* Timeline items */}
-            <div className="flex-1">
+            {/* Timeline — relative container for the continuous line */}
+            <div className="relative mb-6">
+              {/* Continuous vertical line behind all dots */}
+              <div className="absolute left-[5px] top-0 bottom-0 w-[2px] rounded-full"
+                style={{ background: "linear-gradient(180deg, #6D28D9 0%, rgba(109,40,217,0.2) 100%)" }} />
+
               {currentUnit?.lessons.map((l, i) => {
                 const isActive = nextLesson?.id === l.id;
                 const isComp = l.completed;
                 const isLast = i === currentUnit.lessons.length - 1;
                 return (
-                  <div key={l.id} className="flex gap-3">
-                    {/* Timeline column */}
-                    <div className="flex flex-col items-center flex-shrink-0 pt-1">
-                      <div className="rounded-full flex-shrink-0"
+                  <div key={l.id} className={`flex gap-4 relative ${isLast ? "" : "mb-5"}`}
+                    style={{ minHeight: 52 }}>
+                    {/* Layered timeline dot */}
+                    <div className="relative flex-shrink-0 flex items-start pt-[5px]">
+                      {/* Outer glow ring */}
+                      {isActive && (
+                        <div className="absolute rounded-full" style={{ width: 16, height: 16, left: -3, top: 2, background: "radial-gradient(circle, rgba(139,92,246,0.45), transparent 70%)" }} />
+                      )}
+                      {/* Dot */}
+                      <div className="relative rounded-full flex-shrink-0 z-10"
                         style={{
                           width: 12, height: 12,
-                          background: isComp ? "#22C55E" : isActive ? "#8B5CF6" : "#374151",
-                          boxShadow: isActive ? "0 0 8px rgba(139,92,246,0.5)" : isComp ? "0 0 4px rgba(34,197,94,0.3)" : "none",
-                        }} />
-                      {!isLast && (
-                        <div style={{ width: 2, flex: 1, minHeight: 28, background: "linear-gradient(180deg, #6D28D9, rgba(109,40,217,0.15))" }} />
-                      )}
+                          background: isComp ? "#22C55E" : isActive ? "#8B5CF6" : "#4B5563",
+                          boxShadow: isActive ? "0 0 0 3px rgba(139,92,246,0.2)" : "none",
+                        }}>
+                        {isActive && (
+                          <div className="absolute rounded-full"
+                            style={{ width: 6, height: 6, left: 3, top: 3, background: "#FFFFFF", opacity: 0.7 }} />
+                        )}
+                      </div>
                     </div>
-                    {/* Content */}
-                    <div className={`flex-1 min-w-0 flex items-center justify-between ${isLast ? "" : "pb-5"}`}>
+                    {/* Content row */}
+                    <div className="flex-1 min-w-0 flex items-center justify-between" style={{ height: 52 }}>
                       <div className="min-w-0 mr-2">
-                        <p className="text-[13px] font-semibold truncate" style={{ color: isComp ? "#6B7280" : "#F8FAFC" }}>
+                        <p className="text-[15px] font-semibold truncate leading-tight mb-0.5"
+                          style={{ color: isComp ? "#6B7280" : isActive ? "#F8FAFC" : "#D1D5DB" }}>
                           Lesson {l.order}
                         </p>
-                        <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B7280" }}>
+                        <p className="text-[13px] truncate leading-tight"
+                          style={{ color: isComp ? "#5C6370" : "#6B7280" }}>
                           {l.title}
                         </p>
                       </div>
-                      {/* Status badge */}
-                      <span className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                      {/* Status badge — fixed width, compact */}
+                      <span className="flex-shrink-0 text-[11px] font-medium px-3 py-1 rounded-full text-center transition-colors duration-300"
                         style={{
-                          background: isComp ? "rgba(34,197,94,0.1)" : isActive ? "#8B5CF6" : "#374151",
+                          width: 72,
+                          background: isComp ? "rgba(34,197,94,0.08)" : isActive ? "#8B5CF6" : "rgba(75,85,99,0.25)",
                           color: isComp ? "#22C55E" : isActive ? "#F8FAFC" : "#6B7280",
+                          opacity: isComp ? 1 : isActive ? 1 : 0.35,
                         }}>
                         {isComp ? "Done" : isActive ? "Current" : "Locked"}
                       </span>
@@ -404,27 +420,34 @@ export default function CurriculumPage() {
                 );
               })}
 
-              {/* Review node (orange accent, always last) */}
-              <div className="flex gap-3">
-                <div className="flex flex-col items-center flex-shrink-0 pt-1">
-                  <div className="rounded-full flex-shrink-0"
-                    style={{ width: 12, height: 12, background: "#F59E0B", boxShadow: "0 0 4px rgba(245,158,11,0.3)" }} />
-                </div>
-                <div className="flex-1 min-w-0 flex items-center justify-between">
-                  <div className="min-w-0 mr-2">
-                    <p className="text-[13px] font-semibold truncate" style={{ color: "#9CA3AF" }}>Unit {currentUnitNum} Review</p>
-                    <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B7280" }}>Review everything</p>
+              {/* Review node */}
+              <div className="flex gap-4 relative" style={{ minHeight: 52 }}>
+                <div className="flex-shrink-0 flex items-start pt-[5px]">
+                  <div className="relative z-10 rounded-full" style={{ width: 12, height: 12, background: "#F59E0B", boxShadow: "0 0 6px rgba(245,158,11,0.35)" }}>
+                    <div className="absolute rounded-full" style={{ width: 6, height: 6, left: 3, top: 3, background: "#FFFFFF", opacity: 0.6 }} />
                   </div>
-                  <span className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background: "#374151", color: "#6B7280" }}>Locked</span>
+                </div>
+                <div className="flex-1 min-w-0 flex items-center justify-between" style={{ height: 52 }}>
+                  <div className="min-w-0 mr-2">
+                    <p className="text-[15px] font-semibold truncate leading-tight mb-0.5" style={{ color: "#D1D5DB" }}>Review</p>
+                    <p className="text-[13px] truncate leading-tight" style={{ color: "#6B7280" }}>Unit {currentUnitNum} Review</p>
+                  </div>
+                  <span className="flex-shrink-0 text-[11px] font-medium px-3 py-1 rounded-full text-center transition-colors duration-300"
+                    style={{ width: 72, background: "rgba(75,85,99,0.25)", color: "#6B7280", opacity: 0.35 }}>
+                    Locked
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Full-width CTA */}
+            {/* CTA — gradient with shadow + hover lift */}
             <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
-              className="w-full mt-4 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 hover:brightness-110"
-              style={{ background: "#4C1D95", color: "#F8FAFC" }}>
+              className="w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-250 hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(180deg, #5B21B6, #6D28D9)",
+                color: "#F8FAFC",
+                boxShadow: "0 6px 18px rgba(91,33,182,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
+              }}>
               View Full Roadmap
             </button>
           </div>
