@@ -305,15 +305,45 @@ export default function CurriculumPage() {
                         <div className="absolute inset-0 pointer-events-none"
                           style={{ background: "linear-gradient(90deg, rgba(139,92,246,0.06) 0%, transparent 50%)" }} />
                       )}
-                      {/* Number circle — translucent */}
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold relative z-10"
-                        style={{
-                          background: isComp ? "rgba(34,197,94,0.1)" : isActive ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.03)",
-                          color: isComp ? "#22C55E" : isActive ? "#A78BFA" : "#6B7280",
-                          border: `1px solid ${isActive ? "rgba(139,92,246,0.25)" : "rgba(255,255,255,0.06)"}`,
-                          boxShadow: isActive ? "0 0 16px rgba(139,92,246,0.15)" : "none",
-                        }}>
-                        {isComp ? "✓" : l.order}
+                      {/* Number circle — plum glass shell + gold medallion */}
+                      <div className="flex-shrink-0 relative z-10 flex items-center justify-center"
+                        style={{ width: 44, height: 44 }}>
+                        {/* Outer plum glass shell */}
+                        <div className="absolute inset-0 rounded-full"
+                          style={{
+                            background: isComp
+                              ? "rgba(34,197,94,0.08)"
+                              : isActive
+                                ? "radial-gradient(circle at 50% 40%, rgba(168,85,247,0.25), rgba(109,40,217,0.12))"
+                                : "rgba(255,255,255,0.02)",
+                            border: isActive
+                              ? "1px solid rgba(168,85,247,0.28)"
+                              : "1px solid rgba(255,255,255,0.06)",
+                            boxShadow: isActive
+                              ? "0 0 18px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.06)"
+                              : "none",
+                          }} />
+                        {/* Inner metallic gold medallion */}
+                        <div className="absolute rounded-full flex items-center justify-center"
+                          style={{
+                            width: 30, height: 30,
+                            background: isComp
+                              ? "rgba(34,197,94,0.12)"
+                              : isActive
+                                ? "radial-gradient(circle at 40% 35%, #FCD34D, #D97706 70%, #92400E)"
+                                : "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.06), rgba(255,255,255,0.01))",
+                            boxShadow: isActive
+                              ? "0 0 10px rgba(245,158,11,0.25), inset 0 1px 0 rgba(255,255,255,0.2)"
+                              : "none",
+                          }}>
+                          {/* Numeric label */}
+                          <span className="text-sm font-bold"
+                            style={{
+                              color: isComp ? "#22C55E" : isActive ? "#FDE68A" : "#6B7280",
+                            }}>
+                            {isComp ? "✓" : l.order}
+                          </span>
+                        </div>
                       </div>
                       {/* Lesson info — "Lesson N · Title" format */}
                       <div className="flex-1 min-w-0 relative z-10">
