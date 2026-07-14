@@ -233,31 +233,25 @@ function EmmaCard({ dashboard, userName }: { dashboard?: DashboardData; userName
 function TryThese({ mode, setMode }: { mode: TutorMode; setMode: (m: TutorMode) => void }) {
   return (
     <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wider mb-2 px-1" style={{ color: "var(--color-text-muted)" }}>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--color-text-muted)" }}>
         Try These
       </p>
-      <div className="space-y-1">
+      <div className="flex flex-col gap-1.5">
         {TRY_THESE.map((m) => {
           const active = mode === m.key;
           return (
             <button key={m.key} onClick={() => setMode(m.key)}
-              className="flex items-center gap-3 w-full px-2 py-2 rounded-xl text-left transition-all duration-200 hover:-translate-y-0.5"
+              className="flex items-center gap-2.5 w-full px-3 py-2 rounded-full text-left transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                background: active ? "var(--color-hover-bg)" : "var(--color-card-bg)",
+                background: active
+                  ? "var(--color-hover-bg)"
+                  : "var(--color-active-bg)",
                 border: active
                   ? "1px solid var(--color-accent)"
-                  : "1px solid var(--color-border)",
+                  : "1px solid transparent",
                 boxShadow: active ? "0 0 16px var(--color-active-bg)" : "none",
               }}>
-              {/* Emoji in translucent circle */}
-              <span className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-base"
-                style={{
-                  background: "var(--color-active-bg)",
-                  color: "var(--color-accent)",
-                  border: "1px solid var(--color-border)",
-                }}>
-                {m.emoji}
-              </span>
+              <span className="text-base flex-shrink-0">{m.emoji}</span>
               <span className="text-xs font-semibold truncate" style={{ color: active ? "var(--color-active-text)" : "var(--color-text-secondary)" }}>
                 {m.label}
               </span>
@@ -393,7 +387,7 @@ export function ChatInterface() {
   return (
     <div className="flex h-full gap-0">
       {/* ── LEFT SIDEBAR: Emma card + Try These + Emma details ── */}
-      <div className="hidden lg:flex flex-col w-56 flex-shrink-0 border-r mr-3 pr-2 overflow-y-auto gap-4" style={{ borderColor: "var(--color-border)" }}>
+      <div className="hidden md:flex flex-col w-56 flex-shrink-0 border-r mr-3 pr-2 overflow-y-auto gap-4" style={{ borderColor: "var(--color-border)" }}>
         {/* Emma greeting card */}
         <EmmaCard dashboard={dashboard} userName={userName} />
 
