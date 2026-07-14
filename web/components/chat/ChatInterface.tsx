@@ -314,6 +314,8 @@ export function ChatInterface() {
   const [summary, setSummary] = useState<SessionSummary>({ wordsDiscussed: [], grammarExplained: [], correctionsCount: 0, usefulPhrases: [] });
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const userName = (user?.name || "You").split(" ")[0];
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -461,14 +463,43 @@ export function ChatInterface() {
           </div>
         )}
 
-        {/* Input bar — future-ready for voice button */}
-        <div className="flex gap-2 pt-3" style={{ borderTop: "1px solid var(--color-border)" }}>
-          {/* Voice placeholder button (future) */}
-          <button aria-label="Voice input (coming soon)" disabled
-            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 opacity-30"
-            style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)" }}>
-            🎤
-          </button>
+        {/* Input bar */}
+        <div className="flex items-center gap-2 pt-3" style={{ borderTop: "1px solid var(--color-border)" }}>
+          {/* File attach button */}
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.pdf"
+              multiple
+              onChange={(e) => {
+                if (e.target.files) setAttachedFiles(Array.from(e.target.files));
+              }}
+              className="hidden"
+              aria-label="Attach files"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              title="Attach a file"
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:-translate-y-0.5 relative"
+              style={{
+                background: "var(--color-card-bg)",
+                border: "1px solid var(--color-border)",
+                color: "var(--color-text-muted)",
+              }}>
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+              </svg>
+              {attachedFiles.length > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white px-1"
+                  style={{ background: "#ec4899", boxShadow: "0 0 6px rgba(236,72,153,0.5)" }}>
+                  {attachedFiles.length}
+                </span>
+              )}
+            </button>
+          </>
+
+          {/* Input field */}
           <input ref={inputRef}
             value={input} onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
@@ -479,10 +510,19 @@ export function ChatInterface() {
             onFocus={(e) => { e.target.style.borderColor = "var(--color-input-focus)"; }}
             onBlur={(e) => { e.target.style.borderColor = "var(--color-border)"; }}
           />
+
+          {/* Send button — round gradient circle */}
           <button onClick={() => send()} disabled={loading || !input.trim()}
-            className="px-5 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-50 hover:-translate-y-0.5 min-w-[60px]"
-            style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>
-            {loading ? "..." : "Send"}
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40 hover:-translate-y-0.5"
+            style={{
+              background: (loading || !input.trim()) ? "var(--color-card-bg)" : "linear-gradient(135deg, #FF3CA6, #6D3BFF)",
+              border: (loading || !input.trim()) ? "1px solid var(--color-border)" : "none",
+              boxShadow: (loading || !input.trim()) ? "none" : "0 0 16px rgba(217,70,239,0.35)",
+            }}>
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden
+              style={{ color: (loading || !input.trim()) ? "var(--color-text-muted)" : "#fff" }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
