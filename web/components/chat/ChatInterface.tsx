@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import type { DashboardData } from "@/types";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -158,7 +160,11 @@ function SessionSummary({ summary }: { summary: SessionSummary }) {
 function ContextBar() {
   return (
     <div className="flex items-center gap-3 px-3 py-2 rounded-xl mb-3 flex-wrap"
-      style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
+      style={{
+        background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+        border: "1px solid rgba(186, 120, 255, 0.18)",
+        boxShadow: "0 0 35px rgba(168,85,247,.06)",
+      }}>
       <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Context</span>
       <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--color-text-secondary)" }}>
         <span style={{ color: "var(--color-accent-light)" }}>A1</span> Beginner
@@ -175,6 +181,10 @@ function ContextBar() {
 
 export function ChatInterface() {
   const { user } = useAuth();
+  const { data: dashboard } = useQuery<DashboardData>({
+    queryKey: ["dashboard"],
+    queryFn: () => api.get("/dashboard"),
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
