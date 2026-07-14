@@ -25,13 +25,13 @@ interface SessionSummary {
 
 // ── Mode definitions ──────────────────────────────────────────────────
 
-const TRY_THESE: { key: TutorMode; emoji: string; label: string; color: string; bg: string }[] = [
-  { key: "roleplay", emoji: "🎭", label: "Act out a situation", color: "#D946EF", bg: "rgba(217,70,239,0.10)" },
-  { key: "grammar", emoji: "📖", label: "Break down a rule", color: "#3B82F6", bg: "rgba(59,130,246,0.10)" },
-  { key: "vocab", emoji: "🌿", label: "Grow my word bank", color: "#22C55E", bg: "rgba(34,197,94,0.10)" },
-  { key: "writing", emoji: "✍️", label: "Make my German natural", color: "#F59E0B", bg: "rgba(245,158,11,0.10)" },
-  { key: "pronunciation", emoji: "🗣️", label: "Nail the pronunciation", color: "#F43F5E", bg: "rgba(244,63,94,0.10)" },
-  { key: "exam", emoji: "🎯", label: "Crush the next exam", color: "#8B5CF6", bg: "rgba(139,92,246,0.10)" },
+const TRY_THESE: { key: TutorMode; emoji: string; label: string }[] = [
+  { key: "roleplay", emoji: "🎭", label: "Act out a situation" },
+  { key: "grammar", emoji: "📖", label: "Break down a rule" },
+  { key: "vocab", emoji: "🌿", label: "Grow my word bank" },
+  { key: "writing", emoji: "✍️", label: "Make my German natural" },
+  { key: "pronunciation", emoji: "🗣️", label: "Nail the pronunciation" },
+  { key: "exam", emoji: "🎯", label: "Crush the next exam" },
 ];
 
 const MODE_SUGGESTIONS: Record<TutorMode, string[]> = {
@@ -188,13 +188,13 @@ function EmmaCard({ dashboard, userName }: { dashboard?: DashboardData; userName
       <div className="relative z-10">
         {/* Emma avatar + greeting */}
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center"
+          <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
             style={{
               background: "linear-gradient(135deg, #6D3BFF, #FF3CA6)",
               border: "2px solid rgba(255,255,255,0.18)",
               boxShadow: "0 0 0 4px rgba(109,59,255,0.25), 0 0 20px rgba(109,59,255,0.25)",
             }}>
-            <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />
+            <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover scale-[1.35]" />
           </div>
           <div className="min-w-0">
             <p className="text-base font-bold" style={{ color: "#fff" }}>
@@ -241,18 +241,24 @@ function TryThese({ mode, setMode }: { mode: TutorMode; setMode: (m: TutorMode) 
           const active = mode === m.key;
           return (
             <button key={m.key} onClick={() => setMode(m.key)}
-              className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-all duration-200 hover:-translate-y-0.5"
+              className="flex items-center gap-3 w-full px-2 py-2 rounded-xl text-left transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                background: active
-                  ? `linear-gradient(135deg, ${m.bg}, ${m.color}22)`
-                  : m.bg,
+                background: active ? "var(--color-hover-bg)" : "transparent",
                 border: active
-                  ? `1px solid ${m.color}55`
-                  : `1px solid ${m.color}22`,
-                boxShadow: active ? `0 0 16px ${m.color}22` : "none",
+                  ? "1px solid var(--color-accent)"
+                  : "1px solid transparent",
+                boxShadow: active ? "0 0 16px var(--color-active-bg)" : "none",
               }}>
-              <span className="text-base flex-shrink-0">{m.emoji}</span>
-              <span className="text-xs font-semibold truncate" style={{ color: active ? "#fff" : "var(--color-text-secondary)" }}>
+              {/* Emoji in translucent circle */}
+              <span className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-base"
+                style={{
+                  background: "var(--color-active-bg)",
+                  color: "var(--color-accent)",
+                  border: "1px solid var(--color-border)",
+                }}>
+                {m.emoji}
+              </span>
+              <span className="text-xs font-semibold truncate" style={{ color: active ? "var(--color-active-text)" : "var(--color-text-secondary)" }}>
                 {m.label}
               </span>
             </button>
@@ -272,12 +278,12 @@ function EmmaDetails() {
         background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
         border: "1px solid rgba(186, 120, 255, 0.12)",
       }}>
-      <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+      <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #6D3BFF, #FF3CA6)",
           border: "1px solid rgba(255,255,255,0.15)",
         }}>
-        <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />
+        <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover scale-[1.35]" />
       </div>
       <div className="min-w-0">
         <p className="text-xs font-semibold truncate" style={{ color: "var(--color-text)" }}>
@@ -409,9 +415,9 @@ export function ChatInterface() {
             <button key={m.key} onClick={() => setMode(m.key)}
               className="px-3 py-1.5 rounded-full text-[10px] font-semibold whitespace-nowrap flex-shrink-0 transition-all"
               style={{
-                background: mode === m.key ? m.color : "var(--color-card-bg)",
+                background: mode === m.key ? "var(--color-accent)" : "var(--color-card-bg)",
                 color: mode === m.key ? "#fff" : "var(--color-text-secondary)",
-                border: `1px solid ${mode === m.key ? m.color : "var(--color-border)"}`,
+                border: mode === m.key ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
               }}>{m.emoji} {m.label}</button>
           ))}
         </div>
@@ -544,7 +550,7 @@ export function ChatInterface() {
       </div>
 
       {/* ── RIGHT SIDEBAR: Session summary + Recent topics ── */}
-      <div className="hidden xl:flex flex-col w-64 flex-shrink-0 border-l ml-4 pl-4 overflow-y-auto gap-4" style={{ borderColor: "var(--color-border)" }}>
+      <div className="hidden lg:flex flex-col w-64 flex-shrink-0 border-l ml-4 pl-4 overflow-y-auto gap-4" style={{ borderColor: "var(--color-border)" }}>
         <SessionSummary summary={summary} />
         <RecentTopics dashboard={dashboard} />
       </div>
