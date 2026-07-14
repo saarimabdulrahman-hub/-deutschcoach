@@ -270,6 +270,35 @@ function TryThese({ mode, setMode }: { mode: TutorMode; setMode: (m: TutorMode) 
   );
 }
 
+// ── Emma details footer (sidebar bottom) ───────────────────────────────
+
+function EmmaDetails() {
+  return (
+    <div className="rounded-xl p-3 flex items-center gap-3"
+      style={{
+        background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+        border: "1px solid rgba(186, 120, 255, 0.12)",
+      }}>
+      <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{
+          background: "linear-gradient(135deg, #6D3BFF, #FF3CA6)",
+          border: "1px solid rgba(255,255,255,0.15)",
+        }}>
+        <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-semibold truncate" style={{ color: "var(--color-text)" }}>
+          Emma · German Tutor
+        </p>
+        <p className="text-[10px] flex items-center gap-1" style={{ color: "var(--color-text-muted)" }}>
+          <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#22C55E", boxShadow: "0 0 4px rgba(34,197,94,0.5)" }} />
+          Online now
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────
 
 export function ChatInterface() {
