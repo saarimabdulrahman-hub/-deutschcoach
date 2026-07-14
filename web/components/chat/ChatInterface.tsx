@@ -14,7 +14,7 @@ interface Message {
   corrections?: Array<{ error: string; correction: string; explanation: string }>;
 }
 
-type TutorMode = "free" | "roleplay" | "grammar" | "vocab" | "writing" | "pronunciation" | "exam";
+type TutorMode = "roleplay" | "grammar" | "vocab" | "writing" | "pronunciation" | "exam";
 
 interface SessionSummary {
   wordsDiscussed: string[];
@@ -25,18 +25,17 @@ interface SessionSummary {
 
 // ── Mode definitions ──────────────────────────────────────────────────
 
-const MODES: { key: TutorMode; label: string; icon: string; desc: string }[] = [
-  { key: "free", label: "Free Chat", icon: "💬", desc: "Ask me anything about German" },
-  { key: "roleplay", label: "Roleplay", icon: "🎭", desc: "Practice a real conversation" },
-  { key: "grammar", label: "Grammar Coach", icon: "📖", desc: "Explain a grammar pattern" },
-  { key: "vocab", label: "Vocabulary", icon: "📇", desc: "Practice and review words" },
-  { key: "writing", label: "Write & Correct", icon: "✍️", desc: "I'll correct your German" },
-  { key: "pronunciation", label: "Pronunciation", icon: "🔊", desc: "How to say it right" },
-  { key: "exam", label: "Exam Prep", icon: "🎯", desc: "Goethe / TestDaF practice" },
+type TutorModeKeys = TutorMode;
+const TRY_THESE: { key: TutorModeKeys; emoji: string; label: string; color: string; bg: string }[] = [
+  { key: "roleplay", emoji: "🎭", label: "Act out a situation", color: "#D946EF", bg: "rgba(217,70,239,0.10)" },
+  { key: "grammar", emoji: "📖", label: "Break down a rule", color: "#3B82F6", bg: "rgba(59,130,246,0.10)" },
+  { key: "vocab", emoji: "🌿", label: "Grow my word bank", color: "#22C55E", bg: "rgba(34,197,94,0.10)" },
+  { key: "writing", emoji: "✍️", label: "Make my German natural", color: "#F59E0B", bg: "rgba(245,158,11,0.10)" },
+  { key: "pronunciation", emoji: "🗣️", label: "Nail the pronunciation", color: "#F43F5E", bg: "rgba(244,63,94,0.10)" },
+  { key: "exam", emoji: "🎯", label: "Crush the next exam", color: "#8B5CF6", bg: "rgba(139,92,246,0.10)" },
 ];
 
 const MODE_SUGGESTIONS: Record<TutorMode, string[]> = {
-  free: ["How do I introduce myself?", "Teach me common greetings", "What are the days of the week?", "How do I talk about hobbies?"],
   roleplay: ["Let's practice ordering at a café", "I'm checking into a hotel", "Help me with a job interview", "Can we do a doctor's visit?"],
   grammar: ["Explain verb conjugation", "When do I use der/die/das?", "Help me with sentence order", "What's the difference between du and Sie?"],
   vocab: ["Quiz me on greetings", "Teach me 5 food words", "What are the most common verbs?", "Review my recent vocabulary"],
@@ -236,6 +235,41 @@ function EmmaCard({ dashboard, userName }: { dashboard?: DashboardData; userName
   );
 }
 
+// ── Try These section (replaces Modes) ──────────────────────────────────
+
+function TryThese({ mode, setMode }: { mode: TutorMode; setMode: (m: TutorMode) => void }) {
+  return (
+    <div>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-2 px-1" style={{ color: "var(--color-text-muted)" }}>
+        Try These
+      </p>
+      <div className="space-y-1">
+        {TRY_THESE.map((m) => {
+          const active = mode === m.key;
+          return (
+            <button key={m.key} onClick={() => setMode(m.key)}
+              className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                background: active
+                  ? `linear-gradient(135deg, ${m.bg}, ${m.color}22)`
+                  : m.bg,
+                border: active
+                  ? `1px solid ${m.color}55`
+                  : `1px solid ${m.color}22`,
+                boxShadow: active ? `0 0 16px ${m.color}22` : "none",
+              }}>
+              <span className="text-base flex-shrink-0">{m.emoji}</span>
+              <span className="text-xs font-semibold truncate" style={{ color: active ? "#fff" : "var(--color-text-secondary)" }}>
+                {m.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────
 
 export function ChatInterface() {
@@ -247,7 +281,7 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<TutorMode>("free");
+  const [mode, setMode] = useState<TutorMode>("roleplay");
   const [summary, setSummary] = useState<SessionSummary>({ wordsDiscussed: [], grammarExplained: [], correctionsCount: 0, usefulPhrases: [] });
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -291,7 +325,7 @@ export function ChatInterface() {
     }
   }
 
-  const suggestions = MODE_SUGGESTIONS[mode] ?? MODE_SUGGESTIONS.free;
+  const suggestions = MODE_SUGGESTIONS[mode] ?? MODE_SUGGESTIONS.roleplay;
   const isEmpty = messages.length === 0;
 
   return (
@@ -321,14 +355,14 @@ export function ChatInterface() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile mode pills */}
         <div className="lg:hidden flex gap-1.5 mb-2 overflow-x-auto pb-1">
-          {MODES.map((m) => (
+          {TRY_THESE.map((m) => (
             <button key={m.key} onClick={() => setMode(m.key)}
-              className="px-3 py-1.5 rounded-full text-[10px] font-semibold whitespace-nowrap flex-shrink-0"
+              className="px-3 py-1.5 rounded-full text-[10px] font-semibold whitespace-nowrap flex-shrink-0 transition-all"
               style={{
-                background: mode === m.key ? "var(--color-accent)" : "var(--color-card-bg)",
+                background: mode === m.key ? m.color : "var(--color-card-bg)",
                 color: mode === m.key ? "#fff" : "var(--color-text-secondary)",
-                border: "1px solid var(--color-border)",
-              }}>{m.icon} {m.label}</button>
+                border: `1px solid ${mode === m.key ? m.color : "var(--color-border)"}`,
+              }}>{m.emoji} {m.label}</button>
           ))}
         </div>
 
@@ -384,7 +418,7 @@ export function ChatInterface() {
         {isEmpty && (
           <div className="mb-3">
             <p className="text-[10px] font-semibold uppercase tracking-wider mb-2 text-center" style={{ color: "var(--color-text-muted)" }}>
-              Try in {MODES.find((m) => m.key === mode)?.label ?? mode} mode
+              Try in {TRY_THESE.find((m) => m.key === mode)?.label ?? mode} mode
             </p>
             <div className="flex flex-wrap gap-1.5 justify-center">
               {suggestions.slice(0, 4).map((s, i) => (
