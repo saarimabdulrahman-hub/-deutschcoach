@@ -293,6 +293,38 @@ function EmmaDetails() {
   );
 }
 
+// ── Recent Topics card (right sidebar) ─────────────────────────────────
+
+function RecentTopics({ dashboard }: { dashboard?: DashboardData }) {
+  const activities = dashboard?.recent_activity?.slice(0, 3) ?? [];
+  if (activities.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl p-4"
+      style={{
+        background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+        border: "1px solid rgba(186, 120, 255, 0.18)",
+        boxShadow: "0 0 35px rgba(168,85,247,.06)",
+      }}>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
+        Recent Topics
+      </p>
+      <div className="space-y-3">
+        {activities.map((a, i) => (
+          <div key={i}>
+            <p className="text-[13px] font-semibold leading-snug" style={{ color: "var(--color-text)" }}>
+              {a.description}
+            </p>
+            <p className="text-[10px] mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+              {a.type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────
 
 export function ChatInterface() {
