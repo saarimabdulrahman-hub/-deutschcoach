@@ -101,55 +101,49 @@ function WelcomePanel({ userName, onPrompt }: { userName: string; onPrompt: (tex
   );
 }
 
-// ── Session summary sidebar (desktop right) ───────────────────────────
+// ── Session summary (right sidebar) ────────────────────────────────────
 
 function SessionSummary({ summary }: { summary: SessionSummary }) {
-  if (!summary.wordsDiscussed.length && !summary.grammarExplained.length && !summary.correctionsCount) return null;
+  const hasContent = summary.wordsDiscussed.length > 0 || summary.grammarExplained.length > 0 || summary.correctionsCount > 0 || summary.usefulPhrases.length > 0;
+  if (!hasContent) return null;
+
+  const sections = [
+    { icon: "🗣️", label: "Words discussed", items: summary.wordsDiscussed, color: "rgba(34,197,94,0.15)", iconColor: "#22C55E" },
+    { icon: "📖", label: "Grammar explained", items: summary.grammarExplained, color: "rgba(168,85,247,0.15)", iconColor: "#A855F7" },
+    { icon: "✍️", label: "Corrections", items: summary.correctionsCount > 0 ? [`${summary.correctionsCount} correction${summary.correctionsCount > 1 ? "s" : ""} this session`] : [], color: "rgba(245,158,11,0.15)", iconColor: "#F59E0B" },
+    { icon: "💬", label: "Useful phrases", items: summary.usefulPhrases, color: "rgba(244,63,94,0.15)", iconColor: "#F43F5E" },
+  ].filter(s => s.items.length > 0);
 
   return (
-    <div className="hidden xl:flex flex-col w-56 flex-shrink-0 border-l ml-4 pl-4 overflow-y-auto" style={{ borderColor: "var(--color-border)" }}>
-      <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>Session summary</p>
-
-      {summary.wordsDiscussed.length > 0 && (
-        <div className="mb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--color-text-muted)" }}>Words</p>
-          <div className="flex flex-wrap gap-1">
-            {summary.wordsDiscussed.map((w) => (
-              <span key={w} className="px-2 py-1 rounded-lg text-[10px] font-medium"
-                style={{ background: "var(--color-hover-bg)", color: "var(--color-active-text)" }}>{w}</span>
-            ))}
+    <div className="rounded-2xl p-4 relative overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
+        border: "1px solid rgba(186, 120, 255, 0.18)",
+        boxShadow: "0 0 35px rgba(168,85,247,.06)",
+      }}>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
+        Session Summary
+      </p>
+      <div className="space-y-3">
+        {sections.map((s) => (
+          <div key={s.label} className="flex gap-2.5">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+              style={{ background: s.color, color: s.iconColor }}>
+              {s.icon}
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>{s.label}</p>
+              <div className="flex flex-wrap gap-1">
+                {s.items.map((item, i) => (
+                  <span key={i} className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>
+                    {item}{i < s.items.length - 1 ? "," : ""}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-
-      {summary.grammarExplained.length > 0 && (
-        <div className="mb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--color-text-muted)" }}>Grammar</p>
-          <ul className="space-y-1">
-            {summary.grammarExplained.map((g) => (
-              <li key={g} className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>✦ {g}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {summary.correctionsCount > 0 && (
-        <div className="mb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--color-text-muted)" }}>Corrections</p>
-          <p className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>{summary.correctionsCount} correction{summary.correctionsCount > 1 ? "s" : ""} this session</p>
-        </div>
-      )}
-
-      {summary.usefulPhrases.length > 0 && (
-        <div className="mb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--color-text-muted)" }}>Useful phrases</p>
-          <ul className="space-y-1">
-            {summary.usefulPhrases.map((p) => (
-              <li key={p} className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>"{p}"</li>
-            ))}
-          </ul>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
