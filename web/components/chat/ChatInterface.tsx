@@ -245,13 +245,18 @@ function TryThese({ mode, setMode }: { mode: TutorMode; setMode: (m: TutorMode) 
               style={{
                 background: active
                   ? "var(--color-hover-bg)"
-                  : "var(--color-active-bg)",
+                  : "linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), #111127",
                 border: active
                   ? "1px solid var(--color-accent)"
-                  : "1px solid transparent",
-                boxShadow: active ? "0 0 16px var(--color-active-bg)" : "none",
+                  : "1px solid rgba(186, 120, 255, 0.18)",
+                boxShadow: active ? "0 0 16px var(--color-active-bg)" : "0 0 35px rgba(168,85,247,.06)",
               }}>
-              <span className="text-base flex-shrink-0">{m.emoji}</span>
+              <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm"
+                style={{
+                  background: "var(--color-active-bg)",
+                }}>
+                {m.emoji}
+              </span>
               <span className="text-xs font-semibold truncate" style={{ color: active ? "var(--color-active-text)" : "var(--color-text-secondary)" }}>
                 {m.label}
               </span>
