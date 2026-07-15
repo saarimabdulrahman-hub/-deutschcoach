@@ -57,8 +57,8 @@ const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
 };
 
 const sizeStyles: Record<ButtonSize, React.CSSProperties> = {
-  sm: { height: "32px", padding: "0 16px", fontSize: "var(--type-label-md)", gap: "6px" },
-  md: { height: "40px", padding: "0 20px", fontSize: "var(--type-body-md)", gap: "8px" },
+  sm: { height: "40px", padding: "0 16px", fontSize: "var(--type-label-md)", gap: "8px", minWidth: "40px" },
+  md: { height: "44px", padding: "0 20px", fontSize: "var(--type-body-md)", gap: "8px", minWidth: "44px" },
   lg: { height: "48px", padding: "0 24px", fontSize: "var(--type-body-md)", gap: "8px" },
 };
 

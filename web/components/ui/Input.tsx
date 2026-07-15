@@ -122,6 +122,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {(helperText || error) && (
           <p
             id={`${props.name}-helper`}
+            role={hasError ? "alert" : undefined}
             style={{
               fontSize: "var(--type-label-sm)",
               color: hasError ? "var(--color-error-text)" : "var(--color-text-tertiary)",
