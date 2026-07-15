@@ -15,33 +15,40 @@ function palette(p: {
   accent: string; accentLight: string; accentDark: string;
   accentText: string; text: string; muted: string; secondary: string;
 }, gradient?: string): ThemeColors {
+  const hoverBg = p.accent.replace(")", ",0.08)").replace("rgb", "rgba");
+  const activeBg = p.accent.replace(")", ",0.15)").replace("rgb", "rgba");
+  const badgeBg = p.accent.replace(")", ",0.2)").replace("rgb", "rgba");
+  const accentGlow = p.accent.replace(")", ",0.25)").replace("rgb", "rgba");
+  const accentGradient = gradient || `linear-gradient(135deg, ${p.accentDark}, ${p.accent})`;
+
   return {
-    "--color-page-bg": p.bg,
-    "--color-card-bg": p.card,
-    "--color-border": p.border,
-    "--color-text": p.text,
-    "--color-text-muted": p.muted,
+    /* ── Canonical tokens (ThemeContext sets these at runtime) ── */
+    "--color-brand-primary": p.accent,
+    "--color-brand-secondary": p.accentLight,
+    "--color-surface-1": p.card,
+    "--color-text-primary": p.text,
     "--color-text-secondary": p.secondary,
-    "--color-hover-bg": p.accent.replace(")", ",0.08)").replace("rgb", "rgba"),
-    "--color-active-bg": p.accent.replace(")", ",0.15)").replace("rgb", "rgba"),
-    "--color-active-text": p.accentText,
-    "--color-badge-bg": p.accent.replace(")", ",0.2)").replace("rgb", "rgba"),
-    "--color-badge-text": p.accentText,
+    "--color-text-muted": p.muted,
+    "--color-border-subtle": p.border,
+    "--color-border-focus": p.accent,
     "--color-accent": p.accent,
     "--color-accent-light": p.accentLight,
     "--color-accent-dark": p.accentDark,
-    "--color-accent-gradient": gradient || `linear-gradient(135deg, ${p.accentDark}, ${p.accent})`,
-    "--color-accent-glow": p.accent.replace(")", ",0.25)").replace("rgb", "rgba"),
-    "--color-sidebar-bg": p.bg,
-    "--color-header-bg": p.card,
-    "--color-input-bg": p.card,
-    "--color-input-border": p.border,
-    "--color-input-focus": p.accent,
-    "--color-error-bg": "rgba(239,68,68,0.1)",
-    "--color-error-border": "rgba(239,68,68,0.2)",
-    "--color-error-text": "#f87171",
-    "--color-success": "#22c55e",
-    "--color-warning": "#f59e0b",
+    "--color-accent-text": p.accentText,
+    "--color-accent-gradient": accentGradient,
+    "--color-accent-glow": accentGlow,
+    "--color-hover-bg": hoverBg,
+    "--color-active-bg": activeBg,
+    "--color-active-text": p.accentText,
+    "--color-badge-bg": badgeBg,
+    "--color-badge-text": p.accentText,
+    "--color-success": "#2ED573",
+    "--color-warning": "#F39C12",
+    "--color-info": "#4DA3FF",
+    "--color-error": "#FF6B77",
+    "--color-error-bg": "rgba(255, 71, 87, 0.1)",
+    "--color-error-border": "rgba(255, 71, 87, 0.2)",
+    "--color-error-text": "#FF6B77",
     "--color-skeleton": p.border,
   };
 }
