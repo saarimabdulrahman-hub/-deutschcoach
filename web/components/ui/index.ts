@@ -31,6 +31,10 @@ export { Stepper } from "./Stepper";
 export { OTPInput } from "./OTPInput";
 export { FileUpload } from "./FileUpload";
 
+// Utility Components (Phase 2.6)
+export { LanguageSelector } from "./LanguageSelector";
+export { ThemeSwitch } from "./ThemeSwitch";
+
 // Legacy/Existing
 export { ErrorState } from "./ErrorState";
 export { ProgressBar } from "./ProgressBar";
