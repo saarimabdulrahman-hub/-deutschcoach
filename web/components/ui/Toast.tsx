@@ -62,6 +62,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       {/* Toast container */}
       <div
+        role="status"
         aria-live="polite"
         aria-label="Notifications"
         style={{

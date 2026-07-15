@@ -82,7 +82,7 @@ export function SidebarNav({ items = defaultNavItems, className = "" }: SidebarN
             onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--color-hover-bg)"; }}
             onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
           >
-            <span style={{ opacity: isActive ? 1 : 0.6, flexShrink: 0 }}>{item.icon}</span>
+            <span aria-hidden="true" style={{ opacity: isActive ? 1 : 0.6, flexShrink: 0 }}>{item.icon}</span>
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>
           </button>
         );
