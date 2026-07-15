@@ -5,6 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardData } from "@/types";
+import { ChatMessage } from "./ChatMessage";
+import { ChatInput } from "./ChatInput";
+import { StreamingMessage } from "./StreamingMessage";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -14,7 +17,7 @@ interface Message {
   corrections?: Array<{ error: string; correction: string; explanation: string }>;
 }
 
-type TutorMode = "roleplay" | "grammar" | "vocab" | "writing" | "pronunciation" | "exam";
+export type TutorMode = "roleplay" | "grammar" | "vocab" | "writing" | "pronunciation" | "exam";
 
 interface SessionSummary {
   wordsDiscussed: string[];
@@ -353,8 +356,6 @@ export function ChatInterface() {
   const [summary, setSummary] = useState<SessionSummary>({ wordsDiscussed: [], grammarExplained: [], correctionsCount: 0, usefulPhrases: [] });
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const userName = (user?.name || "You").split(" ")[0];
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -438,43 +439,10 @@ export function ChatInterface() {
           {isEmpty && <WelcomePanel userName={userName} onPrompt={(t) => send(t)} />}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex items-start gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                style={msg.role === "user"
-                  ? { background: "var(--color-accent-gradient)", color: "#fff" }
-                  : { background: "var(--color-card-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
-                {msg.role === "user" ? userName.charAt(0).toUpperCase() : <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />}
-              </div>
-              <div className={`max-w-[75%] ${msg.role === "user" ? "items-end" : "items-start"}`}>
-                <div className="px-4 py-3 rounded-2xl text-sm leading-relaxed"
-                  style={msg.role === "user"
-                    ? { background: "var(--color-accent-gradient)", color: "#fff", borderBottomRightRadius: "4px" }
-                    : { background: "var(--color-card-bg)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)", borderBottomLeftRadius: "4px" }}>
-                  {msg.content}
-                </div>
-                {msg.corrections?.length! > 0 && msg.corrections![0]?.explanation && (
-                  <div className="mt-1.5 px-3 py-1.5 rounded-lg text-xs"
-                    style={{ background: "var(--color-hover-bg)", color: "var(--color-active-text)", border: "1px solid var(--color-active-bg)" }}>
-                    💡 {msg.corrections![0].explanation}
-                  </div>
-                )}
-              </div>
-            </div>
+            <ChatMessage key={i} role={msg.role} content={msg.content} corrections={msg.corrections} userName={userName} />
           ))}
 
-          {loading && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}><img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" /></div>
-              <div className="px-4 py-3 rounded-2xl" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-                <span className="flex gap-1.5">
-                  {[0, 120, 240].map((d) => (
-                    <span key={d} className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-accent)", animationDelay: `${d}ms` }} />
-                  ))}
-                </span>
-              </div>
-            </div>
-          )}
+          {loading && <StreamingMessage content="" />}
           <div ref={bottomRef} />
         </div>
 
@@ -496,65 +464,7 @@ export function ChatInterface() {
           </div>
         )}
 
-        {/* Input bar */}
-        <div className="flex items-center gap-2 pt-3" style={{ borderTop: "1px solid var(--color-border)" }}>
-          <>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*,.pdf"
-              multiple
-              onChange={(e) => {
-                if (e.target.files) setAttachedFiles(Array.from(e.target.files));
-              }}
-              className="hidden"
-              aria-label="Attach files"
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              title="Attach a file"
-              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:-translate-y-0.5 relative"
-              style={{
-                background: "var(--color-card-bg)",
-                border: "1px solid var(--color-border)",
-                color: "var(--color-text-muted)",
-              }}>
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
-              </svg>
-              {attachedFiles.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white px-1"
-                  style={{ background: "#ec4899", boxShadow: "0 0 6px rgba(236,72,153,0.5)" }}>
-                  {attachedFiles.length}
-                </span>
-              )}
-            </button>
-          </>
-
-          <input ref={inputRef}
-            value={input} onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-            placeholder={mode === "roleplay" ? "Start the roleplay…" : mode === "writing" ? "Paste or type your German…" : "Ask Emma anything…"}
-            disabled={loading}
-            className="flex-1 px-4 py-3 rounded-xl text-sm outline-none"
-            style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)", color: "var(--color-text)" }}
-            onFocus={(e) => { e.target.style.borderColor = "var(--color-input-focus)"; }}
-            onBlur={(e) => { e.target.style.borderColor = "var(--color-border)"; }}
-          />
-
-          <button onClick={() => send()} disabled={loading || !input.trim()}
-            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40 hover:-translate-y-0.5"
-            style={{
-              background: (loading || !input.trim()) ? "var(--color-card-bg)" : "linear-gradient(135deg, #FF3CA6, #6D3BFF)",
-              border: (loading || !input.trim()) ? "1px solid var(--color-border)" : "none",
-              boxShadow: (loading || !input.trim()) ? "none" : "0 0 16px rgba(217,70,239,0.35)",
-            }}>
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden
-              style={{ color: (loading || !input.trim()) ? "var(--color-text-muted)" : "#fff" }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+        <ChatInput input={input} setInput={setInput} send={send} loading={loading} mode={mode} />
       </div>
 
       {/* ── RIGHT SIDEBAR: Session summary + Recent topics ── */}
