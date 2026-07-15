@@ -26,6 +26,11 @@ export { Pagination } from "./Pagination";
 export { SearchInput } from "./SearchInput";
 export { ToastProvider, useToast } from "./Toast";
 
+// Form Components (Phase 2.4)
+export { Stepper } from "./Stepper";
+export { OTPInput } from "./OTPInput";
+export { FileUpload } from "./FileUpload";
+
 // Legacy/Existing
 export { ErrorState } from "./ErrorState";
 export { ProgressBar } from "./ProgressBar";
