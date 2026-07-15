@@ -8,6 +8,9 @@ import { QuizSetup } from "@/components/quiz/QuizSetup";
 import { QuestionCard } from "@/components/quiz/QuestionCard";
 import { QuizResults } from "@/components/quiz/QuizResults";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useAutosave } from "@/hooks/useAutosave";
+import { useRecovery } from "@/hooks/useRecovery";
+import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
 
 type QuizState = "setup" | "active" | "results";
 
@@ -74,6 +77,14 @@ export default function QuizPage() {
     queryKey: ["dashboard"], queryFn: () => api.get("/dashboard"),
   });
 
+  // Autosave quiz answers
+  useAutosave("quiz-answers", { sessionId, currentIndex, answers, state });
+
+  // Recovery for interrupted quiz
+  const { hasDraft, restore, dismiss } = useRecovery<{
+    sessionId: string; currentIndex: number; answers: StoredAnswer[]; questions: QuizQuestion[];
+  }>("quiz-answers");
+
   const handleStart = useCallback((session: QuizSession) => {
     setSessionId(session.session_id); setQuestions(session.questions);
     setCurrentIndex(0); setAnswers([]); setResults(null); setState("active");
@@ -95,6 +106,7 @@ export default function QuizPage() {
     try {
       const result = await api.post<QuizResultOut>(`/quiz/${sessionId}/submit`, { answers: finalAnswers });
       setResults(result); setState("results");
+      dismiss(); // clear autosaved draft on successful submit
     } catch {
       setResults({ score_pct: 0, questions_total: questions.length, questions_correct: 0,
         results: finalAnswers.map((a) => ({ question_id: a.question_id, correct: false, your_answer: a.answer, correct_answer: "Unknown", feedback: "Submission error. Please try again." })) });
@@ -104,12 +116,32 @@ export default function QuizPage() {
 
   const handleRetry = useCallback(() => {
     setState("setup"); setSessionId(null); setQuestions([]); setAnswers([]); setResults(null);
-  }, []);
+    dismiss();
+  }, [dismiss]);
+
+  // Handle quiz recovery
+  const handleQuizRestore = useCallback(() => {
+    const draft = restore();
+    if (draft) {
+      setSessionId(draft.sessionId);
+      setCurrentIndex(draft.currentIndex);
+      setAnswers(draft.answers);
+      setQuestions(draft.questions);
+      setState("active");
+    }
+  }, [restore]);
 
   // ── Setup state ──────────────────────────────────────────────────────
   if (state === "setup") {
     return (
       <div className="space-y-6 pb-8">
+        {hasDraft && (
+          <RecoveryBanner
+            message="We found an unfinished quiz. Would you like to continue where you left off?"
+            onRestore={handleQuizRestore}
+            onDismiss={dismiss}
+          />
+        )}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: "var(--color-hover-bg)" }}>✅</div>
           <div>
