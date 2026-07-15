@@ -1,38 +1,41 @@
 /**
- * LoginForm — Using canonical Input, PasswordInput, Checkbox, Button
+ * LoginForm — Using react-hook-form + Zod validation
  */
 
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { loginSchema, type LoginInput } from "@/lib/forms";
 import { AuthDivider } from "./AuthDivider";
 import { SocialLoginButtons } from "./SocialLoginButtons";
 
 export default function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  async function onSubmit(data: LoginInput) {
+    setServerError(null);
     try {
-      await login(email, password);
+      await login(data.email, data.password);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err?.detail || err?.message || "Invalid credentials");
-    } finally {
-      setLoading(false);
+      setServerError(err?.detail || err?.message || "Invalid credentials");
     }
   }
 
@@ -43,22 +46,19 @@ export default function LoginForm() {
         <p style={{ fontSize: "var(--type-body-md)", color: "var(--color-text-secondary)", margin: "4px 0 0" }}>Sign in to continue learning</p>
       </div>
 
-      {error && (
-        <div style={{ padding: "12px 16px", borderRadius: "var(--radius-md)", background: "var(--color-error-bg)", border: "1px solid var(--color-error-border)", color: "var(--color-error-text)", fontSize: "var(--type-body-sm)" }}>
-          <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-error-text)", marginRight: "var(--space-2)" }} />
-          {error}
+      {serverError && (
+        <div role="alert" style={{ padding: "12px 16px", borderRadius: "var(--radius-md)", background: "var(--color-error-bg)", border: "1px solid var(--color-error-border)", color: "var(--color-error-text)", fontSize: "var(--type-body-sm)" }}>
+          {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
         <Input
-          name="email"
           variant="email"
           label="Email address"
           placeholder="you@example.com"
-          value={email}
-          onChange={(e: any) => { setEmail(e.target.value); setError(null); }}
-          required
+          error={errors.email?.message}
+          {...register("email")}
           autoComplete="email"
         />
 
@@ -72,15 +72,14 @@ export default function LoginForm() {
           <input
             type="password"
             placeholder="Enter your password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); setError(null); }}
-            required
+            {...register("password")}
             autoComplete="current-password"
+            aria-invalid={!!errors.password}
             style={{
               width: "100%",
               padding: "12px",
               borderRadius: "var(--radius-md)",
-              border: "1px solid var(--color-border-subtle)",
+              border: `1px solid ${errors.password ? "var(--color-error-border)" : "var(--color-border-subtle)"}`,
               background: "var(--color-surface-1)",
               color: "var(--color-text-primary)",
               fontSize: "var(--type-body-md)",
@@ -88,11 +87,16 @@ export default function LoginForm() {
               boxSizing: "border-box",
             }}
             onFocus={(e) => { e.target.style.borderColor = "var(--color-border-focus)"; }}
-            onBlur={(e) => { e.target.style.borderColor = "var(--color-border-subtle)"; }}
+            onBlur={(e) => { e.target.style.borderColor = errors.password ? "var(--color-error-border)" : "var(--color-border-subtle)"; }}
           />
+          {errors.password?.message && (
+            <p role="alert" style={{ fontSize: "var(--type-label-sm)", color: "var(--color-error-text)", margin: "4px 0 0" }}>
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-        <Button type="submit" variant="primary" size="lg" loading={loading} style={{ width: "100%" }}>
+        <Button type="submit" variant="primary" size="lg" loading={isSubmitting} style={{ width: "100%" }}>
           Sign in
         </Button>
       </form>
