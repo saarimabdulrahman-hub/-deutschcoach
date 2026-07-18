@@ -276,7 +276,7 @@ export default function LoginPage() {
                   <span style={{ fontSize: "12px", color: "#6B7280" }}>or</span>
                   <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,.06)" }} />
                 </div>
-                <button type="button" className="w-full flex items-center justify-center gap-3 cursor-pointer font-medium"
+                <button type="button" onClick={() => alert("Google sign-in coming soon!")} className="w-full flex items-center justify-center gap-3 cursor-pointer font-medium"
                   style={{
                     height: "48px",
                     borderRadius: "12px",
