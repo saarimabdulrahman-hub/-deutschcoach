@@ -3,8 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
-import { SRSStats } from "@/components/srs/SRSStats";
-import { FlashcardReviewer } from "@/components/srs/FlashcardReviewer";
+import { ReviewSidebar } from "@/components/review/ReviewSidebar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/ErrorState";
 import type { DashboardData } from "@/types";
@@ -14,108 +13,51 @@ interface SRSStatsData {
   total_due_today: number;
 }
 
-// Weekday labels for the activity sparkline
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
 // ── Today's Review hero ──────────────────────────────────────────────
 
-function TodayHero({ due, streak, estimatedMin }: { due: number; streak: number; estimatedMin: number }) {
+function TodayHero({ due, streak, estimatedMin, mastered, retention }: { due: number; streak: number; estimatedMin: number; mastered: number; retention: number }) {
   const hasCards = due > 0;
   return (
-    <div className="rounded-2xl p-5 sm:p-6" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-accent)" }}>
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--color-text-muted)" }}>Today's Review</p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ color: "var(--color-text)" }}>
+    <div
+      className="flex items-center"
+      style={{
+        borderRadius: "24px",
+        height: "180px",
+        background: `url('/review-hero-bg.png') right center / cover no-repeat`,
+        boxShadow: "0 8px 40px rgba(0,0,0,.3)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* ── Left: Status + Stats ── */}
+      <div className="flex items-center gap-6 px-8" style={{ width: "65%", position: "relative", zIndex: 1 }}>
+        <div className="flex-shrink-0">
+          <p className="text-[10px] font-medium uppercase tracking-[1.5px] mb-2" style={{ color: "#A855F7" }}>Today's Review</p>
+          <h1 className="font-medium m-0 leading-none" style={{ fontSize: "40px", color: "#FFF" }}>
             {hasCards ? `${due} card${due !== 1 ? "s" : ""} ready` : "All caught up!"}
+            {!hasCards && <span style={{ marginLeft: "4px" }}>🎉</span>}
           </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
+          <p className="text-sm mt-2 leading-relaxed" style={{ color: "#A8A4BC", maxWidth: "260px" }}>
             {hasCards
               ? `~${estimatedMin} min · spaced repetition keeps words in your long-term memory`
-              : "Nothing due right now — great work staying on top of your reviews."}
+              : "No cards due right now. Come back later for more practice."}
           </p>
         </div>
+
+        {/* Stats row */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          <div className="rounded-xl px-3 py-2 text-center" style={{ background: "var(--color-hover-bg)", border: "1px solid var(--color-border)" }}>
-            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Review Streak</p>
-            <p className="text-lg font-bold" style={{ color: "var(--color-accent-light)" }}>🔥 {streak}</p>
+          <div className="rounded-xl px-3.5 py-2.5 text-center" style={{ background: "rgba(16,18,32,.65)", border: "1px solid rgba(255,255,255,.05)" }}>
+            <p className="text-lg font-medium m-0" style={{ color: "#FFF" }}>🔥 {streak}</p>
+            <p className="text-[10px] m-0 mt-0.5" style={{ color: "rgba(255,255,255,.3)" }}>Streak</p>
           </div>
-          <div className="rounded-xl px-3 py-2 text-center" style={{ background: "var(--color-hover-bg)", border: "1px solid var(--color-border)" }}>
-            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Est. Time</p>
-            <p className="text-lg font-bold" style={{ color: "var(--color-text)" }}>~{estimatedMin}m</p>
+          <div className="rounded-xl px-3.5 py-2.5 text-center" style={{ background: "rgba(16,18,32,.65)", border: "1px solid rgba(255,255,255,.05)" }}>
+            <p className="text-lg font-medium m-0" style={{ color: "#FFF" }}>{mastered}</p>
+            <p className="text-[10px] m-0 mt-0.5" style={{ color: "rgba(255,255,255,.3)" }}>Mastered</p>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Weakest words ────────────────────────────────────────────────────
-
-function WeakWords({ words, onRetry }: { words: DashboardData["weakest_words"]; onRetry: () => void }) {
-  if (!words?.length) return null;
-  return (
-    <div className="rounded-2xl p-4 sm:p-5" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-bold" style={{ color: "var(--color-text)" }}>Words to strengthen</h2>
-        <button onClick={() => onRetry()} className="text-xs font-semibold hover:underline" style={{ color: "var(--color-accent-light)" }}>
-          Review now →
-        </button>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {words.slice(0, 6).map((w) => (
-          <div key={w.id} className="rounded-xl p-3 flex items-center justify-between"
-            style={{ background: "var(--color-page-bg)", border: "1px solid var(--color-border)" }}>
-            <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>{w.german}</span>
-            <span className="text-xs ml-2" style={{ color: "var(--color-text-muted)" }}>{w.english} · {w.lapses}×</span>
+          <div className="rounded-xl px-3.5 py-2.5 text-center" style={{ background: "rgba(16,18,32,.65)", border: "1px solid rgba(255,255,255,.05)" }}>
+            <p className="text-lg font-medium m-0" style={{ color: "#A855F7" }}>{retention}%</p>
+            <p className="text-[10px] m-0 mt-0.5" style={{ color: "rgba(255,255,255,.3)" }}>Retention</p>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Empty state (rich — not boring) ──────────────────────────────────
-
-function EmptyState({ streak, mastered, retention, onAction }: {
-  streak: number; mastered: number; retention: number; onAction: (route: string) => void;
-}) {
-  return (
-    <div className="space-y-5">
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-xl p-4 text-center" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-          <p className="text-2xl font-extrabold" style={{ color: "var(--color-text)" }}>🔥 {streak}</p>
-          <p className="text-[10px] font-semibold uppercase tracking-wider mt-1" style={{ color: "var(--color-text-muted)" }}>Review Streak</p>
-        </div>
-        <div className="rounded-xl p-4 text-center" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-          <p className="text-2xl font-extrabold" style={{ color: "var(--color-text)" }}>{mastered}</p>
-          <p className="text-[10px] font-semibold uppercase tracking-wider mt-1" style={{ color: "var(--color-text-muted)" }}>Mastered</p>
-        </div>
-        <div className="rounded-xl p-4 text-center" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-          <p className="text-2xl font-extrabold" style={{ color: "var(--color-accent-light)" }}>{retention}%</p>
-          <p className="text-[10px] font-semibold uppercase tracking-wider mt-1" style={{ color: "var(--color-text-muted)" }}>Retention</p>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>Keep practicing</p>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { label: "Random Practice", icon: "🔄", desc: "Mixed exercises from all your words", href: "/quiz" },
-            { label: "Review Weak Words", icon: "🎯", desc: "Focus on what needs work", href: "/review" },
-            { label: "Take a Quiz", icon: "✅", desc: "Test your knowledge", href: "/quiz" },
-            { label: "Learn New Words", icon: "📇", desc: "Start a new lesson", href: "/curriculum" },
-          ].map((item) => (
-            <button key={item.label} onClick={() => onAction(item.href)}
-              className="rounded-xl p-4 text-left transition-all hover:-translate-y-0.5"
-              style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-              <span className="text-xl block mb-2">{item.icon}</span>
-              <p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>{item.label}</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>{item.desc}</p>
-            </button>
-          ))}
         </div>
       </div>
     </div>
@@ -141,7 +83,7 @@ export default function ReviewPage() {
   const mastered = stats?.mastered ?? 0;
   const total = (stats?.new ?? 0) + (stats?.learning ?? 0) + (stats?.reviewing ?? 0) + mastered;
   const retention = total > 0 ? Math.round((mastered / total) * 100) : 0;
-  const estimatedMin = Math.max(1, Math.round(due * 0.3)); // ~18s per card
+  const estimatedMin = Math.max(1, Math.round(due * 0.3));
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["srs-stats"] });
@@ -149,57 +91,220 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="space-y-5 pb-8">
-      {isLoading ? (
-        <div className="space-y-5">
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-48 rounded-2xl" />
-        </div>
-      ) : error ? (
-        <ErrorState message={error instanceof Error ? error.message : "Failed to load review data."}
-          onRetry={() => queryClient.invalidateQueries({ queryKey: ["srs-stats"] })} />
-      ) : (
-        <>
-          {/* Hero */}
-          <TodayHero due={due} streak={streak} estimatedMin={estimatedMin} />
+    <div className="flex" style={{ gap: 0, margin: "-24px", minHeight: "calc(100vh - 72px)" }}>
+      {/* ── Sidebar ── */}
+      <ReviewSidebar activeItem="overview" streak={streak} />
 
-          {/* Flashcard reviewer (the core SRS interaction — untouched) */}
-          <FlashcardReviewer onDone={invalidate} />
-
-          {/* SRS stats (reused as-is) */}
-          {stats && <SRSStats data={stats} />}
-
-          {/* Weakest words */}
-          {dash?.weakest_words?.length! > 0 && (
-            <WeakWords words={dash!.weakest_words} onRetry={invalidate} />
-          )}
-
-          {/* Empty state: rich, not boring */}
-          {due === 0 && !isLoading && (
-            <EmptyState streak={streak} mastered={mastered} retention={retention} onAction={(r) => router.push(r)} />
-          )}
-
-          {/* Weekly activity bar (placeholder — wired when SRS history exists) */}
-          {due > 0 && (
-            <div className="rounded-2xl p-4 sm:p-5" style={{ background: "var(--color-card-bg)", border: "1px solid var(--color-border)" }}>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>This week</p>
-              <div className="flex items-end gap-2 h-20">
-                {DAYS.map((d, i) => {
-                  const h = 12 + Math.round(Math.abs(Math.sin(i * 1.2 + (streak % 7) * 0.7)) * 60);
-                  return (
-                    <div key={d} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-[9px]" style={{ color: "var(--color-text-muted)" }}>{h > 30 ? h / 4 | 0 : 0}</span>
-                      <div className="w-full rounded-t-md transition-all duration-500"
-                        style={{ height: `${h}%`, background: i === new Date().getDay() ? "var(--color-accent-gradient)" : "var(--color-hover-bg)", minHeight: 4 }} />
-                      <span className="text-[9px]" style={{ color: "var(--color-text-muted)" }}>{d}</span>
-                    </div>
-                  );
-                })}
-              </div>
+      {/* ── Main Content ── */}
+      <div className="flex-1 overflow-y-auto p-6" style={{ background: "var(--color-background-primary)" }}>
+        <div className="space-y-5 pb-8 max-w-4xl">
+          {isLoading ? (
+            <div className="space-y-5">
+              <Skeleton className="h-28 rounded-2xl" />
+              <Skeleton className="h-48 rounded-2xl" />
             </div>
+          ) : error ? (
+            <ErrorState message={error instanceof Error ? error.message : "Failed to load review data."}
+              onRetry={() => queryClient.invalidateQueries({ queryKey: ["srs-stats"] })} />
+          ) : (
+            <>
+              {/* Page Header */}
+              <div>
+                <h1 className="font-medium m-0" style={{ fontSize: "36px", color: "#FFF" }}>Review Overview</h1>
+                <p className="mt-1.5 mb-0" style={{ fontSize: "15px", color: "#A8A4BC" }}>Practice and remember what you've learned</p>
+              </div>
+              <TodayHero due={due} streak={streak} estimatedMin={estimatedMin} mastered={mastered} retention={retention} />
+
+              {/* ── MAIN LAYOUT: Today's Review (26% tall) + Right Column (74%) ── */}
+              <div className="flex gap-5">
+                {/* ── LEFT: Today's Review (tall, spans both rows) ── */}
+                <div className="flex flex-col p-6" style={{ flex: "0.26 1 0%", borderRadius: "18px", background: "#141629", border: "1px solid rgba(255,255,255,.05)" }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[11px] font-medium uppercase tracking-[1px]" style={{ color: "#FFF" }}>Today's Review</p>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,.2)" strokeWidth="1" fill="none"/>
+                      <text x="8" y="9" textAnchor="middle" fill="rgba(255,255,255,.2)" fontSize="7" fontWeight="bold">i</text>
+                    </svg>
+                  </div>
+
+                  {/* Circular Progress */}
+                  <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="relative" style={{ width: "110px", height: "110px" }}>
+                      <svg width="110" height="110" viewBox="0 0 110 110" className="absolute inset-0">
+                        <circle cx="55" cy="55" r="45" stroke="#2E1E52" strokeWidth="6" fill="none"/>
+                        <circle cx="55" cy="55" r="45" stroke="url(#progressGrad)" strokeWidth="6" fill="none"
+                          strokeDasharray={`${Math.min(due, 50) / 50 * 283} 283`} strokeLinecap="round" transform="rotate(-90 55 55)"/>
+                        <defs>
+                          <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor="#EC4899"/><stop offset="100%" stopColor="#A855F7"/>
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <p className="font-bold m-0 leading-none" style={{ fontSize: "48px", color: "#FFF" }}>{due}</p>
+                        <p className="m-0 mt-1" style={{ fontSize: "15px", color: "#A8A4BC" }}>cards due</p>
+                      </div>
+                    </div>
+                    <p className="text-xs mt-4" style={{ color: "#A8A4BC" }}>Estimated time</p>
+                    <p className="text-sm font-semibold m-0" style={{ color: "#FFF" }}>{estimatedMin} min</p>
+                  </div>
+
+                  {/* Start Review CTA */}
+                  <button className="w-full py-3 rounded-xl text-sm font-medium border-none cursor-pointer mt-4"
+                    style={{
+                      background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)",
+                      color: "#FFF",
+                      boxShadow: "0 4px 16px rgba(168,85,247,.2)",
+                    }}>
+                    Start Review →
+                  </button>
+                </div>
+
+                {/* ── RIGHT COLUMN (74%) ── */}
+                <div className="flex flex-col gap-5" style={{ flex: "0.74 1 0%" }}>
+                  {/* Top Row: Review by Category */}
+                  <div className="p-5" style={{ borderRadius: "18px", background: "#141629", border: "1px solid rgba(255,255,255,.05)" }}>
+                    <p className="text-[11px] font-medium uppercase tracking-[1px] mb-4" style={{ color: "#FFF" }}>Review by Category</p>
+                    <div className="flex gap-3">
+                      {[
+                        { icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="4" width="12" height="16" rx="1.5" stroke="#38BDF8" strokeWidth="1.5" fill="none"/><rect x="9" y="2.5" width="12" height="16" rx="1.5" stroke="#38BDF8" strokeWidth="1.5" fill="none" opacity="0.5"/><line x1="12" y1="8" x2="18" y2="8" stroke="#38BDF8" strokeWidth="1.2" strokeLinecap="round"/><line x1="12" y1="11" x2="16" y2="11" stroke="#38BDF8" strokeWidth="1.2" strokeLinecap="round"/></svg>, label: "Vocabulary", count: 9 },
+                        { icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="2" stroke="#EC4899" strokeWidth="1.5" fill="none"/><line x1="9" y1="9" x2="19" y2="9" stroke="#EC4899" strokeWidth="1.2" strokeLinecap="round"/><line x1="9" y1="13" x2="19" y2="13" stroke="#EC4899" strokeWidth="1.2" strokeLinecap="round"/><line x1="9" y1="17" x2="16" y2="17" stroke="#EC4899" strokeWidth="1.2" strokeLinecap="round"/></svg>, label: "Grammar", count: 4 },
+                        { icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M5 10C5 7.5 7 5.5 9.5 5.5H18.5C21 5.5 23 7.5 23 10V15C23 17.5 21 19.5 18.5 19.5H15L10 23V19.5H9.5C7 19.5 5 17.5 5 15V10Z" stroke="#38BDF8" strokeWidth="1.5" fill="none"/><circle cx="10.5" cy="12.5" r="1" fill="#38BDF8"/><circle cx="14" cy="12.5" r="1" fill="#38BDF8"/><circle cx="17.5" cy="12.5" r="1" fill="#38BDF8"/></svg>, label: "Phrases", count: 2 },
+                        { icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="9" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" fill="none" strokeDasharray="3 2"/><line x1="14" y1="9" x2="14" y2="19" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" strokeLinecap="round"/><line x1="9" y1="14" x2="19" y2="14" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" strokeLinecap="round"/></svg>, label: "Custom", count: null, dashed: true },
+                      ].map((cat) => (
+                        <button key={cat.label}
+                          className="flex-1 text-center transition-all hover:-translate-y-0.5"
+                          style={{
+                            borderRadius: "14px",
+                            padding: "16px 12px",
+                            background: cat.dashed ? "transparent" : "rgba(16,18,32,.6)",
+                            border: cat.dashed ? "1.5px dashed rgba(255,255,255,.15)" : "1px solid rgba(255,255,255,.05)",
+                            cursor: "pointer",
+                            minHeight: "140px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}>
+                          <div style={{ marginBottom: "10px" }}>{cat.icon}</div>
+                          <p className="text-xs font-medium m-0" style={{ color: "#FFF" }}>{cat.label}</p>
+                          {cat.count !== null && (
+                            <p className="text-[11px] mt-1 m-0" style={{ color: "#A8A4BC" }}>{cat.count} cards due</p>
+                          )}
+                          {cat.dashed && <p className="text-[11px] mt-1 m-0" style={{ color: "rgba(255,255,255,.2)" }}>Create deck</p>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bottom Row: Weak Words + Recent Activity */}
+                  <div className="flex gap-5">
+                    {/* Weak Words */}
+                    <div className="p-5" style={{ flex: "0.5 1 0%", borderRadius: "18px", background: "#141629", border: "1px solid rgba(255,255,255,.05)" }}>
+                      <p className="text-[11px] font-medium uppercase tracking-[1px] mb-3" style={{ color: "#FFF" }}>Weak Words</p>
+                      {dash?.weakest_words?.length ? (
+                        <div className="space-y-0">
+                          {dash.weakest_words.slice(0, 3).map((w, i) => {
+                            const diff = w.lapses >= 3 ? "Hard" : w.lapses >= 2 ? "Medium" : "Easy";
+                            const diffColor = diff === "Hard" ? "#EF4444" : diff === "Medium" ? "#F59E0B" : "#22C55E";
+                            return (
+                              <div key={w.id}>
+                                <div className="flex items-center justify-between py-3">
+                                  <span className="text-sm" style={{ color: "#FFF" }}>{w.german}</span>
+                                  <span className="text-[11px] px-2 py-0.5 rounded" style={{ color: diffColor, background: `${diffColor}15` }}>{diff}</span>
+                                </div>
+                                {i < Math.min(dash.weakest_words.length, 3) - 1 && (
+                                  <div style={{ height: "1px", background: "rgba(255,255,255,.05)" }} />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-xs py-6 text-center" style={{ color: "rgba(255,255,255,.3)" }}>No weak words</p>
+                      )}
+                      <button className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer mt-3"
+                        style={{ background: "rgba(168,85,247,.15)", color: "#A855F7" }}>
+                        Review Weak Words
+                      </button>
+                    </div>
+
+                    {/* Recent Activity — roadmap-style timeline */}
+                    <div className="p-5" style={{ flex: "0.5 1 0%", borderRadius: "18px", background: "#141629", border: "1px solid rgba(255,255,255,.05)" }}>
+                      <p className="text-[11px] font-medium uppercase tracking-[1px] mb-4" style={{ color: "#FFF" }}>Recent Activity</p>
+                      <div className="relative mb-4">
+                        {/* Continuous vertical line */}
+                        <div className="absolute left-[9px] top-0 bottom-0 w-[2px] rounded-full"
+                          style={{ background: "linear-gradient(180deg, rgba(168,85,247,.3) 0%, rgba(168,85,247,.05) 100%)" }} />
+                        {[
+                          { time: "Today", activity: "Reviewed 8 cards", desc: "Vocabulary review session", color: "#EC4899" },
+                          { time: "Yesterday", activity: "Lesson completed", desc: "A1 Lesson 5: Family & Friends", color: "#84CC16" },
+                          { time: "2 days ago", activity: "Reviewed 6 cards", desc: "Grammar: Verb conjugation", color: "#EF4444" },
+                        ].map((item, i) => (
+                          <div key={i} className="flex gap-4 relative" style={{ minHeight: 52 }}>
+                            {/* Timeline dot */}
+                            <div className="relative flex-shrink-0 flex items-start pt-[5px]">
+                              <div className="relative rounded-full flex-shrink-0 z-10"
+                                style={{
+                                  width: 20, height: 20,
+                                  background: `${item.color}25`,
+                                  border: `1px solid ${item.color}40`,
+                                }}>
+                                <div className="absolute rounded-full"
+                                  style={{ width: 8, height: 8, left: 5, top: 5, background: item.color, border: "none" }} />
+                              </div>
+                            </div>
+                            {/* Content */}
+                            <div className="flex-1 min-w-0 flex items-center" style={{ height: 52 }}>
+                              <div className="min-w-0 mr-2">
+                                <p className="text-[13px] font-medium truncate leading-tight mb-0.5" style={{ color: "#FFF" }}>
+                                  {item.activity}
+                                </p>
+                                <p className="text-[12px] truncate leading-tight" style={{ color: "#A8A4BC" }}>
+                                  {item.time} · {item.desc}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer"
+                        style={{ background: "rgba(168,85,247,.15)", color: "#A855F7" }}>
+                        View History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── BOTTOM SECTION: Keep Practicing ── */}
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[1px] mb-3" style={{ color: "#FFF" }}>Keep Practicing</p>
+                <div className="grid grid-cols-4 gap-4">
+                  {[
+                    { icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10L8 6L12 10L16 6" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 14L8 10L12 14L16 10" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>, label: "Random Practice", desc: "Mixed exercises", grad: "linear-gradient(135deg, #8B5CF6, #A855F7)", href: "/quiz" },
+                    { icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#FFF" strokeWidth="1.5" fill="none"/><circle cx="10" cy="10" r="3" stroke="#FFF" strokeWidth="1.5" fill="none"/><circle cx="10" cy="10" r="1" fill="#FFF"/></svg>, label: "Weak Words", desc: "Focus on weak vocabulary", grad: "linear-gradient(135deg, #EC4899, #F43F8E)", href: "/review" },
+                    { icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="#FFF" strokeWidth="1.5" fill="none"/><path d="M6 10L9 13L14 7" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>, label: "Quiz", desc: "Test knowledge", grad: "linear-gradient(135deg, #22C55E, #16A34A)", href: "/quiz" },
+                    { icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 4H15V10L13 12H7L5 10V4Z" stroke="#FFF" strokeWidth="1.5" strokeLinejoin="round" fill="none"/><line x1="8" y1="7" x2="12" y2="7" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round"/><line x1="8" y1="10" x2="11" y2="10" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round"/></svg>, label: "Learn New Words", desc: "Start new lesson", grad: "linear-gradient(135deg, #FB923C, #F97316)", href: "/curriculum" },
+                  ].map((item) => (
+                    <button key={item.label}
+                      onClick={() => router.push(item.href)}
+                      className="p-5 text-left transition-all hover:-translate-y-0.5 cursor-pointer group"
+                      style={{ borderRadius: "18px", background: "#141629", border: "1px solid rgba(255,255,255,.05)" }}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: item.grad }}>
+                        {item.icon}
+                      </div>
+                      <p className="text-sm font-medium m-0" style={{ color: "#FFF" }}>{item.label}</p>
+                      <p className="text-xs mt-1 m-0" style={{ color: "#A8A4BC" }}>{item.desc}</p>
+                      <span className="text-xs mt-2 block font-medium" style={{ color: "#A855F7" }}>→</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

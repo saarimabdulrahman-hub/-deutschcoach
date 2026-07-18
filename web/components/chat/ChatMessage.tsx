@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Avatar } from "@/components/ui/Avatar";
+
 
 interface Correction {
   error: string;

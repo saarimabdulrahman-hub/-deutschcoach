@@ -78,17 +78,18 @@ def _format_context(ctx: EmmaLessonContext) -> str:
 
 def compress_history(history: list[EmmaChatMessage], max_tokens_est: int = 3000) -> list[EmmaChatMessage]:
     """Keep the last ~N messages; drop the middle if too long.
-    Crude token estimate: 1 token ≈ 0.75 words."""
+    Conservative estimate: ~1 token per word for German (compound words
+    are less token-efficient than English)."""
     if not history:
         return []
     total = sum(len(m.text.split()) for m in history)
-    if total * 0.75 <= max_tokens_est:
+    if total <= max_tokens_est:
         return history
     # Keep the most recent messages that fit under the budget.
     kept: list[EmmaChatMessage] = []
     running = 0
     for m in reversed(history):
-        est = len(m.text.split()) * 0.75
+        est = len(m.text.split())  # ~1 token per word (conservative for German)
         if running + est > max_tokens_est and kept:
             break
         kept.insert(0, m)
@@ -124,19 +125,20 @@ def build_emma_messages(
 
     messages: list[dict] = [{"role": "user", "content": preamble}]
 
-    # Seed Emma's first response so she starts in-voice.
-    messages.append({
-        "role": "assistant",
-        "content": "Hi! I'm Emma, your German coach. I'll explain things clearly and help you through — without handing you the answer. What are you wondering about? 🌱",
-    })
-
-    # Inject compressed history.
+    # Inject compressed history first (if any), then seed only for fresh conversations.
     for m in compressed:
         role = "assistant" if m.role == "emma" else "user"
         content = m.text
         if role == "user":
             content = f"[reply in English only] {content}"
         messages.append({"role": role, "content": content})
+
+    # Seed Emma's first response only for fresh conversations (no history).
+    if not compressed:
+        messages.append({
+            "role": "assistant",
+            "content": "Hi! I'm Emma, your German coach. I'll explain things clearly and help you through — without handing you the answer. What are you wondering about? 🌱",
+        })
 
     # Append the current learner message.
     messages.append({"role": "user", "content": f"[reply in English only] {user_message}"})

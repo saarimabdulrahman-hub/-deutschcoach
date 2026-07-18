@@ -24,14 +24,6 @@ const cardStyle: React.CSSProperties = {
   transition: "transform .2s ease, border-color .2s ease",
 };
 
-// Shiny elevated card — for KPI and stat cells
-const shinyCard: React.CSSProperties = {
-  background: "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 50%), #111127",
-  border: "1px solid rgba(186, 120, 255, 0.22)",
-  borderRadius: 16,
-  boxShadow: "0 0 35px rgba(168,85,247,.08)",
-};
-
 // Review & Practice group — themed border/glow that shines INWARD (inset),
 // lighter on the bottom side so it fades open rather than boxing in.
 const reviewWrap: React.CSSProperties = {
@@ -148,20 +140,6 @@ function KpiCard({ icon, iconBg, iconColor, value, unit, label }: {
   );
 }
 
-function StatCell({ icon, value, label }: { icon: string; value: string; label: string }) {
-  return (
-    <div className="rounded-xl p-3 transition-all duration-250 hover:-translate-y-0.5"
-      style={{ background: "rgba(30, 20, 65, 0.45)", border: "1px solid rgba(190, 170, 240, 0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", backdropFilter: "blur(4px)" }}>
-      <div className="flex items-center gap-2 mb-1.5">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
-          style={{ background: "rgba(139,70,255,0.15)", border: "1px solid rgba(190,170,240,0.12)" }}>{icon}</div>
-        <p className="text-base font-bold" style={{ color: "#fff" }}>{value}</p>
-      </div>
-      <p className="text-[9px] font-medium uppercase tracking-wider" style={{ color: "rgba(210,200,240,0.5)" }}>{label}</p>
-    </div>
-  );
-}
-
 function ProgressRing({ pct }: { pct: number }) {
   const r=44; const circ=2*Math.PI*r; const off=circ-(pct/100)*circ;
   return (
@@ -260,12 +238,12 @@ export default function DashboardPage() {
           </div>
           {/* Center: KPI Grid 3x2 */}
           <div className="grid grid-cols-3 grid-rows-2 gap-2">
-            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
-            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0}`} unit="" label="Vocabulary Learned"/>
-            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/12)):0}`} unit=" topics" label="Grammar Topics"/>
+            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct}%`} unit="" label="Level Progress"/>
+            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length}`} unit="" label="Words in Review"/>
+            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value={data.level_progress_pct > 0 ? "✓" : "—"} unit="" label="Grammar Topics"/>
             <KpiCard icon="🎯" iconBg="rgba(245,158,11,.14)" iconColor="#F59E0B" value={data.avg_quiz_score>0?`${data.avg_quiz_score}%`: "0%"} unit="" label="Quiz Accuracy"/>
             <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards to Review"/>
-            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
+            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.continue_lesson ? `L${data.continue_lesson.unit}` : "—"} unit="" label="Current Unit"/>
           </div>
           {/* Right: Review & Practice (heading + inner-glow wrapper) */}
           <div className="rounded-[20px] p-3.5 flex flex-col gap-2.5" style={reviewWrap}>
@@ -295,12 +273,12 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/6)):0}`} unit="/ 80" label="Lessons Completed"/>
-            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length>0?data.weakest_words.length*5:0}`} unit="" label="Vocabulary Learned"/>
-            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value={`${data.level_progress_pct>0?Math.max(1,Math.round(data.level_progress_pct/12)):0}`} unit=" topics" label="Grammar Topics"/>
+            <KpiCard icon="📘" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.level_progress_pct}%`} unit="" label="Level Progress"/>
+            <KpiCard icon="🌿" iconBg="rgba(34,197,94,.14)" iconColor="#22C55E" value={`${data.weakest_words.length}`} unit="" label="Words in Review"/>
+            <KpiCard icon="🧩" iconBg="rgba(168,85,247,.14)" iconColor="#A855F7" value={data.level_progress_pct > 0 ? "✓" : "—"} unit="" label="Grammar Topics"/>
             <KpiCard icon="🎯" iconBg="rgba(245,158,11,.14)" iconColor="#F59E0B" value={data.avg_quiz_score>0?`${data.avg_quiz_score}%`: "0%"} unit="" label="Quiz Accuracy"/>
             <KpiCard icon="🕒" iconBg="rgba(59,130,246,.14)" iconColor="#3B82F6" value={`${data.cards_due_today}`} unit="" label="Cards to Review"/>
-            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.level_progress_pct>0?`${Math.max(1,Math.round(data.level_progress_pct/6)*10)}m`:"0m"} unit="" label="Study Time"/>
+            <KpiCard icon="⏱" iconBg="rgba(56,189,248,.14)" iconColor="#38BDF8" value={data.continue_lesson ? `L${data.continue_lesson.unit}` : "—"} unit="" label="Current Unit"/>
           </div>
           <div className="rounded-[20px] p-3.5 flex flex-col gap-2.5" style={reviewWrap}>
             <p className="text-[11px] font-semibold uppercase tracking-[.13em]" style={{ color: "var(--color-text-muted)" }}>Review & Practice</p>

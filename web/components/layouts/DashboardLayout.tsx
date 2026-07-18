@@ -99,19 +99,19 @@ export function DashboardLayout({ children, hideSidebar }: DashboardLayoutProps)
             <span className="ml-1 px-1.5 py-0.5 rounded-md text-[10px] font-medium leading-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--color-border-subtle)" }}>Ctrl K</span>
           </button>
 
-          {/* Notification bell */}
-          <button title="Notifications" className="relative hidden sm:flex items-center justify-center w-9 h-9 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--color-text-muted)" }}>
+          {/* Notification bell — navigates to notifications center */}
+          <button title="Notifications" onClick={() => router.push("/notifications")}
+            className="relative hidden sm:flex items-center justify-center w-9 h-9 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--color-text-muted)" }}>
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ background: "#ec4899", boxShadow: "0 0 8px rgba(236,72,153,0.6)" }}>3</span>
           </button>
 
           {/* User menu */}
           <div className="relative" ref={menuRef}>
             <button onClick={() => setUserMenuOpen(!userMenuOpen)}
               className="flex items-center gap-2 px-1.5 py-1 rounded-lg hover:bg-white/5 transition-colors">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold" style={{ background: "var(--color-accent-gradient)", color: "#fff" }}>{initial}</div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold" style={{ background: "linear-gradient(135deg, #7c3aed, #db2777)", color: "#fff" }}>{initial}</div>
               <span className="text-sm hidden sm:inline max-w-[100px] truncate" style={{ color: "var(--color-text-secondary)" }}>{user.name}</span>
               <svg className={`h-3.5 w-3.5 transition-transform hidden sm:block ${userMenuOpen ? "rotate-180" : ""}`} style={{ color: "var(--color-text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

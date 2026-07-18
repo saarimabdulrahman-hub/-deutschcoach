@@ -86,8 +86,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           cursor: isDisabled ? "not-allowed" : "pointer",
           transition: "all var(--duration-fast) ease-out",
           outline: "none",
-          minWidth: icon ? undefined : undefined,
-          minHeight: icon ? undefined : undefined,
           whiteSpace: "nowrap",
           ...(icon ? iconSizeStyles[size] : sizeStyles[size]),
           ...variantStyles[variant],

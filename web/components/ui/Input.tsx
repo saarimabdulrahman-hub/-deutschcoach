@@ -46,7 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       : "var(--color-border-subtle)";
 
     return (
-      <div className={containerClassName} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+      <div className={containerClassName} style={{ display: "flex", flexDirection: "column", gap: "6px", ...style }}>
         {label && (
           <label
             style={{

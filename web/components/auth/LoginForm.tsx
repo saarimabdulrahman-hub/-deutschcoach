@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/Input";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
 import { loginSchema, type LoginInput } from "@/lib/forms";
 import { AuthDivider } from "./AuthDivider";
@@ -41,11 +42,6 @@ export default function LoginForm() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-      <div style={{ marginBottom: "var(--space-2)" }}>
-        <h1 style={{ fontSize: "var(--type-heading-lg)", fontWeight: 700, color: "var(--color-text-primary)", margin: 0 }}>Welcome back</h1>
-        <p style={{ fontSize: "var(--type-body-md)", color: "var(--color-text-secondary)", margin: "4px 0 0" }}>Sign in to continue learning</p>
-      </div>
-
       {serverError && (
         <div role="alert" style={{ padding: "12px 16px", borderRadius: "var(--radius-md)", background: "var(--color-error-bg)", border: "1px solid var(--color-error-border)", color: "var(--color-error-text)", fontSize: "var(--type-body-sm)" }}>
           {serverError}
@@ -69,31 +65,12 @@ export default function LoginForm() {
               Forgot password?
             </Link>
           </div>
-          <input
-            type="password"
+          <PasswordInput
             placeholder="Enter your password"
+            error={errors.password?.message}
             {...register("password")}
             autoComplete="current-password"
-            aria-invalid={!!errors.password}
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "var(--radius-md)",
-              border: `1px solid ${errors.password ? "var(--color-error-border)" : "var(--color-border-subtle)"}`,
-              background: "var(--color-surface-1)",
-              color: "var(--color-text-primary)",
-              fontSize: "var(--type-body-md)",
-              outline: "none",
-              boxSizing: "border-box",
-            }}
-            onFocus={(e) => { e.target.style.borderColor = "var(--color-border-focus)"; }}
-            onBlur={(e) => { e.target.style.borderColor = errors.password ? "var(--color-error-border)" : "var(--color-border-subtle)"; }}
           />
-          {errors.password?.message && (
-            <p role="alert" style={{ fontSize: "var(--type-label-sm)", color: "var(--color-error-text)", margin: "4px 0 0" }}>
-              {errors.password.message}
-            </p>
-          )}
         </div>
 
         <Button type="submit" variant="primary" size="lg" loading={isSubmitting} style={{ width: "100%" }}>

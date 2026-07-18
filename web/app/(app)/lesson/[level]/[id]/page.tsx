@@ -10,7 +10,6 @@ import { LessonNavigator } from "@/components/lesson/LessonNavigator";
 import { DEFAULT_LESSON_STAGES, type LessonStageDef } from "@/components/lesson/lessonStages";
 import type { LessonNavApi } from "@/components/lesson/useLessonNavigation";
 import { LessonWelcome } from "@/components/lesson/LessonWelcome";
-import { WarmupContent } from "@/components/lesson/WarmupContent";
 import { DialogueContent } from "@/components/lesson/DialogueContent";
 import { VocabularyContent } from "@/components/lesson/VocabularyContent";
 import { GrammarContent } from "@/components/lesson/GrammarContent";
@@ -109,9 +108,9 @@ export default function LessonPage() {
         }))} />;
 
       case "interactive-exercise":
-        return <FillInExercise items={data.exercises.map((e, i) => ({
-          id: i, front: (e as any).question ?? "", back: (e as any).answer ?? "",
-          hint: (e as any).hint ?? (e as any).question ? "Fill in the blank." : undefined,
+        return <FillInExercise items={data.exercises.map((e: Record<string, unknown>, i) => ({
+          id: i, front: (e.question as string) ?? "", back: (e.answer as string) ?? "",
+          hint: (e.hint as string) ?? e.question ? "Fill in the blank." : undefined,
         }))} />;
 
       case "speaking":

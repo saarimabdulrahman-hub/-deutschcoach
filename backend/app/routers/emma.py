@@ -47,13 +47,13 @@ ANTHROPIC_API_URL = f"{ANTHROPIC_BASE_URL}/v1/messages"
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 
 # Rate-limit: max messages per minute per user (simple in-memory; scale with Redis/cache).
+# TODO: Replace with Redis-backed rate limiter for multi-worker deployments.
 _RATE_WINDOW_S = 60
 _MAX_REQUESTS_PER_WINDOW = 20
 _rate_store: dict[int, list[float]] = {}  # user_id → [timestamps]
 
 
 def _check_rate(user_id: int) -> None:
-    now = asyncio.get_event_loop().time() if _rate_store else __import__("time").time()
     import time as _t
     now = _t.time()
     stamps = _rate_store.setdefault(user_id, [])
@@ -86,7 +86,7 @@ async def _stream_anthropic(messages: list[dict], system: str) -> AsyncGenerator
 
     body = {
         "model": ANTHROPIC_MODEL,
-        "max_tokens": 500,
+        "max_tokens": 1024,
         "system": system,
         "messages": messages,
         "stream": True,
@@ -132,7 +132,7 @@ async def _stream_anthropic(messages: list[dict], system: str) -> AsyncGenerator
             if attempt == retries:
                 yield json.dumps(EmmaStreamError(detail="Emma is taking too long — try again in a moment.").model_dump())
             await asyncio.sleep(0.5 * (attempt + 1))
-        except (httpx.HTTPStatusError, json.JSONDecodeError, ConnectionError) as e:
+        except (httpx.HTTPStatusError, json.JSONDecodeError, httpx.ConnectError, httpx.RemoteProtocolError) as e:
             if attempt == retries:
                 logger.exception("Emma stream error")
                 yield json.dumps(EmmaStreamError(detail="An unexpected error occurred. Please try again.").model_dump())
@@ -163,14 +163,14 @@ async def _non_streaming_response(messages: list[dict], system: str) -> EmmaResp
                     },
                     json={
                         "model": ANTHROPIC_MODEL,
-                        "max_tokens": 500,
+                        "max_tokens": 1024,
                         "system": system,
                         "messages": messages,
                     },
                 )
                 if resp.status_code != 200:
-                    body_text = await resp.aread() if hasattr(resp, 'aread') else ""
-                    logger.error("Anthropic API error %s: %s", resp.status_code, str(body_text)[:500])
+                    body_bytes = await resp.aread()
+                    logger.error("Anthropic API error %s: %s", resp.status_code, body_bytes[:500])
                     raise HTTPException(status_code=502, detail="The AI service is temporarily unavailable. Please try again later.")
                 data = resp.json()
                 reply = ""

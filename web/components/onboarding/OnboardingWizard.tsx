@@ -6,12 +6,10 @@
 
 "use client";
 
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Stepper } from "@/components/ui/Stepper";
 import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Avatar } from "@/components/ui/Avatar";
 import { FileUpload } from "@/components/ui/FileUpload";
 
 const STEPS = [
@@ -43,15 +41,6 @@ export function OnboardingWizard() {
     : step === 1 ? level !== ""
     : true;
 
-  const handleNext = useCallback(() => {
-    if (step < STEPS.length - 1) setStep((s) => s + 1);
-    else handleComplete();
-  }, [step]);
-
-  const handleBack = useCallback(() => {
-    if (step > 0) setStep((s) => s - 1);
-  }, [step]);
-
   const handleComplete = useCallback(async () => {
     setLoading(true);
     try {
@@ -66,6 +55,15 @@ export function OnboardingWizard() {
       setLoading(false);
     }
   }, [name, level, dailyGoal, router]);
+
+  const handleNext = useCallback(() => {
+    if (step < STEPS.length - 1) setStep((s) => s + 1);
+    else handleComplete();
+  }, [step, handleComplete]);
+
+  const handleBack = useCallback(() => {
+    if (step > 0) setStep((s) => s - 1);
+  }, [step]);
 
   const renderStep = () => {
     switch (step) {
@@ -87,7 +85,7 @@ export function OnboardingWizard() {
               label="Your name"
               placeholder="Enter your full name"
               value={name}
-              onChange={(e: any) => setName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               autoComplete="name"
             />
           </div>

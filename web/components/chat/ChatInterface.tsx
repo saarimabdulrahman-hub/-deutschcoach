@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,6 +37,10 @@ const TRY_THESE: { key: TutorMode; emoji: string; label: string }[] = [
   { key: "exam", emoji: "🎯", label: "Crush the next exam" },
 ];
 
+const LEVEL_NAME: Record<string, string> = {
+  A1: "Beginner", A2: "Elementary", B1: "Intermediate", B2: "Upper Intermediate", C1: "Advanced",
+};
+
 const MODE_SUGGESTIONS: Record<TutorMode, string[]> = {
   roleplay: ["Let's practice ordering at a café", "I'm checking into a hotel", "Help me with a job interview", "Can we do a doctor's visit?"],
   grammar: ["Explain verb conjugation", "When do I use der/die/das?", "Help me with sentence order", "What's the difference between du and Sie?"],
@@ -51,9 +55,8 @@ const MODE_SUGGESTIONS: Record<TutorMode, string[]> = {
 function WelcomePanel({ userName, onPrompt }: { userName: string; onPrompt: (text: string) => void }) {
   return (
     <div className="text-center py-6 sm:py-8 max-w-md mx-auto">
-      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center text-3xl"
-        style={{ background: "var(--color-hover-bg)", border: "1px solid var(--color-border)" }}>
-        <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />
+      <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden">
+        <img src="/emma-avatar.webp" alt="Emma" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
       <h2 className="text-xl sm:text-2xl font-extrabold mb-1" style={{ color: "var(--color-text)" }}>
         Hi{userName ? ` ${userName}` : ""} 👋
@@ -161,9 +164,16 @@ function SessionSummary({ summary }: { summary: SessionSummary }) {
   );
 }
 
-// ── Context bar (lesson awareness — placeholder data) ─────────────────
+// ── Context bar (lesson awareness) ─────────────────
 
-function ContextBar() {
+function ContextBar({ mode, dashboard }: { mode?: TutorMode | null; dashboard?: DashboardData }) {
+  const levelLabel = `${dashboard?.continue_lesson?.level || "A1"} ${LEVEL_NAME[dashboard?.continue_lesson?.level || "A1"] || "Beginner"}`;
+  const lessonLabel = dashboard?.continue_lesson?.title ? `Lesson: ${dashboard.continue_lesson.title}` : null;
+  const modeLabel = mode ? `Mode: ${TRY_THESE.find((m) => m.key === mode)?.label ?? mode}` : null;
+  const items = [levelLabel, lessonLabel, modeLabel].filter(Boolean);
+
+  if (items.length === 0) return null;
+
   return (
     <div className="flex items-center gap-3 px-3 py-2 rounded-xl mb-3 flex-wrap"
       style={{
@@ -172,13 +182,12 @@ function ContextBar() {
         boxShadow: "0 0 35px rgba(168,85,247,.06)",
       }}>
       <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>Context</span>
-      <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--color-text-secondary)" }}>
-        <span style={{ color: "var(--color-accent-light)" }}>A1</span> Beginner
-      </span>
-      <span aria-hidden style={{ color: "var(--color-border)" }}>|</span>
-      <span className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>Lesson: Greetings</span>
-      <span aria-hidden style={{ color: "var(--color-border)" }}>|</span>
-      <span className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>Vocab: Hallo, heißen, Tschüss…</span>
+      {items.map((item, i) => (
+        <Fragment key={item}>
+          {i > 0 && <span aria-hidden style={{ color: "var(--color-border)" }}>|</span>}
+          <span className="text-[11px]" style={{ color: "var(--color-text-secondary)" }}>{item}</span>
+        </Fragment>
+      ))}
     </div>
   );
 }
@@ -202,13 +211,8 @@ function EmmaCard({ dashboard, userName }: { dashboard?: DashboardData; userName
       <div className="relative z-10">
         {/* Emma avatar + greeting */}
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, #6D3BFF, #FF3CA6)",
-              border: "2px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 0 0 4px rgba(109,59,255,0.25), 0 0 20px rgba(109,59,255,0.25)",
-            }}>
-            <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover scale-150" />
+          <div className="flex-shrink-0 w-16 h-16 rounded-full overflow-hidden" style={{ boxShadow: "0 0 0 4px rgba(109,59,255,0.25), 0 0 20px rgba(109,59,255,0.25)" }}>
+            <img src="/emma-avatar.webp" alt="Emma" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div className="min-w-0">
             <p className="text-base font-bold" style={{ color: "#fff" }}>
@@ -383,7 +387,7 @@ export function ChatInterface() {
     try {
       const res = await api.post<{ reply: string; corrections: Array<{ error: string; correction: string; explanation: string }> }>(
         "/chat/send",
-        { messages: [...messages, userMsg].map((m) => ({ role: m.role, content: m.content })), scenario: null }
+        { messages: [...messages, userMsg].map((m) => ({ role: m.role, content: m.content })), mode }
       );
       setMessages((prev) => [...prev, { role: "assistant", content: res.reply, corrections: res.corrections }]);
       if (res.corrections?.length) {
@@ -432,7 +436,7 @@ export function ChatInterface() {
         </div>
 
         {/* Context bar */}
-        <ContextBar />
+        <ContextBar mode={mode} dashboard={dashboard} />
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-3 px-1" style={{ scrollBehavior: "smooth" }}>

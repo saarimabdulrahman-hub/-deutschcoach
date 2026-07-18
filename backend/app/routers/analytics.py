@@ -3,7 +3,7 @@ aggregated dashboard queries."""
 
 from __future__ import annotations
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -60,7 +60,6 @@ def record_batch(
     user=Depends(require_auth),
 ):
     """Fire-and-forget batch — send multiple events at once (e.g. on lesson exit)."""
-    now_utc = datetime.utcnow()
     rows = []
     for ev in body.events:
         rows.append(LearningEvent(
@@ -84,7 +83,7 @@ def get_dashboard(
     user=Depends(require_auth),
 ):
     uid = user.id
-    thirty_days = datetime.utcnow() - timedelta(days=30)
+    thirty_days = datetime.now(timezone.utc) - timedelta(days=30)
 
     # ── learner summary ──────────────────────────────────────────────────
     base = db.query(LearningEvent).filter(LearningEvent.user_id == uid)

@@ -116,7 +116,7 @@ export default function CurriculumPage() {
     return <ErrorState message={error instanceof Error ? error.message : "Failed to load curriculum."}
       onRetry={() => queryClient.invalidateQueries({ queryKey: ["curriculum"] })} />;
 
-  const units = (searchQuery ? filteredLessons : lessons) ? groupUnits(searchQuery ? filteredLessons : lessons!) : [];
+  const units = (searchQuery ? filteredLessons : lessons) ? groupUnits(searchQuery ? filteredLessons : lessons ?? []) : [];
   const totalCompleted = levels?.reduce((s, l) => s + l.completed_count, 0) || 0;
   const isFreshStart = totalCompleted === 0;
 
@@ -209,7 +209,7 @@ export default function CurriculumPage() {
                     border: "2px solid rgba(255,255,255,0.18)",
                     boxShadow: "0 0 0 6px rgba(109,59,255,0.25), 0 0 36px rgba(109,59,255,0.25)",
                   }}>
-                  <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover" />
+                  <img src="/emma-avatar.webp" alt="Emma" className="w-full h-full rounded-full object-cover scale-110" />
                 </div>
                 {/* Lesson title stack beside avatar */}
                 <div className="min-w-0">
@@ -224,12 +224,10 @@ export default function CurriculumPage() {
                   </p>
                 </div>
               </div>
-              {/* Metadata row */}
+              {/* Metadata row — derived from real lesson data when available */}
               <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm mb-4" style={{ color: "var(--color-text-muted)" }}>
                 <span>⏱ ~{MIN_PER_LESSON}m</span>
-                <span>📖 8 words</span>
-                <span>✍ grammar</span>
-                <span>📝 practice</span>
+                {nextLesson.topics && nextLesson.topics.length > 0 && <span>📖 {nextLesson.topics.length} topics</span>}
               </div>
               {/* CTA */}
               <button onClick={() => goLesson(nextLesson!.id)}
@@ -313,9 +311,9 @@ export default function CurriculumPage() {
                         {m.icon}
                       </div>
                       <div className="min-w-0 relative z-10">
-                        <p className="text-[15px] font-bold mb-0.5 truncate" style={{ color: "#FFFFFF" }}>{m.title}</p>
-                        <p className="text-[12px] truncate" style={{ color: "#9CA3AF" }}>{m.subtitle}</p>
-                        <span className="text-[10px] font-semibold mt-1.5 block" style={{ color: "#6B7280" }}>{m.meta}</span>
+                        <p className="text-[15px] font-bold mb-0.5 truncate" style={{ color: "var(--color-text-primary)" }}>{m.title}</p>
+                        <p className="text-[12px] truncate" style={{ color: "var(--color-text-muted)" }}>{m.subtitle}</p>
+                        <span className="text-[10px] font-semibold mt-1.5 block" style={{ color: "var(--color-text-tertiary)" }}>{m.meta}</span>
                       </div>
                     </button>
                   ))}
@@ -524,7 +522,10 @@ export default function CurriculumPage() {
             </div>
 
             {/* CTA — gradient with shadow + hover lift */}
-            <button onClick={() => setOverride(units[0]?.unit ? viewLevel : viewLevel)}
+            <button onClick={() => {
+              const el = document.getElementById("complete-journey");
+              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
               className="w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-250 hover:-translate-y-0.5"
               style={{
                 background: "rgba(139,92,246,0.12)",
@@ -539,7 +540,7 @@ export default function CurriculumPage() {
 
       {/* ── Complete Journey (premium, layered) ── */}
       {levels && levels.length > 0 && (
-        <section aria-labelledby="journey-heading">
+        <section id="complete-journey" aria-labelledby="journey-heading">
           <h2 id="journey-heading" className="text-[22px] font-extrabold mb-5" style={{ color: "#FFFFFF" }}>Complete Journey</h2>
           <div className="rounded-[20px] p-6 relative overflow-hidden"
             style={{
