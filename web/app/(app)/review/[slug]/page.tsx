@@ -33,6 +33,8 @@ export default function ReviewSlugPage() {
   });
 
   const streak = dash?.streak ?? 0;
+  const total = stats ? stats.new + stats.learning + stats.reviewing + stats.mastered : 0;
+  const retention = total > 0 ? Math.round((stats!.mastered / total) * 100) : 0;
 
   return (
     <div className="flex" style={{ gap: 0, margin: "0 -24px", minHeight: "calc(100vh - 72px)" }}>
@@ -45,15 +47,19 @@ export default function ReviewSlugPage() {
               {/* Header with icon, title + due badge */}
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-start gap-3">
-                  <span style={{ fontSize: "28px", lineHeight: 1 }}>📚</span>
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ flexShrink: 0, marginTop: "4px" }}>
+                    <path d="M5 6L14 9V22L5 19V6Z" fill="#A855F7" opacity="0.85"/>
+                    <path d="M14 9L23 6V19L14 22V9Z" fill="#A855F7" opacity="0.65"/>
+                    <path d="M14 9V22" stroke="rgba(255,255,255,.2)" strokeWidth="0.8"/>
+                  </svg>
                   <div>
-                    <h1 style={{ fontSize: "38px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.1 }}>Spaced Repetition</h1>
-                    <p style={{ fontSize: "15px", color: "#B3B4C8", margin: "2px 0 0" }}>Smart review system that helps you remember better, for longer.</p>
+                    <h1 style={{ fontSize: "28px", fontWeight: 600, color: "#FFF", margin: 0, lineHeight: 1.1 }}>Spaced Repetition</h1>
+                    <p style={{ fontSize: "13px", color: "#B3B4C8", margin: "2px 0 0" }}>Smart review system that helps you remember better, for longer.</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-full px-4 py-2 flex-shrink-0" style={{ background: "rgba(16,18,32,.7)", border: "1px solid rgba(168,85,247,.15)", boxShadow: "0 0 12px rgba(168,85,247,.08)" }}>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#FFF" strokeWidth="1.2" fill="none"/><path d="M7 4.5V7l2 2" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round"/></svg>
-                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#FFF" }}>0 due today</span>
+                <div className="flex items-center gap-2 rounded-full px-4 py-2 flex-shrink-0" style={{ background: "rgba(168,85,247,.12)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "none", boxShadow: "0 0 20px rgba(168,85,247,.1)" }}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#C084FC" strokeWidth="1.2" fill="none"/><path d="M7 4.5V7l2 2" stroke="#C084FC" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#C084FC" }}>0 due today</span>
                 </div>
               </div>
 
@@ -61,7 +67,7 @@ export default function ReviewSlugPage() {
               <div className="relative flex items-center overflow-hidden" style={{ borderRadius: "24px", minHeight: "220px", background: `url('/sr-hero-bg.png') center / cover no-repeat`, border: "1px solid rgba(255,255,255,.04)" }}>
                 {/* Left text */}
                 <div className="px-8 py-6" style={{ flex: "0.45 1 0%", position: "relative", zIndex: 2 }}>
-                  <h2 style={{ fontSize: "36px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.1 }}>You&apos;re all set!</h2>
+                  <h2 style={{ fontSize: "36px", fontWeight: 600, color: "#FFF", margin: 0, lineHeight: 1.1 }}>You&apos;re all set!</h2>
                   <p style={{ fontSize: "14px", color: "#B3B4C8", marginTop: "8px", lineHeight: 1.5, maxWidth: "280px" }}>Great job keeping up with your reviews.</p>
                   <p style={{ fontSize: "13px", color: "rgba(255,255,255,.3)", marginTop: "4px" }}>Consistency is the key to fluency.</p>
                 </div>
@@ -72,84 +78,130 @@ export default function ReviewSlugPage() {
               {/* 4 Stat Cards */}
               <div className="grid grid-cols-4 gap-5">
                 {[
-                  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z" fill="url(#fG2)" stroke="none"/><defs><linearGradient id="fG2" x1="2" y1="2" x2="22" y2="22"><stop offset="0%" stopColor="#F97316"/><stop offset="100%" stopColor="#EAB308"/></linearGradient></defs></svg>, value: `${dash?.streak ?? 0}`, label: "Day Streak", color: "#F97316" },
-                  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#A855F7" strokeWidth="2" fill="none"/><path d="M12 7v5l4 2" stroke="#A855F7" strokeWidth="2" strokeLinecap="round"/></svg>, value: `${stats?.mastered ?? 0}`, label: "Mastered", color: "#A855F7" },
-                  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#22C55E" strokeWidth="2" fill="none" strokeDasharray="14 14" strokeLinecap="round"/></svg>, value: `${stats ? Math.round((stats.mastered / Math.max(stats.new + stats.learning + stats.reviewing + stats.mastered, 1)) * 100) : 0}%`, label: "Retention", color: "#22C55E" },
-                  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#C084FC" strokeWidth="2" fill="none"/><line x1="3" y1="9" x2="21" y2="9" stroke="#C084FC" strokeWidth="2"/></svg>, value: "12", label: "Longest Streak", color: "#C084FC" },
+                  {
+                    icon: <span style={{ fontSize: "48px", filter: "drop-shadow(0 0 14px rgba(249,115,22,.5))" }}>🔥</span>,
+                    value: `${dash?.streak ?? 0}`, label: "DAY STREAK", desc: "Keep it going!", valueColor: "#FFF",
+                  },
+                  {
+                    icon: <div className="flex items-center justify-center" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#221635", boxShadow: "0 0 16px rgba(157,77,255,.15)" }}>
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="9" stroke="#9D4DFF" strokeWidth="2" fill="none"/><path d="M14 8v6l4 3" stroke="#9D4DFF" strokeWidth="2" strokeLinecap="round"/></svg>
+                    </div>,
+                    value: `${stats?.mastered ?? 0}`, label: "CARDS MASTERED", desc: "Words you know", valueColor: "#F6F6FA",
+                  },
+                  {
+                    icon: <div className="flex items-center justify-center" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#221635" }}>
+                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="13" stroke="rgba(255,255,255,.04)" strokeWidth="3" fill="none"/>
+                        <circle cx="16" cy="16" r="13" stroke="url(#ringG)" strokeWidth="3" fill="none" strokeDasharray={`${0.92 * 82} 82`} strokeLinecap="round" transform="rotate(-90 16 16)"/>
+                        <defs><linearGradient id="ringG" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stopColor="#EC4BAF"/><stop offset="50%" stopColor="#B13EFF"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient></defs>
+                      </svg>
+                    </div>,
+                    value: `${retention}%`, label: "RETENTION RATE", desc: "Excellent!", valueColor: "#F6F6FA",
+                  },
+                  {
+                    icon: <div className="flex items-center justify-center" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#221635", boxShadow: "0 0 16px rgba(164,107,255,.12)" }}>
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="4" width="22" height="20" rx="2" stroke="#A46BFF" strokeWidth="1.8" fill="none"/><line x1="3" y1="9" x2="25" y2="9" stroke="#A46BFF" strokeWidth="1.8"/></svg>
+                    </div>,
+                    value: "12", label: "LONGEST STREAK", desc: "days", valueColor: "#F6F6FA",
+                  },
                 ].map((stat) => (
-                  <div key={stat.label} className="rounded-[18px] p-5 flex items-center gap-3" style={{ background: "#1B1730", border: "1px solid rgba(255,255,255,.05)" }}>
-                    <span style={{ color: stat.color, filter: `drop-shadow(0 0 6px ${stat.color}30)` }}>{stat.icon}</span>
+                  <div key={stat.label} className="flex items-start gap-4 p-5" style={{ borderRadius: "20px", background: "#151220", border: "1px solid rgba(168,85,247,.12)" }}>
+                    <span style={{ filter: `drop-shadow(0 0 6px rgba(157,77,255,.2))` }}>{stat.icon}</span>
                     <div>
-                      <p style={{ fontSize: "20px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{stat.value}</p>
-                      <p style={{ fontSize: "11px", color: "rgba(255,255,255,.35)", margin: 0 }}>{stat.label}</p>
+                      <p style={{ fontSize: "34px", fontWeight: 700, color: stat.valueColor, margin: 0, lineHeight: 1.1 }}>{stat.value}</p>
+                      <p style={{ fontSize: "11px", fontWeight: 500, color: "#B14BFF", margin: "2px 0 0", letterSpacing: "0.5px" }}>{stat.label}</p>
+                      <p style={{ fontSize: "12px", color: "#A0A0B5", margin: "4px 0 0" }}>{stat.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Review Queue */}
-              <div className="rounded-[20px] overflow-hidden" style={{ background: "#1B1730", border: "1px solid rgba(255,255,255,.05)" }}>
-                <div className="flex items-center justify-between px-5 py-4">
-                  <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#FFF", margin: 0 }}>Review Queue</h2>
-                  <div className="flex gap-2">
-                    <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Study All</button>
-                    <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "rgba(255,255,255,.05)", color: "rgba(255,255,255,.5)", border: "1px solid rgba(255,255,255,.06)" }}>Filter</button>
+              {/* Review Queue + How It Works (side by side) */}
+              <div className="flex gap-5">
+                {/* Review Queue (takes ~70%) */}
+                <div className="flex-1 rounded-[20px] overflow-hidden" style={{ background: "#1B1730", border: "1px solid rgba(255,255,255,.05)" }}>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <h2 style={{ fontSize: "16px", fontWeight: 500, color: "#FFF", margin: 0 }}>Review Queue</h2>
+                    <div className="flex gap-2">
+                      <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Study All</button>
+                      <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "rgba(255,255,255,.05)", color: "rgba(255,255,255,.5)", border: "1px solid rgba(255,255,255,.06)" }}>Filter</button>
+                    </div>
                   </div>
-                </div>
-                {/* Table header */}
-                <div className="px-5 py-2 flex items-center gap-3 text-xs font-medium uppercase tracking-wider" style={{ color: "rgba(255,255,255,.25)", borderTop: "1px solid rgba(255,255,255,.05)" }}>
-                  <span style={{ width: "24px" }} />
-                  <span style={{ width: "24px" }}>🔊</span>
-                  <span style={{ flex: 1 }}>German Word</span>
-                  <span style={{ flex: 1 }}>Translation</span>
-                  <span style={{ width: "80px" }}>Next Review</span>
-                  <span style={{ width: "60px", textAlign: "center" }}>Interval</span>
-                  <span style={{ width: "60px", textAlign: "center" }}>Ease</span>
-                  <span style={{ width: "20px" }} />
-                </div>
-                {/* Table rows */}
-                {[
-                  { word: "der Fortschritt", trans: "progress", review: "Due now", interval: "1 day", ease: "Hard", easeColor: "#EF4444" },
-                  { word: "die Gelegenheit", trans: "opportunity", review: "Due now", interval: "1 day", ease: "Medium", easeColor: "#F59E0B" },
-                  { word: "entwickeln", trans: "develop", review: "Due now", interval: "1 day", ease: "Hard", easeColor: "#EF4444" },
-                  { word: "Herausforderung", trans: "challenge", review: "Due now", interval: "1 day", ease: "Medium", easeColor: "#F59E0B" },
-                  { word: "Veränderung", trans: "change", review: "Tomorrow", interval: "2 days", ease: "Easy", easeColor: "#22C55E" },
-                ].map((row, i) => (
-                  <div key={i} className="px-5 flex items-center gap-3 text-sm" style={{ height: "68px", borderTop: "1px solid rgba(255,255,255,.04)" }}>
-                    <input type="checkbox" style={{ accentColor: "#A855F7" }} />
-                    <span style={{ color: "rgba(255,255,255,.3)", cursor: "pointer" }}>🔊</span>
-                    <span style={{ flex: 1, color: "#FFF", fontWeight: 500 }}>{row.word}</span>
-                    <span style={{ flex: 1, color: "#A8A4BC" }}>{row.trans}</span>
-                    <span style={{ width: "80px", color: row.review === "Due now" ? "#EF4444" : "#A8A4BC", fontSize: "12px" }}>{row.review}</span>
-                    <span style={{ width: "60px", textAlign: "center", fontSize: "12px", color: "rgba(255,255,255,.4)" }}>{row.interval}</span>
-                    <span style={{ width: "60px", textAlign: "center", fontSize: "11px", padding: "2px 8px", borderRadius: "999px", color: row.easeColor, background: `${row.easeColor}15` }}>{row.ease}</span>
-                    <span style={{ width: "20px", color: "rgba(255,255,255,.2)", cursor: "pointer" }}>⋮</span>
+                  <div className="px-5 py-2 flex items-center gap-3 text-xs font-medium uppercase tracking-wider" style={{ color: "rgba(255,255,255,.25)", borderTop: "1px solid rgba(255,255,255,.05)" }}>
+                    <span style={{ width: "24px" }} /><span style={{ width: "24px" }}>🔊</span>
+                    <span style={{ flex: 1 }}>German Word</span>
+                    <span style={{ flex: 1 }}>Translation</span>
+                    <span style={{ width: "80px" }}>Next Review</span>
+                    <span style={{ width: "60px", textAlign: "center" }}>Interval</span>
+                    <span style={{ width: "60px", textAlign: "center" }}>Ease</span>
+                    <span style={{ width: "20px" }} />
                   </div>
-                ))}
-              </div>
-
-              {/* How It Works */}
-              <div className="rounded-[20px] p-6" style={{ background: "#1B1730", border: "1px solid rgba(255,255,255,.05)" }}>
-                <h2 style={{ fontSize: "15px", fontWeight: 600, color: "#FFF", margin: "0 0 16px" }}>How It Works</h2>
-                <div className="grid grid-cols-3 gap-5">
                   {[
-                    { num: "①", title: "Learn", desc: "New words introduced at optimal intervals." },
-                    { num: "②", title: "Review", desc: "Recall words actively to strengthen memory." },
-                    { num: "③", title: "Remember", desc: "Spaced repetition moves knowledge to long-term memory." },
-                  ].map((step) => (
-                    <div key={step.num} className="p-4 rounded-xl" style={{ background: "rgba(16,18,32,.5)", border: "1px solid rgba(255,255,255,.04)" }}>
-                      <p style={{ fontSize: "24px", margin: "0 0 6px" }}>{step.num}</p>
-                      <p style={{ fontSize: "13px", fontWeight: 600, color: "#FFF", margin: 0 }}>{step.title}</p>
-                      <p style={{ fontSize: "12px", color: "#A8A4BC", margin: "4px 0 0", lineHeight: 1.4 }}>{step.desc}</p>
+                    { word: "der Fortschritt", trans: "progress", review: "Due now", interval: "1 day", ease: "Hard", easeColor: "#EF4444" },
+                    { word: "die Gelegenheit", trans: "opportunity", review: "Due now", interval: "1 day", ease: "Medium", easeColor: "#F59E0B" },
+                    { word: "entwickeln", trans: "develop", review: "Due now", interval: "1 day", ease: "Hard", easeColor: "#EF4444" },
+                    { word: "Herausforderung", trans: "challenge", review: "Due now", interval: "1 day", ease: "Medium", easeColor: "#F59E0B" },
+                    { word: "Veränderung", trans: "change", review: "Tomorrow", interval: "2 days", ease: "Easy", easeColor: "#22C55E" },
+                  ].map((row, i) => (
+                    <div key={i} className="px-5 flex items-center gap-3 text-sm" style={{ height: "68px", borderTop: "1px solid rgba(255,255,255,.04)" }}>
+                      <input type="checkbox" style={{ accentColor: "#A855F7" }} />
+                      <span style={{ color: "rgba(255,255,255,.3)" }}>🔊</span>
+                      <span style={{ flex: 1, color: "#FFF", fontWeight: 500 }}>{row.word}</span>
+                      <span style={{ flex: 1, color: "#A8A4BC" }}>{row.trans}</span>
+                      <span style={{ width: "80px", color: row.review === "Due now" ? "#EF4444" : "#A8A4BC", fontSize: "12px" }}>{row.review}</span>
+                      <span style={{ width: "60px", textAlign: "center", fontSize: "12px", color: "rgba(255,255,255,.4)" }}>{row.interval}</span>
+                      <span style={{ width: "60px", textAlign: "center", fontSize: "11px", padding: "2px 8px", borderRadius: "999px", color: row.easeColor, background: `${row.easeColor}15` }}>{row.ease}</span>
+                      <span style={{ width: "20px", color: "rgba(255,255,255,.2)" }}>⋮</span>
                     </div>
                   ))}
                 </div>
-                {/* Pro Tip */}
-                <div className="flex items-start gap-3 mt-5 p-5 rounded-[18px]" style={{ background: "rgba(168,85,247,.06)", border: "1px solid rgba(168,85,247,.1)" }}>
-                  <span style={{ fontSize: "18px", flexShrink: 0 }}>💡</span>
-                  <div>
-                    <p style={{ fontSize: "13px", fontWeight: 600, color: "#FFF", margin: 0 }}>Pro Tip</p>
-                    <p style={{ fontSize: "12px", color: "#A8A4BC", margin: "2px 0 0", lineHeight: 1.4 }}>Review your cards daily — even 5 minutes helps. Consistency builds stronger neural pathways than cramming.</p>
+
+                {/* How It Works — slim card (~30%) */}
+                <div className="rounded-[20px] p-5 flex flex-col" style={{ width: "260px", background: "#1B1730", border: "1px solid rgba(255,255,255,.05)" }}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span style={{ fontSize: "16px" }}>🎓</span>
+                    <h2 style={{ fontSize: "14px", fontWeight: 500, color: "#FFF", margin: 0 }}>How It Works</h2>
+                  </div>
+                  <div className="flex flex-col gap-4 flex-1">
+                    <svg style={{ position: "absolute", width: 0, height: 0 }}>
+                      <defs>
+                        <linearGradient id="numShine" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9"/>
+                          <stop offset="18%" stopColor="#f9a8d4" stopOpacity="0.5"/>
+                          <stop offset="45%" stopColor="#d946ef" stopOpacity="0.2"/>
+                          <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.12"/>
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    {[
+                      { num: "1", title: "Learn", desc: "New words introduced at optimal intervals." },
+                      { num: "2", title: "Review", desc: "Recall words actively to strengthen memory." },
+                      { num: "3", title: "Remember", desc: "Spaced repetition moves to long-term memory." },
+                    ].map((step) => (
+                      <div key={step.num} className="flex gap-3">
+                        <div className="flex-shrink-0 relative" style={{ width: "38px", height: "38px" }}>
+                          <svg width="38" height="38" viewBox="0 0 38 38" className="absolute inset-0">
+                            <circle cx="19" cy="19" r="18" fill="none" stroke="url(#numShine)" strokeWidth="1.5" style={{ filter: "drop-shadow(0 0 4px rgba(217,70,239,0.35))" }} />
+                            <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ color: "#A855F7", fontSize: "13px", fontWeight: 700 }}>
+                            {step.num}
+                          </div>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: "13px", fontWeight: 600, color: "#FFF", margin: 0 }}>{step.title}</p>
+                          <p style={{ fontSize: "11px", color: "#A8A4BC", margin: "2px 0 0", lineHeight: 1.3 }}>{step.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Pro Tip */}
+                  <div className="mt-4 p-3 rounded-xl" style={{ background: "rgba(168,85,247,.06)", border: "1px solid rgba(168,85,247,.1)" }}>
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span style={{ fontSize: "12px" }}>💡</span>
+                      <span style={{ fontSize: "11px", fontWeight: 600, color: "#FFF" }}>Pro Tip</span>
+                    </div>
+                    <p style={{ fontSize: "11px", color: "#A8A4BC", margin: 0, lineHeight: 1.3, paddingLeft: "20px" }}>Review daily — even 5 minutes helps.</p>
                   </div>
                 </div>
               </div>
