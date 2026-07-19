@@ -43,17 +43,15 @@ export default function ReviewSlugPage() {
           {slug === "spaced-repetition" && (
             <>
               {/* Header with icon, title + due badge */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(168,85,247,.12)", boxShadow: "0 0 12px rgba(168,85,247,.1)" }}>
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="3" width="12" height="14" rx="2" stroke="#A855F7" strokeWidth="1.5" fill="none"/><line x1="7" y1="7" x2="13" y2="7" stroke="#A855F7" strokeWidth="1.5"/><line x1="7" y1="11" x2="11" y2="11" stroke="#A855F7" strokeWidth="1.5"/></svg>
-                  </div>
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start gap-3">
+                  <span style={{ fontSize: "28px", lineHeight: 1 }}>📚</span>
                   <div>
                     <h1 style={{ fontSize: "38px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.1 }}>Spaced Repetition</h1>
                     <p style={{ fontSize: "15px", color: "#B3B4C8", margin: "2px 0 0" }}>Smart review system that helps you remember better, for longer.</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-full px-4 py-2" style={{ background: "rgba(16,18,32,.7)", border: "1px solid rgba(168,85,247,.15)", boxShadow: "0 0 12px rgba(168,85,247,.08)" }}>
+                <div className="flex items-center gap-2 rounded-full px-4 py-2 flex-shrink-0" style={{ background: "rgba(16,18,32,.7)", border: "1px solid rgba(168,85,247,.15)", boxShadow: "0 0 12px rgba(168,85,247,.08)" }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#FFF" strokeWidth="1.2" fill="none"/><path d="M7 4.5V7l2 2" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round"/></svg>
                   <span style={{ fontSize: "12px", fontWeight: 600, color: "#FFF" }}>0 due today</span>
                 </div>
@@ -61,24 +59,14 @@ export default function ReviewSlugPage() {
 
               {/* Hero Banner with bg image */}
               <div className="relative flex items-center overflow-hidden" style={{ borderRadius: "24px", minHeight: "220px", background: `url('/sr-hero-bg.png') center / cover no-repeat`, border: "1px solid rgba(255,255,255,.04)" }}>
-                {/* Left text (35%) */}
-                <div className="px-8 py-6" style={{ flex: "0.35 1 0%", position: "relative", zIndex: 2 }}>
+                {/* Left text */}
+                <div className="px-8 py-6" style={{ flex: "0.45 1 0%", position: "relative", zIndex: 2 }}>
                   <h2 style={{ fontSize: "36px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.1 }}>You&apos;re all set!</h2>
                   <p style={{ fontSize: "14px", color: "#B3B4C8", marginTop: "8px", lineHeight: 1.5, maxWidth: "280px" }}>Great job keeping up with your reviews.</p>
                   <p style={{ fontSize: "13px", color: "rgba(255,255,255,.3)", marginTop: "4px" }}>Consistency is the key to fluency.</p>
                 </div>
                 {/* Center: brain is in the bg image */}
-                <div style={{ flex: "0.35 1 0%" }} />
-                {/* Right: Status card (30%) */}
-                <div style={{ flex: "0.3 1 0%", position: "relative", zIndex: 2 }} className="flex items-center justify-center">
-                  <div className="rounded-xl px-5 py-4 text-center" style={{ background: "rgba(16,18,32,.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,.06)", boxShadow: "0 4px 24px rgba(0,0,0,.2)" }}>
-                    <p style={{ fontSize: "10px", color: "rgba(255,255,255,.4)", margin: 0, textTransform: "uppercase", letterSpacing: "0.5px" }}>Cards Reviewed Today</p>
-                    <p style={{ fontSize: "32px", fontWeight: 700, color: "#FFF", margin: "4px 0" }}>18 <span style={{ color: "#62E98A" }}>✓</span></p>
-                    <p style={{ fontSize: "12px", color: "#62E98A", margin: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
-                      <span>✨</span> Excellent work!
-                    </p>
-                  </div>
-                </div>
+                <div style={{ flex: "0.55 1 0%" }} />
               </div>
 
               {/* 4 Stat Cards */}
