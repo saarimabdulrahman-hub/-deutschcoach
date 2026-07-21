@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import type { QuizSession, QuizQuestion, DashboardData } from "@/types";
+import type { QuizSession, QuizQuestion, DashboardData, QuizResultOut } from "@/types";
 import { QuestionCard } from "@/components/quiz/QuestionCard";
 import { QuizResults } from "@/components/quiz/QuizResults";
 import { EmmaAIPanel } from "@/components/quiz/EmmaAIPanel";
@@ -11,11 +11,6 @@ import { useAutosave } from "@/hooks/useAutosave";
 import { useRecovery } from "@/hooks/useRecovery";
 
 type QuizState = "setup" | "active" | "results";
-
-interface QuizResultOut {
-  score_pct: number; questions_total: number; questions_correct: number;
-  results: { question_id: string; correct: boolean; your_answer: string; correct_answer: string; feedback?: string | null }[];
-}
 
 interface StoredAnswer { question_id: string; answer: string; }
 

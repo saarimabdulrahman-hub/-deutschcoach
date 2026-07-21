@@ -35,8 +35,11 @@ export { FileUpload } from "./FileUpload";
 export { LanguageSelector } from "./LanguageSelector";
 export { ThemeSwitch } from "./ThemeSwitch";
 
-// Legacy/Existing
+// Error handling
 export { ErrorState } from "./ErrorState";
+export { ErrorBoundary } from "./ErrorBoundary";
+
+// Legacy/Existing
 export { ProgressBar } from "./ProgressBar";
 export { TabBar } from "./TabBar";
 export { CommandBar } from "./CommandBar";

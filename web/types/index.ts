@@ -190,6 +190,19 @@ export interface QuizQuestion {
   hint?: string;
 }
 
+export interface QuizResultOut {
+  score_pct: number;
+  questions_total: number;
+  questions_correct: number;
+  results: {
+    question_id: string;
+    correct: boolean;
+    your_answer: string;
+    correct_answer: string;
+    feedback?: string | null;
+  }[];
+}
+
 // ---- Plans / pricing ----
 
 export interface Plan {
