@@ -9,7 +9,7 @@ import type { DashboardData, SRSCardOut } from "@/types";
 import {
   HOW_IT_WORKS_STEPS,
   FLASHCARD_QUICK_START, RECENTLY_STUDIED_DECKS,
-  WEAK_WORD_STATS, MEMORY_DISTRIBUTION,
+  WEAK_WORD_STATS,
   BOOKMARK_ITEMS, BOOKMARK_COLLECTIONS, BOOKMARK_TYPES, BOOKMARK_ACTIVITY,
 } from "@/lib/mockData/review";
 
@@ -561,13 +561,30 @@ export default function ReviewSlugPage() {
                 <div className="rounded-[16px] p-6" style={{ width: "40%", background: "linear-gradient(180deg, #16142B, #111322)", border: "1px solid rgba(255,255,255,.05)", boxShadow: "0 10px 30px rgba(0,0,0,.45)" }}>
                   <p style={{ fontSize: "15px", fontWeight: 500, color: "#FFF", margin: "0 0 18px" }}>Memory Distribution</p>
                   <div className="flex items-center gap-6">
+                    {(() => {
+                      const totalCards = (stats?.new ?? 0) + (stats?.learning ?? 0) + (stats?.reviewing ?? 0) + (stats?.mastered ?? 0);
+                      const strongPct = totalCards > 0 ? Math.round((stats?.mastered ?? 0) / totalCards * 100) : 0;
+                      const normalPct = totalCards > 0 ? Math.round((stats?.learning ?? 0) / totalCards * 100) : 0;
+                      const reviewPct = totalCards > 0 ? 100 - strongPct - normalPct : 0;
+                      const circ = 2 * Math.PI * 45;
+                      const dashStrong = (strongPct / 100) * circ;
+                      const dashNormal = (normalPct / 100) * circ;
+                      const dashReview = (reviewPct / 100) * circ;
+                      const rotNormal = -90 + (strongPct / 100) * 360;
+                      const rotReview = rotNormal + (normalPct / 100) * 360;
+                      const items = [
+                        { color: "#22C55E", label: "Strong Memory", pct: `${strongPct}%` },
+                        { color: "#8B5CF6", label: "Normal", pct: `${normalPct}%` },
+                        { color: "#F59E0B", label: "Needs Review", pct: `${reviewPct}%` },
+                      ];
+                      return (<>
                     <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-                      <circle cx="60" cy="60" r="45" stroke="#22C55E" strokeWidth="24" fill="none" strokeDasharray="205 283" strokeLinecap="round" transform="rotate(-90 60 60)" />
-                      <circle cx="60" cy="60" r="45" stroke="#8B5CF6" strokeWidth="24" fill="none" strokeDasharray="70 283" strokeLinecap="round" transform="rotate(55 60 60)" />
-                      <circle cx="60" cy="60" r="45" stroke="#F59E0B" strokeWidth="24" fill="none" strokeDasharray="8 283" strokeLinecap="round" transform="rotate(105 60 60)" />
+                      {dashStrong > 0 && <circle cx="60" cy="60" r="45" stroke="#22C55E" strokeWidth="24" fill="none" strokeDasharray={`${dashStrong} ${circ}`} strokeLinecap="round" transform="rotate(-90 60 60)" />}
+                      {dashNormal > 0 && <circle cx="60" cy="60" r="45" stroke="#8B5CF6" strokeWidth="24" fill="none" strokeDasharray={`${dashNormal} ${circ}`} strokeLinecap="round" transform={`rotate(${rotNormal} 60 60)`} />}
+                      {dashReview > 0 && <circle cx="60" cy="60" r="45" stroke="#F59E0B" strokeWidth="24" fill="none" strokeDasharray={`${dashReview} ${circ}`} strokeLinecap="round" transform={`rotate(${rotReview} 60 60)`} />}
                     </svg>
                     <div className="space-y-3">
-                      {MEMORY_DISTRIBUTION.map((item) => (
+                      {items.map((item) => (
                         <div key={item.label} className="flex items-center gap-3 h-full">
                           <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: item.color }} />
                           <span style={{ fontSize: "13px", color: "#A1A1AA", flex: 1 }}>{item.label}</span>
@@ -575,6 +592,8 @@ export default function ReviewSlugPage() {
                         </div>
                       ))}
                     </div>
+                      </>);
+                    })()}
                   </div>
                 </div>
 
