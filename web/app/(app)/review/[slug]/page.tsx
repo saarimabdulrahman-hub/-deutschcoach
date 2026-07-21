@@ -420,10 +420,10 @@ export default function ReviewSlugPage() {
                       <div style={{ padding: "48px 24px", textAlign: "center" }}>
                         <span style={{ fontSize: "32px", display: "block", marginBottom: "12px" }}>📝</span>
                         <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF", margin: "0 0 4px" }}>
-                          {mistakes?.length === 0 ? "No mistakes yet!" : "No results for this filter"}
+                          {!mistakes || mistakes.length === 0 ? "No mistakes yet!" : "No results for this filter"}
                         </p>
                         <p style={{ fontSize: "12px", color: "#A8A4BC", margin: 0 }}>
-                          {mistakes?.length === 0 ? "Take a quiz to start tracking your progress." : "Try a different filter."}
+                          {!mistakes || mistakes.length === 0 ? "Take a quiz to start tracking your progress." : "Try a different filter."}
                         </p>
                       </div>
                     );
