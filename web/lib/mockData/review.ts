@@ -81,16 +81,6 @@ export const MISTAKE_STATS = [
   { value: "5", label: "Day Streak", desc: "Review streak", color: "#EC4899" },
 ] as const;
 
-export const MISTAKE_FILTERS = ["All", "High Priority", "Medium", "Low"] as const;
-
-export const MISTAKE_TABLE = [
-  { word: "abholen", trans: "to pick up", wrong: "abholen", correct: "abholen", time: "2 days ago", priority: "#EC4899" },
-  { word: "die Gelegenheit", trans: "opportunity", wrong: "Gelegenheit", correct: "die Gelegenheit", time: "3 days ago", priority: "#F59E0B" },
-  { word: "entwickeln", trans: "to develop", wrong: "entwikeln", correct: "entwickeln", time: "5 days ago", priority: "#EC4899" },
-  { word: "die Herausforderung", trans: "challenge", wrong: "Herrausforderung", correct: "Herausforderung", time: "1 week ago", priority: "#22C55E" },
-  { word: "die Veränderung", trans: "change", wrong: "Veränderung", correct: "Veränderung", time: "1 week ago", priority: "#F59E0B" },
-] as const;
-
 // ── Weak Words ────────────────────────────────────────────────────────
 
 export const WEAK_WORD_STATS = [

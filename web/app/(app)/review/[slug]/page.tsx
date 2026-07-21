@@ -9,7 +9,6 @@ import type { DashboardData, SRSCardOut } from "@/types";
 import {
   HOW_IT_WORKS_STEPS,
   FLASHCARD_QUICK_START, RECENTLY_STUDIED_DECKS,
-  MISTAKE_FILTERS, MISTAKE_TABLE,
   WEAK_WORD_STATS, MEMORY_DISTRIBUTION,
   BOOKMARK_ITEMS, BOOKMARK_COLLECTIONS, BOOKMARK_TYPES, BOOKMARK_ACTIVITY,
 } from "@/lib/mockData/review";
@@ -401,52 +400,61 @@ export default function ReviewSlugPage() {
 
               {/* ── Mistake Table ── */}
               <div className="rounded-[20px] overflow-hidden" style={{ background: "#16162A", border: "1px solid rgba(255,255,255,.05)" }}>
-                {(mistakes?.length ? mistakes
-                  .filter((m) => {
-                    if (mistakeFilter === "All") return true;
-                    if (mistakeFilter === "High Priority") return m.lapses > 2;
-                    if (mistakeFilter === "Medium") return m.lapses >= 1 && m.lapses <= 2;
-                    if (mistakeFilter === "Low") return m.lapses === 0;
-                    return true;
-                  })
-                  .sort((a, b) => {
-                    if (mistakeSort === "Most Missed") return b.miss_count - a.miss_count;
-                    if (mistakeSort === "Least Missed") return a.miss_count - b.miss_count;
-                    return 0; // Recent — backend already returns ordered
-                  })
-                  .map((m) => ({
-                    word: m.german, trans: m.english,
-                    wrong: m.user_answer || "—",
-                    correct: m.correct_answer || m.german,
-                    time: `${m.miss_count} miss${m.miss_count !== 1 ? "es" : ""}`, priority: m.lapses > 2 ? "#EC4899" : m.lapses > 0 ? "#F59E0B" : "#22C55E",
-                  })) : MISTAKE_TABLE).map((row, i) => (
-                  <div key={i} className="flex items-center gap-4 px-5" style={{ height: "80px", borderTop: i > 0 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
-                    {/* Priority dot + Word */}
+                {(() => {
+                  const filtered = mistakes?.length ? mistakes
+                    .filter((m) => {
+                      if (mistakeFilter === "All") return true;
+                      if (mistakeFilter === "High Priority") return m.lapses > 2;
+                      if (mistakeFilter === "Medium") return m.lapses >= 1 && m.lapses <= 2;
+                      if (mistakeFilter === "Low") return m.lapses === 0;
+                      return true;
+                    })
+                    .sort((a, b) => {
+                      if (mistakeSort === "Most Missed") return b.miss_count - a.miss_count;
+                      if (mistakeSort === "Least Missed") return a.miss_count - b.miss_count;
+                      return 0;
+                    }) : [];
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div style={{ padding: "48px 24px", textAlign: "center" }}>
+                        <span style={{ fontSize: "32px", display: "block", marginBottom: "12px" }}>📝</span>
+                        <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF", margin: "0 0 4px" }}>
+                          {mistakes?.length === 0 ? "No mistakes yet!" : "No results for this filter"}
+                        </p>
+                        <p style={{ fontSize: "12px", color: "#A8A4BC", margin: 0 }}>
+                          {mistakes?.length === 0 ? "Take a quiz to start tracking your progress." : "Try a different filter."}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((m, i) => {
+                    const priority = m.lapses > 2 ? "#EC4899" : m.lapses > 0 ? "#F59E0B" : "#22C55E";
+                    return (
+                  <div key={m.vocab_id} className="flex items-center gap-4 px-5" style={{ height: "80px", borderTop: i > 0 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
                     <div style={{ flex: 1.5, display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: row.priority, boxShadow: `0 0 6px ${row.priority}50`, flexShrink: 0 }} />
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: priority, boxShadow: `0 0 6px ${priority}50`, flexShrink: 0 }} />
                       <div>
-                        <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF", margin: 0 }}>{row.word}</p>
-                        <p style={{ fontSize: "12px", color: "#A8A4BC", margin: "2px 0 0" }}>{row.trans}</p>
+                        <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF", margin: 0 }}>{m.german}</p>
+                        <p style={{ fontSize: "12px", color: "#A8A4BC", margin: "2px 0 0" }}>{m.english}</p>
                       </div>
                     </div>
-                    {/* You wrote */}
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: "10px", color: "rgba(255,255,255,.3)", margin: "0 0 2px" }}>You wrote:</p>
-                      <p style={{ fontSize: "13px", color: "#EC4899", textDecoration: "line-through", margin: 0 }}>{row.wrong}</p>
+                      <p style={{ fontSize: "13px", color: "#EC4899", textDecoration: "line-through", margin: 0 }}>{m.user_answer || "—"}</p>
                     </div>
-                    {/* Correct */}
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: "10px", color: "rgba(255,255,255,.3)", margin: "0 0 2px" }}>Correct:</p>
-                      <p style={{ fontSize: "13px", color: "#22C55E", margin: 0 }}>{row.correct}</p>
+                      <p style={{ fontSize: "13px", color: "#22C55E", margin: 0 }}>{m.correct_answer || m.german}</p>
                     </div>
-                    {/* Time */}
-                    <span style={{ width: "80px", fontSize: "12px", color: "rgba(255,255,255,.3)" }}>{row.time}</span>
-                    {/* Review button */}
+                    <span style={{ width: "80px", fontSize: "12px", color: "rgba(255,255,255,.3)" }}>{m.miss_count} miss{m.miss_count !== 1 ? "es" : ""}</span>
                     <button onClick={() => router.push("/review")} className="px-4 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #8B5CF6, #EC4899)", color: "#FFF", boxShadow: "0 0 12px rgba(139,92,246,.2)" }}>Review</button>
-                    {/* Menu */}
                     <span style={{ color: "rgba(255,255,255,.2)", cursor: "pointer", fontSize: "18px" }}>⋮</span>
                   </div>
-                ))}
+                    );
+                  });
+                })()}
               </div>
             </>
           )}
