@@ -88,7 +88,7 @@ export function ReviewSidebar({ activeItem = "overview", streak = 0 }: ReviewSid
             return (
               <button
                 key={item.id}
-                onClick={() => router.push(`/review/${item.id}`)}
+                onClick={() => router.push(item.id === "overview" ? "/review" : `/review/${item.id}`)}
                 className="flex items-center gap-3 w-full text-left px-3 transition-all"
                 style={{
                   height: "44px",
