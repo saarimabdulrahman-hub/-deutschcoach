@@ -3,8 +3,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme, THEME_LIST } from "@/contexts/ThemeContext";
+import type { DashboardData } from "@/types";
 
 type Section = "profile" | "learning" | "appearance" | "notifications" | "security" | "subscription" | "account";
 
@@ -32,6 +34,14 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [active, setActive] = useState<Section>("profile");
+
+  const { data: dash } = useQuery<DashboardData>({
+    queryKey: ["dashboard"], queryFn: () => api.get("/dashboard"), staleTime: 60_000,
+  });
+
+  const { data: srsStats } = useQuery<{ mastered: number; learning: number; reviewing: number; new: number }>({
+    queryKey: ["srs-stats"], queryFn: () => api.get("/srs/stats"), staleTime: 60_000,
+  });
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -133,10 +143,10 @@ export default function SettingsPage() {
               {/* Account Stats */}
               <div className="flex gap-3 mb-6">
                 {[
-                  { icon: "🔥", value: "17", label: "Day Streak", color: "#F97316" },
-                  { icon: "📚", value: "243", label: "Words Learned", color: "#A855F7" },
-                  { icon: "🎯", value: "A1", label: "Beginner", color: "#22C55E" },
-                  { icon: "⭐", value: "Pro", label: "Member", color: "#FBBF24" },
+                  { icon: "🔥", value: `${user?.daily_streak ?? dash?.streak ?? 0}`, label: "Day Streak", color: "#F97316" },
+                  { icon: "📚", value: `${(srsStats?.mastered ?? 0) + (srsStats?.learning ?? 0) + (srsStats?.reviewing ?? 0)}`, label: "Words Learned", color: "#A855F7" },
+                  { icon: "🎯", value: user?.target_level ?? "A1", label: "Beginner", color: "#22C55E" },
+                  { icon: "⭐", value: user?.subscription_tier === "pro" ? "Pro" : user?.subscription_tier === "plus" ? "Plus" : user?.subscription_tier === "starter" ? "Starter" : "Free", label: "Member", color: "#FBBF24" },
                 ].map((s) => (
                   <div key={s.label} className="flex-1 rounded-xl p-3 flex items-center gap-3" style={{ background: "rgba(16,18,32,.5)", border: "1px solid rgba(255,255,255,.04)" }}>
                     <span style={{ fontSize: "20px" }}>{s.icon}</span>
