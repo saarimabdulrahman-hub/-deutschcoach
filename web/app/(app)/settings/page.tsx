@@ -268,20 +268,19 @@ export default function SettingsPage() {
                 <div>
                   <p style={{ fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,.5)", marginBottom: "8px" }}>Accent Color</p>
                   <div className="flex gap-2">
-                    {["#A855F7", "#EC4899", "#3B82F6"].map((c) => (
-                      <button key={c} className="w-8 h-8 rounded-full border-none cursor-pointer" style={{ background: c, boxShadow: "0 0 0 2px rgba(255,255,255,.05)" }} />
+                    {THEME_LIST.slice(0, 5).map((t) => (
+                      <button key={t.key} onClick={() => setTheme(t.key)} className="w-8 h-8 rounded-full border-none cursor-pointer transition-transform hover:scale-110"
+                        style={{ background: t.color, boxShadow: theme === t.key ? "0 0 0 2px #FFF, 0 0 12px " + t.color : "0 0 0 2px rgba(255,255,255,.05)" }} title={t.label} />
                     ))}
                   </div>
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,.5)", marginBottom: "8px" }}>Motion</p>
                   <div className="space-y-2">
-                    {["Animations", "Reduced Motion"].map((m) => (
-                      <div key={m} className="flex items-center justify-between py-1">
-                        <span style={{ fontSize: "13px", color: "#FFF" }}>{m}</span>
-                        <Toggle on={m === "Animations"} onChange={() => {}} />
-                      </div>
-                    ))}
+                    <div className="flex items-center justify-between py-1">
+                      <span style={{ fontSize: "13px", color: "#FFF" }}>Animations</span>
+                      <Toggle on={true} onChange={() => {}} />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -351,11 +350,13 @@ export default function SettingsPage() {
                 <div style={{ height: "1px", background: "rgba(255,255,255,.08)", marginBottom: "16px" }} />
 
                 {/* Renewal */}
-                <p style={{ fontSize: "12px", color: "#9B9BB3", margin: "0 0 2px" }}>Renews on</p>
-                <p style={{ fontSize: "22px", fontWeight: 700, color: "#FFF", margin: "0 0 20px" }}>January 15, 2027</p>
+                <p style={{ fontSize: "12px", color: "#9B9BB3", margin: "0 0 2px" }}>{user?.subscription_tier === "pro" ? "Renews on" : "Trial ends"}</p>
+                <p style={{ fontSize: "22px", fontWeight: 700, color: "#FFF", margin: "0 0 20px" }}>
+                  {user?.trial_ends_at ? new Date(user.trial_ends_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "—"}
+                </p>
 
                 {/* CTA Button */}
-                <button className="flex items-center gap-3 border-none cursor-pointer" style={{ height: "56px", padding: "0 32px", borderRadius: "14px", background: "linear-gradient(90deg, #7338FF, #FF2FA0)", color: "#FFF", fontSize: "15px", fontWeight: 600, boxShadow: "0 0 40px rgba(190,90,255,.45)" }}>
+                <button onClick={() => router.push("/pricing")} className="flex items-center gap-3 border-none cursor-pointer" style={{ height: "56px", padding: "0 32px", borderRadius: "14px", background: "linear-gradient(90deg, #7338FF, #FF2FA0)", color: "#FFF", fontSize: "15px", fontWeight: 600, boxShadow: "0 0 40px rgba(190,90,255,.45)" }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l2 4.5H15l-3.5 3.5L13 15l-5-3.5L3 15l1.5-5L1 6.5h5L8 2z" fill="#FFF"/></svg>
                   Manage Plan
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M10 5l3 3-3 3" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
