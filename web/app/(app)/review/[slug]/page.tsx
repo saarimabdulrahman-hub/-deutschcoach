@@ -8,7 +8,7 @@ import { ReviewSidebar } from "@/components/review/ReviewSidebar";
 import type { DashboardData, SRSCardOut } from "@/types";
 import {
   HOW_IT_WORKS_STEPS,
-  FLASHCARD_QUICK_START, RECENTLY_STUDIED_DECKS,
+  FLASHCARD_QUICK_START,
   WEAK_WORD_STATS,
   BOOKMARK_ITEMS, BOOKMARK_COLLECTIONS, BOOKMARK_TYPES, BOOKMARK_ACTIVITY,
 } from "@/lib/mockData/review";
@@ -310,9 +310,31 @@ export default function ReviewSlugPage() {
                 <button onClick={() => router.push("/review/flashcards")} className="text-xs border-none cursor-pointer" style={{ color: "#8B5CF6", background: "none" }}>View all decks →</button>
               </div>
               <div className="rounded-[20px] overflow-hidden" style={{ background: "#161322", border: "1px solid rgba(255,255,255,.05)" }}>
+                {(() => {
+                  const decks = [
+                    ...(dash?.continue_lesson ? [{
+                      badge: dash.continue_lesson.level, badgeColor: "#22C55E",
+                      title: dash.continue_lesson.title, sub: `Unit ${dash.continue_lesson.unit}`,
+                      cards: "—", mastery: `${dash.continue_lesson.progress_pct}%`, masteryColor: "#22C55E" as string, last: "In progress",
+                    }] : []),
+                    ...(dash?.weakest_words?.length ? [{
+                      badge: "SRS", badgeColor: "#8B5CF6",
+                      title: "Spaced Repetition", sub: `${dash.cards_due_today} cards due`,
+                      cards: `${dash.cards_due_today}`, mastery: `${dash.avg_quiz_score}%`, masteryColor: dash.avg_quiz_score >= 80 ? "#22C55E" as string : "#FACC15" as string, last: "Now",
+                    }] : []),
+                  ];
 
-                {RECENTLY_STUDIED_DECKS.map((row, i) => (
-                  <div key={i} className="px-6 flex items-center gap-4 text-sm" style={{ height: "72px", borderTop: "1px solid rgba(255,255,255,.04)", cursor: "pointer" }}>
+                  if (decks.length === 0) {
+                    return (
+                      <div style={{ padding: "40px 24px", textAlign: "center" }}>
+                        <p style={{ fontSize: "14px", color: "#FFF", margin: "0 0 4px" }}>No decks yet</p>
+                        <p style={{ fontSize: "12px", color: "#A8A4BC", margin: 0 }}>Complete your first lesson to see your study history here.</p>
+                      </div>
+                    );
+                  }
+
+                  return decks.map((row, i) => (
+                  <div key={i} className="px-6 flex items-center gap-4 text-sm" style={{ height: "72px", borderTop: i > 0 ? "1px solid rgba(255,255,255,.04)" : "none", cursor: "pointer" }}>
                     <div className="flex items-center justify-center flex-shrink-0" style={{ width: "48px", height: "48px", borderRadius: "50%", background: `${row.badgeColor}15`, border: `1.5px solid ${row.badgeColor}30`, color: row.badgeColor, fontSize: "12px", fontWeight: 500 }}>{row.badge}</div>
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: "14px", fontWeight: 400, color: "#FFF", margin: 0 }}>{row.title}</p>
@@ -321,9 +343,9 @@ export default function ReviewSlugPage() {
                     <span style={{ width: "60px", textAlign: "center", fontSize: "14px", color: "#FFF", fontWeight: 400 }}>{row.cards}</span>
                     <span style={{ width: "60px", textAlign: "center", fontSize: "14px", fontWeight: 500, color: row.masteryColor }}>{row.mastery}</span>
                     <span style={{ width: "80px", textAlign: "center", fontSize: "12px", color: "rgba(255,255,255,.4)" }}>{row.last}</span>
-                    <span style={{ width: "20px", color: "rgba(255,255,255,.2)", cursor: "pointer", fontSize: "18px", lineHeight: 1 }}>⋮</span>
                   </div>
-                ))}
+                  ));
+                })()}
               </div>
             </>
           )}
