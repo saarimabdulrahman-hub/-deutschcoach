@@ -255,7 +255,7 @@ export default function QuizPage() {
         {/* ── CHOOSE YOUR QUIZ MODE ── */}
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium m-0" style={{ color: "#FFF" }}>Choose your quiz mode</p>
-          <button className="text-xs border-none cursor-pointer" style={{ color: "#A855F7", background: "none" }}>(?) How it works</button>
+          <button onClick={() => setSelectedMode("Current Lesson")} className="text-xs border-none cursor-pointer" style={{ color: "#A855F7", background: "none" }}>(?) How it works</button>
         </div>
 
         {/* 5 Quiz Mode Cards — premium glassmorphism */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ReviewSidebar } from "@/components/review/ReviewSidebar";
@@ -34,6 +34,7 @@ const SECTION_INFO: Record<string, { title: string; desc: string }> = {
 
 export default function ReviewSlugPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
   const info = SECTION_INFO[slug] || { title: slug, desc: "" };
 
@@ -148,7 +149,7 @@ export default function ReviewSlugPage() {
                   <div className="flex items-center justify-between px-5 py-4">
                     <h2 style={{ fontSize: "16px", fontWeight: 500, color: "#FFF", margin: 0 }}>Review Queue</h2>
                     <div className="flex gap-2">
-                      <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Study All</button>
+                      <button onClick={() => router.push("/review")} className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Study All</button>
                       <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "rgba(255,255,255,.05)", color: "rgba(255,255,255,.5)", border: "1px solid rgba(255,255,255,.06)" }}>Filter</button>
                     </div>
                   </div>
@@ -260,7 +261,7 @@ export default function ReviewSlugPage() {
               {/* ── Recently Studied ── */}
               <div className="flex items-center justify-between mb-3">
                 <h2 style={{ fontSize: "18px", fontWeight: 500, color: "#FFF", margin: 0 }}>Recently Studied</h2>
-                <button className="text-xs border-none cursor-pointer" style={{ color: "#8B5CF6", background: "none" }}>View all decks →</button>
+                <button onClick={() => router.push("/review/flashcards")} className="text-xs border-none cursor-pointer" style={{ color: "#8B5CF6", background: "none" }}>View all decks →</button>
               </div>
               <div className="rounded-[20px] overflow-hidden" style={{ background: "#161322", border: "1px solid rgba(255,255,255,.05)" }}>
 
@@ -360,7 +361,7 @@ export default function ReviewSlugPage() {
                     {/* Time */}
                     <span style={{ width: "80px", fontSize: "12px", color: "rgba(255,255,255,.3)" }}>{row.time}</span>
                     {/* Review button */}
-                    <button className="px-4 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #8B5CF6, #EC4899)", color: "#FFF", boxShadow: "0 0 12px rgba(139,92,246,.2)" }}>Review</button>
+                    <button onClick={() => router.push("/review")} className="px-4 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #8B5CF6, #EC4899)", color: "#FFF", boxShadow: "0 0 12px rgba(139,92,246,.2)" }}>Review</button>
                     {/* Menu */}
                     <span style={{ color: "rgba(255,255,255,.2)", cursor: "pointer", fontSize: "18px" }}>⋮</span>
                   </div>
@@ -558,14 +559,14 @@ export default function ReviewSlugPage() {
                       <p style={{ fontSize: "11px", color: "#A1A1AA", margin: 0, lineHeight: 1.4 }}>Keep studying consistently for long-term retention.</p>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "6px", flexShrink: 0, paddingLeft: "32px" }}>
-                      <button className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "linear-gradient(90deg, #7C3AED, #D946EF)", color: "#FFF", fontSize: "12px", fontWeight: 500, boxShadow: "0 0 18px rgba(168,85,247,.2)", whiteSpace: "nowrap" }}>
+                      <button onClick={() => router.push("/review")} className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "linear-gradient(90deg, #7C3AED, #D946EF)", color: "#FFF", fontSize: "12px", fontWeight: 500, boxShadow: "0 0 18px rgba(168,85,247,.2)", whiteSpace: "nowrap" }}>
                         ← Continue →
                       </button>
-                      <button className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "#18182E", border: "1px solid rgba(255,255,255,.05)", color: "#FFF", fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap" }}>
+                      <button onClick={() => router.push("/quiz")} className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "#18182E", border: "1px solid rgba(255,255,255,.05)", color: "#FFF", fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap" }}>
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 3.5l4-2 4 2v4l-4 2-4-2V3.5z" stroke="#A855F7" strokeWidth="1" fill="none"/><path d="M5.5 5l3-1.5M5.5 5v4" stroke="#A855F7" strokeWidth="1" fill="none"/></svg>
                         Practice
                       </button>
-                      <button className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "#18182E", border: "1px solid rgba(255,255,255,.05)", color: "#FFF", fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap" }}>
+                      <button onClick={() => router.push("/curriculum")} className="flex items-center justify-center gap-1.5 border-none cursor-pointer" style={{ width: "140px", height: "32px", borderRadius: "8px", background: "#18182E", border: "1px solid rgba(255,255,255,.05)", color: "#FFF", fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap" }}>
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1.5" y="1.5" width="8" height="9" rx="1.5" stroke="#A855F7" strokeWidth="1" fill="none"/></svg>
                         Browse
                       </button>
@@ -693,7 +694,7 @@ export default function ReviewSlugPage() {
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="rgba(255,255,255,.2)" strokeWidth="1" strokeLinecap="round"/></svg>
                     </div>
                   ))}
-                  <button className="w-full mt-3 py-2 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ border: "1px dashed rgba(168,85,247,.2)", color: "#A855F7", background: "transparent" }}>+ Create New Collection</button>
+                  <button onClick={() => router.push("/chat")} className="w-full mt-3 py-2 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ border: "1px dashed rgba(168,85,247,.2)", color: "#A855F7", background: "transparent" }}>+ Create New Collection</button>
                 </div>
 
                 {/* Bookmark Types (Donut) */}
@@ -733,7 +734,7 @@ export default function ReviewSlugPage() {
                       </div>
                     ))}
                   </div>
-                  <button className="mt-3 text-xs border-none cursor-pointer" style={{ color: "#A855F7", background: "none" }}>View All Activity →</button>
+                  <button onClick={() => router.push("/review")} className="mt-3 text-xs border-none cursor-pointer" style={{ color: "#A855F7", background: "none" }}>View All Activity →</button>
                 </div>
               </div>
             </>

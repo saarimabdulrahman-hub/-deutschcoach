@@ -151,7 +151,7 @@ export default function ReviewPage() {
                   </div>
 
                   {/* Start Review CTA */}
-                  <button className="w-full py-3 rounded-xl text-sm font-medium border-none cursor-pointer mt-4"
+                  <button onClick={() => router.push("/review/spaced-repetition")} className="w-full py-3 rounded-xl text-sm font-medium border-none cursor-pointer mt-4"
                     style={{
                       background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)",
                       color: "#FFF",
@@ -224,7 +224,7 @@ export default function ReviewPage() {
                       ) : (
                         <p className="text-xs py-6 text-center" style={{ color: "rgba(255,255,255,.3)" }}>No weak words</p>
                       )}
-                      <button className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer mt-3"
+                      <button onClick={() => router.push("/review/weak-words")} className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer mt-3"
                         style={{ background: "rgba(168,85,247,.15)", color: "#A855F7" }}>
                         Review Weak Words
                       </button>
@@ -266,7 +266,7 @@ export default function ReviewPage() {
                           );
                         })}
                       </div>
-                      <button className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer"
+                      <button onClick={() => router.push("/review/mistakes")} className="w-full py-2.5 rounded-xl text-xs font-medium border-none cursor-pointer"
                         style={{ background: "rgba(168,85,247,.15)", color: "#A855F7" }}>
                         View History
                       </button>
