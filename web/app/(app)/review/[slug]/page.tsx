@@ -8,7 +8,7 @@ import type { DashboardData, SRSCardOut } from "@/types";
 import {
   HOW_IT_WORKS_STEPS,
   FLASHCARD_QUICK_START, RECENTLY_STUDIED_DECKS,
-  MISTAKE_STATS, MISTAKE_FILTERS, MISTAKE_TABLE,
+  MISTAKE_FILTERS, MISTAKE_TABLE,
   WEAK_WORD_STATS, MEMORY_DISTRIBUTION,
   BOOKMARK_ITEMS, BOOKMARK_COLLECTIONS, BOOKMARK_TYPES, BOOKMARK_ACTIVITY,
 } from "@/lib/mockData/review";
@@ -117,17 +117,17 @@ export default function ReviewSlugPage() {
                     icon: <div className="flex items-center justify-center" style={{ width: "60px", height: "60px", borderRadius: "50%", boxShadow: "0 0 24px #A855F7, 0 0 50px rgba(168,85,247,.3)", background: "#221635" }}>
                       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                         <circle cx="16" cy="16" r="13" stroke="rgba(255,255,255,.04)" strokeWidth="3" fill="none"/>
-                        <circle cx="16" cy="16" r="13" stroke="url(#ringG)" strokeWidth="3" fill="none" strokeDasharray={`${0.92 * 82} 82`} strokeLinecap="round" transform="rotate(-90 16 16)"/>
+                        <circle cx="16" cy="16" r="13" stroke="url(#ringG)" strokeWidth="3" fill="none" strokeDasharray={`${(retention / 100) * 82} 82`} strokeLinecap="round" transform="rotate(-90 16 16)"/>
                         <defs><linearGradient id="ringG" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stopColor="#EC4BAF"/><stop offset="50%" stopColor="#B13EFF"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient></defs>
                       </svg>
                     </div>,
-                    value: `${retention}%`, label: "RETENTION RATE", desc: "Excellent!", valueColor: "#F6F6FA",
+                    value: `${retention}%`, label: "RETENTION RATE", desc: retention >= 80 ? "Excellent!" : "Keep going!", valueColor: "#F6F6FA",
                   },
                   {
                     icon: <div className="flex items-center justify-center" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#221635", boxShadow: "0 0 24px #A855F7, 0 0 50px rgba(168,85,247,.3)" }}>
                       <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="4" width="22" height="20" rx="2" stroke="#A46BFF" strokeWidth="1.8" fill="none"/><line x1="3" y1="9" x2="25" y2="9" stroke="#A46BFF" strokeWidth="1.8"/></svg>
                     </div>,
-                    value: "12", label: "LONGEST STREAK", desc: "days", valueColor: "#F6F6FA",
+                    value: `${dash?.streak ?? 0}`, label: "LONGEST STREAK", desc: "days", valueColor: "#F6F6FA",
                   },
                 ].map((stat) => (
                   <div key={stat.label} className="flex items-start gap-4 p-5" style={{ borderRadius: "20px", background: "#151220", border: "1px solid rgba(168,85,247,.12)" }}>
@@ -297,7 +297,12 @@ export default function ReviewSlugPage() {
 
               {/* ── Statistics Cards ── */}
               <div className="grid grid-cols-4 gap-5">
-                {MISTAKE_STATS.map((stat) => (
+                {[
+                  { value: mistakes?.length ?? 0, label: "Total Mistakes", desc: "Unique words missed", color: "#8B5CF6", pct: 60 },
+                  { value: mistakes?.filter(m => m.lapses > 2).length ?? 0, label: "Needs Review", desc: "High priority words", color: "#EC4899", pct: 40 },
+                  { value: `${dash?.avg_quiz_score ?? 0}%`, label: "Retention Impact", desc: "Avg quiz accuracy", color: "#8B5CF6", pct: (dash?.avg_quiz_score ?? 0) },
+                  { value: dash?.streak ?? 0, label: "Day Streak", desc: "Review streak", color: "#EC4899", pct: Math.min(100, (dash?.streak ?? 0) * 10) },
+                ].map((stat) => (
                   <div key={stat.label} className="rounded-[18px] p-4 relative overflow-hidden" style={{ background: "#16162A", border: "1px solid rgba(255,255,255,.04)" }}>
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center justify-center" style={{ width: "40px", height: "40px", borderRadius: "50%", background: `${stat.color}12` }}>
@@ -309,7 +314,7 @@ export default function ReviewSlugPage() {
                     <p style={{ fontSize: "10px", color: "#A8A4BC", margin: "2px 0 0" }}>{stat.desc}</p>
                     {/* Progress bar */}
                     <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "2px", background: "rgba(255,255,255,.04)" }}>
-                      <div style={{ width: `${Math.random() * 60 + 30}%`, height: "100%", background: `linear-gradient(90deg, ${stat.color}, transparent)` }} />
+                      <div style={{ width: `${stat.pct}%`, height: "100%", background: `linear-gradient(90deg, ${stat.color}, transparent)` }} />
                     </div>
                   </div>
                 ))}
@@ -406,12 +411,12 @@ export default function ReviewSlugPage() {
                         <circle cx="30" cy="30" r="23" stroke="url(#memG)" strokeWidth="5" fill="none" strokeDasharray="115 145" strokeLinecap="round" transform="rotate(-90 30 30)" filter="url(#memGlow)"/>
                         <defs><linearGradient id="memG" x1="0" y1="0" x2="60" y2="60"><stop offset="0%" stopColor="#D946EF"/><stop offset="50%" stopColor="#A855F7"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient></defs>
                       </svg>
-                      <span style={{ position: "absolute", fontSize: "11px", fontWeight: 600, color: "#FFF" }}>96%</span>
+                      <span style={{ position: "absolute", fontSize: "11px", fontWeight: 600, color: "#FFF" }}>{dash?.avg_quiz_score ?? 0}%</span>
                     </div>
                     <div>
-                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>96%</p>
+                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{dash?.avg_quiz_score ?? 0}%</p>
                       <p style={{ fontSize: "13px", fontWeight: 500, color: "#FFF", margin: "2px 0 0" }}>Memory Accuracy</p>
-                      <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Last 30 days</p>
+                      <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Avg quiz score</p>
                     </div>
                   </div>
                 </div>
@@ -422,7 +427,7 @@ export default function ReviewSlugPage() {
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><defs><linearGradient id="starGrad" x1="0" y1="0" x2="24" y2="24"><stop offset="0%" stopColor="#FFD35C"/><stop offset="100%" stopColor="#F59E0B"/></linearGradient></defs><path d="M12 2l2.5 6.5H21l-5.5 4.5 2 7L12 15l-5.5 5 2-7L3 8.5h6.5L12 2z" fill="url(#starGrad)" filter="url(#sG)"/><defs><filter id="sG"><feGaussianBlur stdDeviation="0.5"/></filter></defs></svg>
                     </div>
                     <div>
-                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>243</p>
+                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{stats?.mastered ?? 0}</p>
                       <p style={{ fontSize: "13px", fontWeight: 500, color: "#FFF", margin: "2px 0 0" }}>Mastered Words</p>
                       <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Vocabulary retained</p>
                     </div>
@@ -435,7 +440,7 @@ export default function ReviewSlugPage() {
                       <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3l7 4.5v5.5l-7 5-7-5V7.5l7-4.5z" stroke="#B86EFF" strokeWidth="1.5" fill="none"/><path d="M8 11.5l2 2 4-4" stroke="#B86EFF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                     <div>
-                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>18</p>
+                      <p style={{ fontSize: "22px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{Math.max(0, (stats?.mastered ?? 0) - (dash?.weakest_words?.length ?? 0))}</p>
                       <p style={{ fontSize: "13px", fontWeight: 500, color: "#FFF", margin: "2px 0 0" }}>Strong Words</p>
                       <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Never forgotten</p>
                     </div>
@@ -448,9 +453,9 @@ export default function ReviewSlugPage() {
                       <svg width="22" height="24" viewBox="0 0 22 24" fill="none"><defs><linearGradient id="lGrad" x1="0" y1="0" x2="22" y2="24"><stop offset="0%" stopColor="#F4C8FF"/><stop offset="100%" stopColor="#D946EF"/></linearGradient></defs><path d="M12 2L4 13h6l-1 9 9-12h-6l1-8z" fill="url(#lGrad)" filter="url(#lG)"/><defs><filter id="lG"><feGaussianBlur stdDeviation="0.5"/></filter></defs></svg>
                     </div>
                     <div>
-                      <p style={{ fontSize: "20px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>Excellent</p>
+                      <p style={{ fontSize: "20px", fontWeight: 500, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{(dash?.avg_quiz_score ?? 0) >= 85 ? "Excellent" : (dash?.avg_quiz_score ?? 0) >= 70 ? "Good" : (dash?.avg_quiz_score ?? 0) >= 50 ? "Fair" : "Growing"}</p>
                       <p style={{ fontSize: "13px", fontWeight: 500, color: "#FFF", margin: "2px 0 0" }}>Learning Confidence</p>
-                      <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Based on retention</p>
+                      <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0" }}>Based on quiz scores</p>
                     </div>
                   </div>
                 </div>
