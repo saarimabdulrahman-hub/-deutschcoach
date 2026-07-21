@@ -793,12 +793,12 @@ export default function ReviewSlugPage() {
                   {/* 3 Stat Cards */}
                   <div className="flex gap-3">
                     {[
-                      { icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12l4-3 4 3V2H4z" stroke="#A855F7" strokeWidth="1.5" fill="none"/></svg>, value: "24", label: "Total saved items" },
-                      { icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="#A855F7" strokeWidth="1.5" fill="none"/></svg>, value: "3", label: "Organized lists" },
-                      { icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="#A855F7" strokeWidth="1.5" fill="none"/><line x1="2.5" y1="7" x2="13.5" y2="7" stroke="#A855F7" strokeWidth="1.5"/></svg>, value: "Today", label: "Keep learning!" },
+                      { value: bookmarks?.length ?? 0, label: "Total saved items" },
+                      { value: bookmarks?.length ? 1 : 0, label: "Collections" },
+                      { value: dash?.streak ? `${dash.streak}d streak` : "Today", label: "Keep learning!" },
                     ].map((stat) => (
                       <div key={stat.label} className="flex-1 rounded-xl px-3 py-2.5 text-center" style={{ background: "rgba(16,18,32,.65)", border: "1px solid rgba(255,255,255,.06)" }}>
-                        <span style={{ color: "#A855F7", display: "block", marginBottom: "4px" }}>{stat.icon}</span>
+                        <span style={{ color: "#A855F7", display: "block", marginBottom: "4px", fontSize: "16px" }}>●</span>
                         <p style={{ fontSize: "18px", fontWeight: 700, color: "#FFF", margin: 0, lineHeight: 1.2 }}>{stat.value}</p>
                         <p style={{ fontSize: "9px", color: "rgba(255,255,255,.35)", margin: "2px 0 0" }}>{stat.label}</p>
                       </div>
