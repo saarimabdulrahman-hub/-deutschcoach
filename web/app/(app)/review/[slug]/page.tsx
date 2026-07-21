@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ReviewSidebar } from "@/components/review/ReviewSidebar";
@@ -57,6 +58,9 @@ export default function ReviewSlugPage() {
   const { data: mistakes } = useQuery<{ vocab_id: number; german: string; english: string; miss_count: number; lapses: number; status: string }[]>({
     queryKey: ["quiz-mistakes"], queryFn: () => api.get("/quiz/mistakes"), staleTime: 30_000,
   });
+
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
 
   const streak = dash?.streak ?? 0;
   const total = stats ? stats.new + stats.learning + stats.reviewing + stats.mastered : 0;
@@ -150,7 +154,22 @@ export default function ReviewSlugPage() {
                     <h2 style={{ fontSize: "16px", fontWeight: 500, color: "#FFF", margin: 0 }}>Review Queue</h2>
                     <div className="flex gap-2">
                       <button onClick={() => router.push("/review")} className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Study All</button>
-                      <button className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "rgba(255,255,255,.05)", color: "rgba(255,255,255,.5)", border: "1px solid rgba(255,255,255,.06)" }}>Filter</button>
+                      <div style={{ position: "relative" }}>
+                        <button onClick={() => setFilterOpen(!filterOpen)} className="px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer flex items-center gap-1" style={{ background: filterOpen ? "rgba(168,85,247,.15)" : "rgba(255,255,255,.05)", color: filterOpen ? "#C084FC" : "rgba(255,255,255,.5)", border: `1px solid ${filterOpen ? "rgba(168,85,247,.3)" : "rgba(255,255,255,.06)"}` }}>
+                          Filter: {activeFilter} ▾
+                        </button>
+                        {filterOpen && (
+                          <div className="absolute right-0 mt-1 rounded-xl py-1 z-50" style={{ minWidth: "140px", background: "#1B1730", border: "1px solid rgba(168,85,247,.2)", boxShadow: "0 8px 32px rgba(0,0,0,.5)" }}>
+                            {["All", "Due Now", "Hard", "Medium", "Easy"].map((f) => (
+                              <button key={f} onClick={() => { setActiveFilter(f); setFilterOpen(false); }}
+                                className="w-full text-left px-4 py-2 text-xs border-none cursor-pointer hover:bg-white/5 transition-colors"
+                                style={{ background: activeFilter === f ? "rgba(168,85,247,.1)" : "transparent", color: activeFilter === f ? "#C084FC" : "rgba(255,255,255,.6)" }}>
+                                {f}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="px-5 py-2 flex items-center gap-3 text-xs font-medium uppercase tracking-wider" style={{ color: "rgba(255,255,255,.25)", borderTop: "1px solid rgba(255,255,255,.05)" }}>
@@ -162,7 +181,11 @@ export default function ReviewSlugPage() {
                     <span style={{ width: "60px", textAlign: "center" }}>Ease</span>
                     <span style={{ width: "20px" }} />
                   </div>
-                  {(dueCards?.length ? dueCards : []).map((card, i) => {
+                  {(dueCards?.length ? dueCards.filter((card) => {
+                    if (activeFilter === "All") return true;
+                    if (activeFilter === "Due Now") return card.interval_days <= 0;
+                    return easeLabel(card.easiness_factor).label === activeFilter;
+                  }) : []).map((card, i) => {
                     const ease = easeLabel(card.easiness_factor);
                     const isDue = card.interval_days <= 0 ? "Due now" : "Later";
                     return (
