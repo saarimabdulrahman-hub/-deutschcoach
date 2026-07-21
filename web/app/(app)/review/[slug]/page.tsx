@@ -61,6 +61,9 @@ export default function ReviewSlugPage() {
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [mistakeFilter, setMistakeFilter] = useState<string>("All");
+  const [mistakeSort, setMistakeSort] = useState<string>("Recent");
+  const [sortOpen, setSortOpen] = useState(false);
 
   const PRO_TIPS = [
     "Review daily — even 5 minutes helps.",
@@ -368,21 +371,53 @@ export default function ReviewSlugPage() {
               {/* ── Filter Row ── */}
               <div className="flex items-center justify-between">
                 <div className="flex gap-1.5">
-                  {MISTAKE_FILTERS.map((f) => (
-                    <button key={f} className="px-3 py-1.5 rounded-full text-xs font-medium border-none cursor-pointer" style={{ background: f === "All" ? "linear-gradient(135deg, #8B5CF6, #EC4899)" : "rgba(255,255,255,.04)", color: f === "All" ? "#FFF" : "rgba(255,255,255,.4)" }}>{f}</button>
-                  ))}
+                  {["All", "High Priority", "Medium", "Low"].map((f) => {
+                    const isActive = mistakeFilter === f;
+                    return (
+                    <button key={f} onClick={() => setMistakeFilter(f)}
+                      className="px-3 py-1.5 rounded-full text-xs font-medium border-none cursor-pointer transition-all"
+                      style={{ background: isActive ? "linear-gradient(135deg, #8B5CF6, #EC4899)" : "rgba(255,255,255,.04)", color: isActive ? "#FFF" : "rgba(255,255,255,.4)" }}>{f}</button>
+                    );
+                  })}
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs" style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.06)", color: "rgba(255,255,255,.4)", cursor: "pointer" }}>
-                  Sort by: Recent <span style={{ marginLeft: "4px" }}>▾</span>
+                <div style={{ position: "relative" }}>
+                  <div onClick={() => setSortOpen(!sortOpen)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                    style={{ background: sortOpen ? "rgba(168,85,247,.1)" : "rgba(255,255,255,.04)", border: `1px solid ${sortOpen ? "rgba(168,85,247,.3)" : "rgba(255,255,255,.06)"}`, color: "rgba(255,255,255,.5)" }}>
+                    Sort: {mistakeSort} <span style={{ marginLeft: "4px" }}>▾</span>
+                  </div>
+                  {sortOpen && (
+                    <div className="absolute right-0 mt-1 rounded-xl py-1 z-50" style={{ minWidth: "140px", background: "#1B1730", border: "1px solid rgba(168,85,247,.2)", boxShadow: "0 8px 32px rgba(0,0,0,.5)" }}>
+                      {["Recent", "Most Missed", "Least Missed"].map((s) => (
+                        <button key={s} onClick={() => { setMistakeSort(s); setSortOpen(false); }}
+                          className="w-full text-left px-4 py-2 text-xs border-none cursor-pointer hover:bg-white/5 transition-colors"
+                          style={{ background: mistakeSort === s ? "rgba(168,85,247,.1)" : "transparent", color: mistakeSort === s ? "#C084FC" : "rgba(255,255,255,.6)" }}>
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* ── Mistake Table ── */}
               <div className="rounded-[20px] overflow-hidden" style={{ background: "#16162A", border: "1px solid rgba(255,255,255,.05)" }}>
-                {(mistakes?.length ? mistakes.map((m) => ({
-                  word: m.german, trans: m.english, wrong: "—", correct: m.german,
-                  time: `${m.miss_count} miss${m.miss_count !== 1 ? "es" : ""}`, priority: m.lapses > 2 ? "#EC4899" : m.lapses > 0 ? "#F59E0B" : "#22C55E",
-                })) : MISTAKE_TABLE).map((row, i) => (
+                {(mistakes?.length ? mistakes
+                  .filter((m) => {
+                    if (mistakeFilter === "All") return true;
+                    if (mistakeFilter === "High Priority") return m.lapses > 2;
+                    if (mistakeFilter === "Medium") return m.lapses >= 1 && m.lapses <= 2;
+                    if (mistakeFilter === "Low") return m.lapses === 0;
+                    return true;
+                  })
+                  .sort((a, b) => {
+                    if (mistakeSort === "Most Missed") return b.miss_count - a.miss_count;
+                    if (mistakeSort === "Least Missed") return a.miss_count - b.miss_count;
+                    return 0; // Recent — backend already returns ordered
+                  })
+                  .map((m) => ({
+                    word: m.german, trans: m.english, wrong: "—", correct: m.german,
+                    time: `${m.miss_count} miss${m.miss_count !== 1 ? "es" : ""}`, priority: m.lapses > 2 ? "#EC4899" : m.lapses > 0 ? "#F59E0B" : "#22C55E",
+                  })) : MISTAKE_TABLE).map((row, i) => (
                   <div key={i} className="flex items-center gap-4 px-5" style={{ height: "80px", borderTop: i > 0 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
                     {/* Priority dot + Word */}
                     <div style={{ flex: 1.5, display: "flex", alignItems: "center", gap: "10px" }}>
