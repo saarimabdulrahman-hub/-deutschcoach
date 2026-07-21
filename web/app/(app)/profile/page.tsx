@@ -81,9 +81,9 @@ export default function ProfilePage() {
       />
 
       <AchievementList achievements={[
-        { id: "1", icon: "🌟", label: "First Lesson", earned: dash?.level_progress_pct > 0 },
+        { id: "1", icon: "🌟", label: "First Lesson", earned: (dash?.level_progress_pct ?? 0) > 0 },
         { id: "2", icon: "🔥", label: "3-Day Streak", earned: (dash?.streak ?? 0) >= 3 },
-        { id: "3", icon: "📚", label: "10 Lessons", earned: dash?.level_progress_pct >= 15 },
+        { id: "3", icon: "📚", label: "10 Lessons", earned: (dash?.level_progress_pct ?? 0) >= 15 },
         { id: "4", icon: "🎯", label: "Quiz Master", earned: (dash?.avg_quiz_score ?? 0) >= 80 },
         { id: "5", icon: "💬", label: "15-Day Streak", earned: (dash?.streak ?? 0) >= 15 },
         { id: "6", icon: "🏆", label: "Level Up", earned: (dash?.level_progress_pct ?? 0) >= 100 },
