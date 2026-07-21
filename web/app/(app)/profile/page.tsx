@@ -12,15 +12,6 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
-const MOCK_ACHIEVEMENTS = [
-  { id: "1", icon: "🌟", label: "First Lesson", earned: true },
-  { id: "2", icon: "🔥", label: "7-Day Streak", earned: true },
-  { id: "3", icon: "📚", label: "10 Lessons", earned: true },
-  { id: "4", icon: "🎯", label: "Perfect Quiz", earned: false },
-  { id: "5", icon: "💬", label: "Chat 50 Times", earned: false },
-  { id: "6", icon: "🏆", label: "Level A2", earned: false },
-];
-
 export default function ProfilePage() {
   const { user } = useAuth();
   const { data: dash } = useQuery<DashboardData>({
@@ -89,7 +80,14 @@ export default function ProfilePage() {
         vocabularyLearned={(srsStats?.mastered ?? 0) + (srsStats?.learning ?? 0) + (srsStats?.reviewing ?? 0)}
       />
 
-      <AchievementList achievements={MOCK_ACHIEVEMENTS} />
+      <AchievementList achievements={[
+        { id: "1", icon: "🌟", label: "First Lesson", earned: dash?.level_progress_pct > 0 },
+        { id: "2", icon: "🔥", label: "3-Day Streak", earned: (dash?.streak ?? 0) >= 3 },
+        { id: "3", icon: "📚", label: "10 Lessons", earned: dash?.level_progress_pct >= 15 },
+        { id: "4", icon: "🎯", label: "Quiz Master", earned: (dash?.avg_quiz_score ?? 0) >= 80 },
+        { id: "5", icon: "💬", label: "15-Day Streak", earned: (dash?.streak ?? 0) >= 15 },
+        { id: "6", icon: "🏆", label: "Level Up", earned: (dash?.level_progress_pct ?? 0) >= 100 },
+      ]} />
     </div>
   );
 }
