@@ -314,7 +314,7 @@ export default function SettingsPage() {
 
           {/* ── SUBSCRIPTION ── */}
           {active === "subscription" && (
-            <div className="relative flex items-center overflow-hidden rounded-[28px]" style={{ background: "linear-gradient(135deg, #070612, #0C0820)", border: "1px solid rgba(170,120,255,.35)", boxShadow: "0 8px 40px rgba(0,0,0,.3), 0 0 60px rgba(180,80,255,.08)" }}>
+            <div className="relative flex items-center overflow-hidden rounded-[28px]" style={{ background: "linear-gradient(135deg, #070612 0%, #0C0820 30%, #0A0625 60%, #110630 100%)", border: "1px solid rgba(170,120,255,.35)", boxShadow: "0 8px 40px rgba(0,0,0,.3), 0 0 60px rgba(180,80,255,.08)" }}>
               {/* Background stars */}
               <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
                 <span className="absolute" style={{ top: "15%", left: "10%", width: "2px", height: "2px", borderRadius: "50%", background: "#FFF", opacity: 0.3 }} />
@@ -363,9 +363,11 @@ export default function SettingsPage() {
               </div>
 
               {/* Right Illustration (62%) — crown bg image */}
-              <div className="flex-1 relative flex items-center justify-center" style={{ minHeight: "400px", background: `url('/subscription-crown-bg.png') center / cover no-repeat` }}>
-                {/* Purple glow overlay */}
-                <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(168,85,247,.12), transparent 60%)", pointerEvents: "none" }} />
+              <div className="flex-1 relative flex items-center justify-center" style={{ minHeight: "400px", background: `url('/subscription-crown-bg.png') right center / cover no-repeat` }}>
+                {/* Blend gradient — transitions from card bg into image */}
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, #0A0625 0%, rgba(10,6,37,.3) 30%, transparent 50%)", pointerEvents: "none" }} />
+                {/* Purple ambient glow */}
+                <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 50%, rgba(168,85,247,.08), transparent 60%)", pointerEvents: "none" }} />
                 {/* Pro Badge */}
                 <div className="absolute flex items-center justify-center" style={{ top: "12%", right: "8%", padding: "6px 14px", borderRadius: "12px", background: "rgba(255,255,255,.08)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,.06)" }}>
                   <span style={{ fontSize: "12px", fontWeight: 700, color: "#A855F7" }}>Pro</span>

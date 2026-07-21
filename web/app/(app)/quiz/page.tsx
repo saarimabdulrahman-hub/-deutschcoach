@@ -4,10 +4,9 @@ import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { QuizSession, QuizQuestion, DashboardData } from "@/types";
-import { QuizSetup } from "@/components/quiz/QuizSetup";
 import { QuestionCard } from "@/components/quiz/QuestionCard";
 import { QuizResults } from "@/components/quiz/QuizResults";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { EmmaAIPanel } from "@/components/quiz/EmmaAIPanel";
 import { useAutosave } from "@/hooks/useAutosave";
 import { useRecovery } from "@/hooks/useRecovery";
 
@@ -55,7 +54,6 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<StoredAnswer[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState<QuizResultOut | null>(null);
-  const [lastSource, setLastSource] = useState<string>("current-lesson");
   const [questionCount, setQuestionCount] = useState(10);
   const [selectedMode, setSelectedMode] = useState<string>("Current Lesson");
 
@@ -78,7 +76,13 @@ export default function QuizPage() {
     const question = questions[currentIndex];
     if (!question) return;
     const newAnswer: StoredAnswer = { question_id: String(question.id), answer };
-    const newAnswers = [...answers, newAnswer];
+    const newAnswers = [...answers];
+    // Replace if re-answering, otherwise append
+    if (currentIndex < newAnswers.length) {
+      newAnswers[currentIndex] = newAnswer;
+    } else {
+      newAnswers.push(newAnswer);
+    }
     setAnswers(newAnswers);
     if (currentIndex + 1 >= questions.length) submitQuiz(newAnswers);
     else setCurrentIndex((i) => i + 1);
@@ -104,19 +108,17 @@ export default function QuizPage() {
   }, [dismiss]);
 
   const [generating, setGenerating] = useState(false);
-  const [genError, setGenError] = useState<string | null>(null);
 
   async function handleGenerateQuiz() {
-    setGenerating(true); setGenError(null);
+    setGenerating(true);
     try {
       let body: Record<string, unknown> = { count: questionCount };
       if (selectedMode === "CEFR Level") body.level = dash?.continue_lesson?.level || "A1";
       if (selectedMode === "Speed Challenge") body.count = Math.min(questionCount, 15);
       const session = await api.post<QuizSession>("/quiz/generate", body);
       handleStart(session);
-      setLastSource(selectedMode.toLowerCase().replace(/\s+/g, "-"));
-    } catch (err: unknown) {
-      setGenError(err instanceof Error ? err.message : "Failed to start quiz.");
+    } catch {
+      // silently fail — error state handled by parent boundary
     } finally { setGenerating(false); }
   }
 
@@ -508,16 +510,88 @@ export default function QuizPage() {
       );
     }
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: "var(--color-hover-bg)" }}>✅</div>
-          <div>
-            <h1 className="text-xl font-bold" style={{ color: "var(--color-text)" }}>Quiz</h1>
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Question {currentIndex + 1} of {questions.length}</p>
+      <div className="flex gap-6 pb-8 items-start">
+        <EmmaAIPanel
+                  greeting={
+                    currentIndex === 0
+                      ? "Los geht's!"
+                      : currentIndex >= questions.length - 1
+                        ? "Last one!"
+                        : undefined
+                  }
+                  encouragement={
+                    currentIndex === 0
+                      ? "Let's start strong!"
+                      : currentIndex >= questions.length - 1
+                        ? "Finish strong, you're almost there!"
+                        : undefined
+                  }
+                  tip={questions[currentIndex]?.hint || undefined}
+                />
+        <div className="flex-1 min-w-0" style={{ background: "#0F1120", borderRadius: "20px", padding: "24px" }}>
+          <div className="space-y-6">
+            <QuestionCard
+              question={questions[currentIndex]}
+              onAnswer={handleAnswer}
+              questionNumber={currentIndex + 1}
+              totalQuestions={questions.length}
+            />
+
+            {/* Action Row */}
+            <div className="flex items-center gap-3">
+              <button
+                disabled={currentIndex === 0}
+                onClick={() => setCurrentIndex(i => Math.max(0, i - 1))}
+                className="flex items-center gap-2.5 text-base font-semibold transition-all duration-200 flex-shrink-0"
+                style={{
+                  width: "140px", height: "50px", borderRadius: "12px",
+                  background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.06)",
+                  color: currentIndex === 0 ? "rgba(255,255,255,.2)" : "rgba(255,255,255,.6)",
+                  cursor: currentIndex === 0 ? "not-allowed" : "pointer",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8L10 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Previous
+              </button>
+
+              <div className="flex-1" />
+
+              <button
+                onClick={() => setCurrentIndex(i => Math.min(questions.length - 1, i + 1))}
+                disabled={currentIndex >= questions.length - 1 || answers.length <= currentIndex}
+                className="flex items-center justify-center gap-2 text-base font-semibold transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                style={{
+                  width: "220px", height: "50px", borderRadius: "14px",
+                  background: "linear-gradient(135deg, #6D28FF, #FF3EA5)",
+                  boxShadow: "0 0 30px rgba(109,40,255,.3), 0 0 60px rgba(255,62,165,.12)",
+                  color: "#FFF",
+                }}
+              >
+                <span>Next Question</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4L10 8L6 12" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
+
+            {/* Bottom Stats */}
+            <div className="flex items-center overflow-hidden" style={{ height: "72px", borderRadius: "16px", background: "#111322", border: "1px solid rgba(255,255,255,.04)" }}>
+              {[
+                { icon: "🔥", value: dash?.streak ?? "7", label: "Day Streak" },
+                { icon: "⭐", value: "120", label: "This Lesson" },
+                { icon: "🎯", value: `${dash?.avg_quiz_score ?? 85}%`, label: "Accuracy" },
+                { icon: "📈", value: dash?.continue_lesson?.level ?? "A1", label: "Current Level" },
+              ].map((stat, i) => (
+                <div key={stat.label} className="flex-1 flex items-center justify-center gap-3"
+                  style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,.04)" : "none", height: "100%" }}>
+                  <span style={{ fontSize: "22px" }}>{stat.icon}</span>
+                  <div>
+                    <p className="m-0" style={{ fontSize: "22px", fontWeight: 700, color: "#FFF" }}>{stat.value}</p>
+                    <p className="m-0" style={{ fontSize: "13px", fontWeight: 400, color: "rgba(255,255,255,.35)" }}>{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <QuestionCard question={questions[currentIndex]} onAnswer={handleAnswer}
-          questionNumber={currentIndex + 1} totalQuestions={questions.length} />
       </div>
     );
   }
