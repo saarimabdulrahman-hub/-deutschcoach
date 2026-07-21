@@ -579,6 +579,7 @@ export default function ReviewSlugPage() {
                       ];
                       return (<>
                     <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                      <circle cx="60" cy="60" r="45" stroke="rgba(255,255,255,0.06)" strokeWidth="24" fill="none" />
                       {dashStrong > 0 && <circle cx="60" cy="60" r="45" stroke="#22C55E" strokeWidth="24" fill="none" strokeDasharray={`${dashStrong} ${circ}`} strokeLinecap="round" transform="rotate(-90 60 60)" />}
                       {dashNormal > 0 && <circle cx="60" cy="60" r="45" stroke="#8B5CF6" strokeWidth="24" fill="none" strokeDasharray={`${dashNormal} ${circ}`} strokeLinecap="round" transform={`rotate(${rotNormal} 60 60)`} />}
                       {dashReview > 0 && <circle cx="60" cy="60" r="45" stroke="#F59E0B" strokeWidth="24" fill="none" strokeDasharray={`${dashReview} ${circ}`} strokeLinecap="round" transform={`rotate(${rotReview} 60 60)`} />}
