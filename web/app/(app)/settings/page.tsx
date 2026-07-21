@@ -121,7 +121,7 @@ export default function SettingsPage() {
             </div>
             <p style={{ fontSize: "11px", fontWeight: 600, color: "#FFF", margin: 0 }}>Emma</p>
             <p style={{ fontSize: "9px", color: "rgba(255,255,255,.3)", margin: "2px 0 6px" }}>AI Assistant</p>
-            <button className="w-full py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Ask Emma</button>
+            <button onClick={() => router.push("/chat")} className="w-full py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer" style={{ background: "linear-gradient(90deg, #6D3BFF, #FF3CA6)", color: "#FFF" }}>Ask Emma</button>
           </div>
         </div>
 
