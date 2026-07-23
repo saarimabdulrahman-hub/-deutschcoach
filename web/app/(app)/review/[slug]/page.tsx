@@ -87,7 +87,7 @@ export default function ReviewSlugPage() {
   const retention = total > 0 ? Math.round((stats!.mastered / total) * 100) : 0;
 
   return (
-    <div className="flex" style={{ gap: 0, margin: "0 -24px", minHeight: "calc(100vh - 72px)" }}>
+    <div className="flex flex-col lg:flex-row" style={{ gap: 0, margin: "0 -24px", minHeight: "calc(100vh - 72px)" }}>
       <ReviewSidebar activeItem={slug} streak={streak} />
       <div className="flex-1 overflow-y-auto p-6" style={{ background: "#080611" }}>
         <div className="max-w-4xl space-y-6 pb-8">
@@ -126,7 +126,7 @@ export default function ReviewSlugPage() {
               </div>
 
               {/* 4 Stat Cards */}
-              <div className="grid grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-5">
                 {[
                   {
                     icon: <span style={{ fontSize: "48px", filter: "drop-shadow(0 0 14px rgba(249,115,22,.5))" }}>🔥</span>,
@@ -288,7 +288,7 @@ export default function ReviewSlugPage() {
               </div>
 
               {/* ── Quick Start ── */}
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-5">
                 {FLASHCARD_QUICK_START.map((card) => (
                   <button key={card.title} className="flex items-center gap-4 p-5 rounded-[18px] border-none cursor-pointer transition-all hover:-translate-y-0.5" style={{ background: "#161322", border: "1px solid rgba(255,255,255,.04)" }}>
                     <div className="flex items-center justify-center flex-shrink-0" style={{ width: "48px", height: "48px", borderRadius: "50%", background: `${card.color}08`, backdropFilter: "blur(8px)", border: `1px solid ${card.color}20` }}>
@@ -364,7 +364,7 @@ export default function ReviewSlugPage() {
               </div>
 
               {/* ── Statistics Cards ── */}
-              <div className="grid grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-5">
                 {[
                   { value: mistakes?.length ?? 0, label: "Total Mistakes", desc: "Unique words missed", color: "#8B5CF6", pct: 60 },
                   { value: mistakes?.filter(m => m.lapses > 2).length ?? 0, label: "Needs Review", desc: "High priority words", color: "#EC4899", pct: 40 },
@@ -526,7 +526,7 @@ export default function ReviewSlugPage() {
               </div>
 
               {/* ── KPI STATISTICS ROW ── */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3">
                 {/* Card 1 — Memory Accuracy */}
                 <div className="rounded-[16px] p-4" style={{ height: "110px", background: "linear-gradient(180deg, #18162E, #121426)", border: "1px solid rgba(255,255,255,.05)", boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
                   <div className="flex items-center gap-3 h-full">

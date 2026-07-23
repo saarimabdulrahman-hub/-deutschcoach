@@ -104,9 +104,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="flex gap-5">
-        {/* ── Left Sidebar (300px) ── */}
-        <div className="flex-shrink-0 rounded-[20px] p-3" style={{ width: "280px", background: "#141827", border: "1px solid rgba(255,255,255,.04)", boxShadow: "0 4px 24px rgba(0,0,0,.12)" }}>
+      <div className="flex flex-col lg:flex-row gap-5">
+        {/* ── Left Sidebar ── */}
+        <div className="flex-shrink-0 rounded-[20px] p-3" style={{ width: "100%", maxWidth: "280px", background: "#141827", border: "1px solid rgba(255,255,255,.04)", boxShadow: "0 4px 24px rgba(0,0,0,.12)" }}>
           <nav className="flex flex-col gap-1">
             {NAV.map((item) => {
               const isActive = active === item.key;

@@ -72,7 +72,7 @@ export function ReviewSidebar({ activeItem = "overview", streak = 0 }: ReviewSid
 
   return (
     <aside
-      className="flex flex-col h-full overflow-y-auto"
+      className="flex flex-col h-full overflow-y-auto hidden lg:flex"
       style={{
         width: "270px",
         minWidth: "270px",

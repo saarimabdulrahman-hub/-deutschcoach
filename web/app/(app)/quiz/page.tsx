@@ -359,7 +359,7 @@ export default function QuizPage() {
         </div>
 
         {/* ── STATISTICS ROW (5 KPI cards) ── */}
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4">
           {[
             {
               icon: <div style={{ position: "relative", width: "96px", height: "96px", display: "flex", alignItems: "center", justifyContent: "center" }}><svg width="96" height="96" viewBox="0 0 96 96" fill="none" style={{ position: "absolute" }}><circle cx="48" cy="48" r="38" stroke="rgba(255,255,255,.06)" strokeWidth="6" fill="none"/><circle cx="48" cy="48" r="38" stroke="#22C55E" strokeWidth="6" fill="none" strokeDasharray={`${((dash?.avg_quiz_score ?? 0) / 100) * 239} 239`} strokeLinecap="round" transform="rotate(-90 48 48)"/></svg><span style={{ fontSize: "20px", fontWeight: 800, color: "#FFF" }}>{dash?.avg_quiz_score ?? 0}%</span></div>,
@@ -392,7 +392,7 @@ export default function QuizPage() {
         </div>
 
         {/* ── THREE-COLUMN ANALYTICS SECTION ── */}
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
           {/* ── Today's Challenge ── */}
           <div className="flex flex-col rounded-2xl" style={{ background: "#131829", border: "1px solid rgba(255,255,255,.05)" }}>
             {/* Header */}

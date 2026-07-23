@@ -284,7 +284,7 @@ export default function ReviewPage() {
               {/* ── BOTTOM SECTION: Keep Practicing ── */}
               <div>
                 <p className="text-[11px] font-medium uppercase tracking-[1px] mb-3" style={{ color: "#FFF" }}>Keep Practicing</p>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4">
                   {KEEP_PRACTICING_ITEMS.map((item) => (
                     <button key={item.label}
                       onClick={() => router.push(item.href)}
